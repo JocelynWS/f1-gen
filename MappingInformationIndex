@@ -1,0 +1,18 @@
+package ies
+
+import "github.com/lvdund/ngap/aper"
+
+type MappingInformationIndex struct {
+    BitString []byte `lb:26, ub:26`
+}
+
+// Encode
+func (mii *MappingInformationIndex) Encode(w *aper.AperWriter) (err error) {
+    return w.WriteBitString(mii.BitString, 26)
+}
+
+// Decode
+func (mii *MappingInformationIndex) Decode(r *aper.AperReader) (err error) {
+    mii.BitString, err = r.ReadBitString(26)
+    return
+}
