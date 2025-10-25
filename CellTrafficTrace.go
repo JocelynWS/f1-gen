@@ -15,21 +15,20 @@ type CellTrafficTrace struct {
 	TraceID                        TraceID               `mandatory,ignore`
 	TraceCollectionEntityIPAddress TransportLayerAddress `mandatory,ignore`
 	PrivacyIndicator               *PrivacyIndicator     `optional,ignore`
-	TraceCollectionEntityURI       *URIAddress           `optional,ignore`
+	TraceCollectionEntityURI       []byte                `optional,ignore` 
 }
 
 func (msg *CellTrafficTrace) Encode(w io.Writer) (err error) {
-    var ies []F1apMessageIE
-    if ies, err = msg.toIes(); err != nil {
-        err = msgErrors(fmt.Errorf("CellTrafficTrace"), err)
-        return
-    }
-    return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_CellTrafficTrace, Criticality_PresentIgnore, ies)
+	var ies []F1apMessageIE
+	if ies, err = msg.toIes(); err != nil {
+		err = msgErrors(fmt.Errorf("CellTrafficTrace"), err)
+		return
+	}
+	return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_CellTrafficTrace, Criticality_PresentIgnore, ies)
 }
 
 func (msg *CellTrafficTrace) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}
-
 	ies = append(ies, F1apMessageIE{
 		Id:          ProtocolIEID{Value: ProtocolIEID_GNBCUUEF1APID},
 		Criticality: Criticality{Value: Criticality_PresentReject},
@@ -39,7 +38,6 @@ func (msg *CellTrafficTrace) toIes() (ies []F1apMessageIE, err error) {
 			Value: aper.Integer(msg.GNBCUUEF1APID),
 		},
 	})
-
 	ies = append(ies, F1apMessageIE{
 		Id:          ProtocolIEID{Value: ProtocolIEID_GNBDUUEF1APID},
 		Criticality: Criticality{Value: Criticality_PresentReject},
@@ -49,19 +47,16 @@ func (msg *CellTrafficTrace) toIes() (ies []F1apMessageIE, err error) {
 			Value: aper.Integer(msg.GNBDUUEF1APID),
 		},
 	})
-
 	ies = append(ies, F1apMessageIE{
 		Id:          ProtocolIEID{Value: ProtocolIEID_TraceID},
 		Criticality: Criticality{Value: Criticality_PresentIgnore},
 		Value:       &msg.TraceID,
 	})
-
 	ies = append(ies, F1apMessageIE{
 		Id:          ProtocolIEID{Value: ProtocolIEID_TraceCollectionEntityIPAddress},
 		Criticality: Criticality{Value: Criticality_PresentIgnore},
 		Value:       &msg.TraceCollectionEntityIPAddress,
 	})
-
 	if msg.PrivacyIndicator != nil {
 		ies = append(ies, F1apMessageIE{
 			Id:          ProtocolIEID{Value: ProtocolIEID_PrivacyIndicator},
@@ -69,12 +64,15 @@ func (msg *CellTrafficTrace) toIes() (ies []F1apMessageIE, err error) {
 			Value:       msg.PrivacyIndicator,
 		})
 	}
-
 	if msg.TraceCollectionEntityURI != nil {
 		ies = append(ies, F1apMessageIE{
 			Id:          ProtocolIEID{Value: ProtocolIEID_TraceCollectionEntityURI},
 			Criticality: Criticality{Value: Criticality_PresentIgnore},
-			Value:       msg.TraceCollectionEntityURI,
+			Value: &OCTETSTRING{
+				Value: msg.TraceCollectionEntityURI,
+				c:     aper.Constraint{Lb: 0, Ub: 255},
+				ext:   false,
+			},
 		})
 	}
 
@@ -163,7 +161,7 @@ func (decoder *CellTrafficTraceDecoder) decodeIE(r *aper.AperReader) (msgIe *F1a
 			err = utils.WrapError("Read GNBCUUEF1APID", err)
 			return
 		}
-		msg.GNBCUUEF1APID = int64(tmp.Value)
+		msg.GNBCUUEF1APID = int64(tmp.Value) 
 
 	case ProtocolIEID_GNBDUUEF1APID:
 		tmp := INTEGER{c: aper.Constraint{Lb: 0, Ub: 4294967295}, ext: false}
@@ -171,7 +169,7 @@ func (decoder *CellTrafficTraceDecoder) decodeIE(r *aper.AperReader) (msgIe *F1a
 			err = utils.WrapError("Read GNBDUUEF1APID", err)
 			return
 		}
-		msg.GNBDUUEF1APID = int64(tmp.Value)
+		msg.GNBDUUEF1APID = int64(tmp.Value) 
 
 	case ProtocolIEID_TraceID:
 		var tmp TraceID
@@ -198,12 +196,12 @@ func (decoder *CellTrafficTraceDecoder) decodeIE(r *aper.AperReader) (msgIe *F1a
 		msg.PrivacyIndicator = &tmp
 
 	case ProtocolIEID_TraceCollectionEntityURI:
-		var tmp URIAddress
+		var tmp OCTETSTRING
 		if err = tmp.Decode(ieR); err != nil {
 			err = utils.WrapError("Read TraceCollectionEntityURI", err)
 			return
 		}
-		msg.TraceCollectionEntityURI = &tmp
+		msg.TraceCollectionEntityURI = tmp.Value
 
 	default:
 		if msgIe.Criticality.Value != Criticality_PresentIgnore {

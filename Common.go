@@ -162,12 +162,13 @@ func (ie *ProtocolIEID) Encode(r *aper.AperWriter) (err error) {
 // 	Value aper.Integer `aper:"valueLB:0,valueUB:255"`
 // }
 
-func BuildDiagnostics(present uint8, procedureCode ProcedureCode, criticality Criticality, diagnosticsItems []CriticalityDiagnosticsIEItem) *CriticalityDiagnostics {
+func BuildDiagnostics(present uint8, procedureCode ProcedureCode, criticality Criticality, transactionID int64, diagnosticsItems []CriticalityDiagnosticsIEItem) *CriticalityDiagnostics {
+	procCodeValue := int64(procedureCode.Value)
 	return &CriticalityDiagnostics{
-		ProcedureCode:             &procedureCode,
+		ProcedureCode:             &procCodeValue,
 		TriggeringMessage:         &TriggeringMessage{Value: aper.Enumerated(present)},
 		ProcedureCriticality:      &criticality,
-		TransactionID:             TransactionID,
+		TransactionID:             &transactionID,
 		IEsCriticalityDiagnostics: diagnosticsItems,
 	}
 }
@@ -470,7 +471,7 @@ const (
 	ProtocolIEID_PagingOrigin                                   = 216
 	ProtocolIEID_NewgNBCUUEF1APID                               = 217
 	ProtocolIEID_RedirectedRRCmessage                          = 218
-	ProtocolIEID_NewGNBDUUEF1APID                               = 219
+	ProtocolIEID_NewgNBDUUEF1APID                               = 219
 	ProtocolIEID_NotificationInformation                        = 220
 	ProtocolIEID_PLMNAssistanceInfoForNetShar                   = 221
 	ProtocolIEID_UEContextNotRetrievable                        = 222

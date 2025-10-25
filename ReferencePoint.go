@@ -14,7 +14,7 @@ type ReferencePoint struct {
 	CoordinateID               *int64
 	ReferencePointCoordinate   *AccessPointPosition
 	ReferencePointCoordinateHA *NGRANHighAccuracyAccessPointPosition
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *ReferencePoint) Encode(w *aper.AperWriter) (err error) {

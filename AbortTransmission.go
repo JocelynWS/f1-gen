@@ -12,7 +12,7 @@ type AbortTransmission struct {
 	Choice           uint64
 	SRSResourceSetID *int64
 	ReleaseALL       *NULL
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *AbortTransmission) Encode(w *aper.AperWriter) (err error) {

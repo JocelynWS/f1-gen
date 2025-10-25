@@ -12,7 +12,7 @@ type NPNBroadcastInformation struct {
 	Choice                     uint64
 	SNPNBroadcastInformation   *NPNBroadcastInformationSNPN
 	PNINPNBroadcastInformation *NPNBroadcastInformationPNINPN
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *NPNBroadcastInformation) Encode(w *aper.AperWriter) (err error) {

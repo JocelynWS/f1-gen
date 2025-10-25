@@ -18,7 +18,7 @@ type ReferenceSignal struct {
 	SRS            *int64
 	PositioningSRS *int64
 	DLPRS          *DLPRS
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *ReferenceSignal) Encode(w *aper.AperWriter) (err error) {

@@ -6,7 +6,7 @@ import (
 )
 
 type SRSConfiguration struct {
-	SRSCarrierList []SRSCarrierListItem `lb:1,ub:maxnoofSRSCarriers,mandatory,valExt`
+	SRSCarrierList []SRSCarrierListItem `lb:1,ub:maxnoSRSCarriers,mandatory,valExt`
 	// IEExtensions * `optional`
 }
 
@@ -19,7 +19,7 @@ func (ie *SRSConfiguration) Encode(w *aper.AperWriter) (err error) {
 	if len(ie.SRSCarrierList) > 0 {
 		tmp := Sequence[*SRSCarrierListItem]{
 			Value: []*SRSCarrierListItem{},
-			c:     aper.Constraint{Lb: 1, Ub: maxnoofSRSCarriers},
+			c:     aper.Constraint{Lb: 1, Ub: maxnoSRSCarriers},
 			ext:   true,
 		}
 		for _, i := range ie.SRSCarrierList {
@@ -43,7 +43,7 @@ func (ie *SRSConfiguration) Decode(r *aper.AperReader) (err error) {
 		return
 	}
 	tmp_SRSCarrierList := Sequence[*SRSCarrierListItem]{
-		c:   aper.Constraint{Lb: 1, Ub: maxnoofSRSCarriers},
+		c:   aper.Constraint{Lb: 1, Ub: maxnoSRSCarriers},
 		ext: true,
 	}
 	fn := func() *SRSCarrierListItem { return new(SRSCarrierListItem) }

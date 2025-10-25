@@ -6,7 +6,7 @@ import (
 )
 
 type PosMeasurementResultListItem struct {
-	PosMeasurementResult []PosMeasurementResultItem `lb:1,ub:maxnoofMeasPRS,mandatory,valExt`
+	PosMeasurementResult []PosMeasurementResultItem `lb:1,ub:maxnoofPosMeas,mandatory,valExt`
 	TRPID                int64                      `lb:0,ub:4095,mandatory,valExt`
 	// IEExtensions * `optional`
 }
@@ -20,7 +20,7 @@ func (ie *PosMeasurementResultListItem) Encode(w *aper.AperWriter) (err error) {
 	if len(ie.PosMeasurementResult) > 0 {
 		tmp := Sequence[*PosMeasurementResultItem]{
 			Value: []*PosMeasurementResultItem{},
-			c:     aper.Constraint{Lb: 1, Ub: maxnoofMeasPRS},
+			c:     aper.Constraint{Lb: 1, Ub: maxnoofPosMeas},
 			ext:   true,
 		}
 		for _, i := range ie.PosMeasurementResult {
@@ -49,7 +49,7 @@ func (ie *PosMeasurementResultListItem) Decode(r *aper.AperReader) (err error) {
 		return
 	}
 	tmp_PosMeasurementResult := Sequence[*PosMeasurementResultItem]{
-		c:   aper.Constraint{Lb: 1, Ub: maxnoofMeasPRS},
+		c:   aper.Constraint{Lb: 1, Ub: maxnoofPosMeas},
 		ext: true,
 	}
 	fn := func() *PosMeasurementResultItem { return new(PosMeasurementResultItem) }

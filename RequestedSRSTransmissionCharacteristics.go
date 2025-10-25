@@ -53,7 +53,7 @@ func (ie *RequestedSRSTransmissionCharacteristics) Encode(w *aper.AperWriter) (e
 	if len(ie.SRSResourceSetList) > 0 {
 		tmp := Sequence[*SRSResourceSetItem]{
 			Value: []*SRSResourceSetItem{},
-			c:     aper.Constraint{Lb: 1, Ub: maxnoofSRSResourceSets},
+			c:     aper.Constraint{Lb: 1, Ub: maxnoSRSResourceSets},
 			ext:   true,
 		}
 		for _, i := range ie.SRSResourceSetList {
@@ -113,7 +113,7 @@ func (ie *RequestedSRSTransmissionCharacteristics) Decode(r *aper.AperReader) (e
 
 	if aper.IsBitSet(optionals, 2) {
 		tmp_SRSResourceSetList := Sequence[*SRSResourceSetItem]{
-			c:   aper.Constraint{Lb: 1, Ub: maxnoofSRSResourceSets},
+			c:   aper.Constraint{Lb: 1, Ub: maxnoSRSResourceSets},
 			ext: true,
 		}
 		fn := func() *SRSResourceSetItem { return new(SRSResourceSetItem) }

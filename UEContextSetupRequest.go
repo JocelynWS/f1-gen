@@ -100,7 +100,7 @@ func (msg *UEContextSetupRequest) toIes() (ies []F1apMessageIE, err error) {
 	ies = append(ies, F1apMessageIE{
 		Id:          ProtocolIEID{Value: ProtocolIEID_CUtoDURRCInformation},
 		Criticality: Criticality{Value: Criticality_PresentReject},
-		Value:       &msg.CUtoDURRCInformation,
+		Value:       msg.CUtoDURRCInformation,
 	})
 	if len(msg.CandidateSpCellList) > 0 {
 		tmp_CandidateSpCellList := Sequence[*CandidateSpCellItem]{
@@ -220,14 +220,14 @@ func (msg *UEContextSetupRequest) toIes() (ies []F1apMessageIE, err error) {
 				Value: msg.ServingPLMN,
 			}})
 	}
-	if msg.GNBDUUEAMBRUL != nil {
+	if msg.GNBDUUEAMBRUL != 0 {
 		ies = append(ies, F1apMessageIE{
 			Id:          ProtocolIEID{Value: ProtocolIEID_GNBDUUEAMBRUL},
 			Criticality: Criticality{Value: Criticality_PresentIgnore},
 			Value: &INTEGER{
 				c:     aper.Constraint{Lb: 0, Ub: 4000000000000},
 				ext:   true,
-				Value: aper.Integer(*msg.GNBDUUEAMBRUL),
+				Value: aper.Integer(msg.GNBDUUEAMBRUL),
 			}})
 	}
 	if msg.RRCDeliveryStatusRequest != nil {
@@ -370,7 +370,7 @@ func (msg *UEContextSetupRequest) toIes() (ies []F1apMessageIE, err error) {
 	ies = append(ies, F1apMessageIE{
 		Id:          ProtocolIEID{Value: ProtocolIEID_ConditionalInterDUMobilityInformation},
 		Criticality: Criticality{Value: Criticality_PresentReject},
-		Value:       &msg.ConditionalInterDUMobilityInformation,
+		Value:       msg.ConditionalInterDUMobilityInformation,
 	})
 	if len(msg.ManagementBasedMDTPLMNList) > 0 {
 		tmp_ManagementBasedMDTPLMNList := Sequence[*PLMNIdentity]{
@@ -559,7 +559,7 @@ func (decoder *UEContextSetupRequestDecoder) decodeIE(r *aper.AperReader) (msgIe
 			err = utils.WrapError("Read CUtoDURRCInformation", err)
 			return
 		}
-		msg.CUtoDURRCInformation = tmp
+		msg.CUtoDURRCInformation = &tmp
 	case ProtocolIEID_CandidateSpCellList:
 		tmp := Sequence[*CandidateSpCellItem]{
 			c:   aper.Constraint{Lb: 1, Ub: maxnoofCandidateSpCells},
@@ -686,7 +686,7 @@ func (decoder *UEContextSetupRequestDecoder) decodeIE(r *aper.AperReader) (msgIe
 			err = utils.WrapError("Read GNBDUUEAMBRUL", err)
 			return
 		}
-		msg.GNBDUUEAMBRUL = (*int64)(&tmp.Value)
+		msg.GNBDUUEAMBRUL = (int64)(tmp.Value)
 	case ProtocolIEID_RRCDeliveryStatusRequest:
 		var tmp RRCDeliveryStatusRequest
 		if err = tmp.Decode(ieR); err != nil {
@@ -830,7 +830,7 @@ func (decoder *UEContextSetupRequestDecoder) decodeIE(r *aper.AperReader) (msgIe
 			err = utils.WrapError("Read ConditionalInterDUMobilityInformation", err)
 			return
 		}
-		msg.ConditionalInterDUMobilityInformation = tmp
+		msg.ConditionalInterDUMobilityInformation = &tmp
 	case ProtocolIEID_ManagementBasedMDTPLMNList:
 		tmp := Sequence[*PLMNIdentity]{
 			c:   aper.Constraint{Lb: 1, Ub: maxnoofMDTPLMNs},

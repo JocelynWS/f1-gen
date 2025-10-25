@@ -12,7 +12,7 @@ type SRSType struct {
 	Choice            uint64
 	SemipersistentSRS *SemipersistentSRS
 	AperiodicSRS      *AperiodicSRS
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *SRSType) Encode(w *aper.AperWriter) (err error) {

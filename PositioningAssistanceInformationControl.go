@@ -46,7 +46,7 @@ func (msg *PositioningAssistanceInformationControl) toIes() (ies []F1apMessageIE
 	ies = append(ies, F1apMessageIE{
 		Id:          ProtocolIEID{Value: ProtocolIEID_PosBroadcast},
 		Criticality: Criticality{Value: Criticality_PresentReject},
-		Value:       &msg.PosBroadcast,
+		Value:       msg.PosBroadcast,
 	})
 	if len(msg.PositioningBroadcastCells) > 0 {
 		tmp_PositioningBroadcastCells := Sequence[*NRCGI]{
@@ -195,7 +195,7 @@ func (decoder *PositioningAssistanceInformationControlDecoder) decodeIE(r *aper.
 			err = utils.WrapError("Read PosBroadcast", err)
 			return
 		}
-		msg.PosBroadcast = tmp
+		msg.PosBroadcast = &tmp
 	case ProtocolIEID_PositioningBroadcastCells:
 		tmp := Sequence[*NRCGI]{
 			c:   aper.Constraint{Lb: 1, Ub: maxCellingNBDU},

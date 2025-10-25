@@ -6,7 +6,7 @@ import (
 )
 
 type RadioResourceStatus struct {
-	SSBAreaRadioResourceStatusList SSBAreaRadioResourceStatusList `mandatory`
+	SSBAreaRadioResourceStatusList SSBAreaRadioResourceStatusItem `mandatory`
 	// IEExtensions * `optional`
 }
 

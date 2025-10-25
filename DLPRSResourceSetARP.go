@@ -6,10 +6,10 @@ import (
 )
 
 type DLPRSResourceSetARP struct {
-	DlPRSResourceSetID          PRSResourceSetID            `mandatory`
+	DlPRSResourceSetID          PRSResourceSetID             `mandatory`
 	DLPRSResourceSetARPLocation DLPRSResourceSetARPLocation `mandatory`
-	ListofDLPRSResourceARP      SEQUENCE                    `mandatory`
-	// IEExtensions * `optional`
+	ListofDLPRSResourceARP      []DLPRSResourceARP           `mandatory,lb:1,ub:maxnoofPRSResourcesPerSet`
+	// IEExtensions * `optional,ignore`
 }
 
 func (ie *DLPRSResourceSetARP) Encode(w *aper.AperWriter) (err error) {
@@ -26,12 +26,15 @@ func (ie *DLPRSResourceSetARP) Encode(w *aper.AperWriter) (err error) {
 		err = utils.WrapError("Encode DLPRSResourceSetARPLocation", err)
 		return
 	}
-	if err = ie.ListofDLPRSResourceARP.Encode(w); err != nil {
-		err = utils.WrapError("Encode ListofDLPRSResourceARP", err)
-		return
+	for i := range ie.ListofDLPRSResourceARP {
+		if err = ie.ListofDLPRSResourceARP[i].Encode(w); err != nil {
+			err = utils.WrapError("Encode ListofDLPRSResourceARP", err)
+			return
+		}
 	}
 	return
 }
+
 func (ie *DLPRSResourceSetARP) Decode(r *aper.AperReader) (err error) {
 	if _, err = r.ReadBool(); err != nil {
 		return
@@ -47,9 +50,11 @@ func (ie *DLPRSResourceSetARP) Decode(r *aper.AperReader) (err error) {
 		err = utils.WrapError("Read DLPRSResourceSetARPLocation", err)
 		return
 	}
-	if err = ie.ListofDLPRSResourceARP.Decode(r); err != nil {
-		err = utils.WrapError("Read ListofDLPRSResourceARP", err)
-		return
+	for i := range ie.ListofDLPRSResourceARP {
+		if err = ie.ListofDLPRSResourceARP[i].Decode(r); err != nil {
+			err = utils.WrapError("Read ListofDLPRSResourceARP", err)
+			return
+		}
 	}
 	return
 }

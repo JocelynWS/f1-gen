@@ -18,12 +18,12 @@ type ECIDMeasurementFailureIndication struct {
 }
 
 func (msg *ECIDMeasurementFailureIndication) Encode(w io.Writer) (err error) {
-    var ies []F1apMessageIE
-    if ies, err = msg.toIes(); err != nil {
-        err = msgErrors(fmt.Errorf("ECIDMeasurementFailureIndication"), err)
-        return
-    }
-    return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_ECIDMeasurementFailureIndication, Criticality_PresentIgnore, ies)
+	var ies []F1apMessageIE
+	if ies, err = msg.toIes(); err != nil {
+		err = msgErrors(fmt.Errorf("ECIDMeasurementFailureIndication"), err)
+		return
+	}
+	return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_ECIDMeasurementFailureIndication, Criticality_PresentIgnore, ies)
 }
 func (msg *ECIDMeasurementFailureIndication) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}
@@ -62,7 +62,7 @@ func (msg *ECIDMeasurementFailureIndication) toIes() (ies []F1apMessageIE, err e
 	ies = append(ies, F1apMessageIE{
 		Id:          ProtocolIEID{Value: ProtocolIEID_Cause},
 		Criticality: Criticality{Value: Criticality_PresentIgnore},
-		Value:       &msg.Cause,
+		Value:       msg.Cause,
 	})
 	return
 }
@@ -201,12 +201,13 @@ func (decoder *ECIDMeasurementFailureIndicationDecoder) decodeIE(r *aper.AperRea
 		}
 		msg.RANUEMeasurementID = int64(tmp.Value)
 	case ProtocolIEID_Cause:
-		var tmp Cause
+		tmp := new(Cause)
 		if err = tmp.Decode(ieR); err != nil {
 			err = utils.WrapError("Read Cause", err)
 			return
 		}
 		msg.Cause = tmp
+
 	default:
 		switch msgIe.Criticality.Value {
 		case Criticality_PresentReject:

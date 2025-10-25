@@ -20,7 +20,7 @@ type RelativePathDelay struct {
 	K3     *int64
 	K4     *int64
 	K5     *int64
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *RelativePathDelay) Encode(w *aper.AperWriter) (err error) {

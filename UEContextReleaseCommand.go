@@ -14,7 +14,7 @@ type UEContextReleaseCommand struct {
 	GNBDUUEF1APID            int64                     `lb:0,ub:4294967295,mandatory,reject`
 	Cause                    Cause                     `mandatory,ignore`
 	RRCContainer             []byte                    `lb:0,ub:0,optional,ignore`
-	SRBID                    int64                     `lb:0,ub:3,conditional,ignore`
+	SRBID                    *int64                    `lb:0,ub:3,conditional,ignore` 
 	OldgNBDUUEF1APID         *int64                    `lb:0,ub:4294967295,optional,ignore`
 	ExecuteDuplication       *ExecuteDuplication       `mandatory,ignore`
 	RRCDeliveryStatusRequest *RRCDeliveryStatusRequest `optional,ignore`
@@ -22,13 +22,14 @@ type UEContextReleaseCommand struct {
 }
 
 func (msg *UEContextReleaseCommand) Encode(w io.Writer) (err error) {
-    var ies []F1apMessageIE
-    if ies, err = msg.toIes(); err != nil {
-        err = msgErrors(fmt.Errorf("UEContextReleaseCommand"), err)
-        return
-    }
-    return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_UEContextRelease, Criticality_PresentReject, ies)
+	var ies []F1apMessageIE
+	if ies, err = msg.toIes(); err != nil {
+		err = msgErrors(fmt.Errorf("UEContextReleaseCommand"), err)
+		return
+	}
+	return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_UEContextRelease, Criticality_PresentReject, ies)
 }
+
 func (msg *UEContextReleaseCommand) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}
 	ies = append(ies, F1apMessageIE{
@@ -39,6 +40,7 @@ func (msg *UEContextReleaseCommand) toIes() (ies []F1apMessageIE, err error) {
 			ext:   false,
 			Value: aper.Integer(msg.GNBCUUEF1APID),
 		}})
+
 	ies = append(ies, F1apMessageIE{
 		Id:          ProtocolIEID{Value: ProtocolIEID_GNBDUUEF1APID},
 		Criticality: Criticality{Value: Criticality_PresentReject},
@@ -47,11 +49,13 @@ func (msg *UEContextReleaseCommand) toIes() (ies []F1apMessageIE, err error) {
 			ext:   false,
 			Value: aper.Integer(msg.GNBDUUEF1APID),
 		}})
+
 	ies = append(ies, F1apMessageIE{
 		Id:          ProtocolIEID{Value: ProtocolIEID_Cause},
 		Criticality: Criticality{Value: Criticality_PresentIgnore},
 		Value:       &msg.Cause,
 	})
+
 	if msg.RRCContainer != nil {
 		ies = append(ies, F1apMessageIE{
 			Id:          ProtocolIEID{Value: ProtocolIEID_RRCContainer},
@@ -62,16 +66,18 @@ func (msg *UEContextReleaseCommand) toIes() (ies []F1apMessageIE, err error) {
 				Value: msg.RRCContainer,
 			}})
 	}
-	if msg.SRBID != nil {
+
+	if msg.SRBID != nil { // ✅ vẫn giữ nguyên điều kiện nil
 		ies = append(ies, F1apMessageIE{
 			Id:          ProtocolIEID{Value: ProtocolIEID_SRBID},
 			Criticality: Criticality{Value: Criticality_PresentIgnore},
 			Value: &INTEGER{
 				c:     aper.Constraint{Lb: 0, Ub: 3},
 				ext:   false,
-				Value: aper.Integer(*msg.SRBID),
+				Value: aper.Integer(*msg.SRBID), 
 			}})
 	}
+
 	if msg.OldgNBDUUEF1APID != nil {
 		ies = append(ies, F1apMessageIE{
 			Id:          ProtocolIEID{Value: ProtocolIEID_OldgNBDUUEF1APID},
@@ -82,11 +88,13 @@ func (msg *UEContextReleaseCommand) toIes() (ies []F1apMessageIE, err error) {
 				Value: aper.Integer(*msg.OldgNBDUUEF1APID),
 			}})
 	}
+
 	ies = append(ies, F1apMessageIE{
 		Id:          ProtocolIEID{Value: ProtocolIEID_ExecuteDuplication},
 		Criticality: Criticality{Value: Criticality_PresentIgnore},
-		Value:       &msg.ExecuteDuplication,
+		Value:       msg.ExecuteDuplication,
 	})
+
 	if msg.RRCDeliveryStatusRequest != nil {
 		ies = append(ies, F1apMessageIE{
 			Id:          ProtocolIEID{Value: ProtocolIEID_RRCDeliveryStatusRequest},
@@ -94,6 +102,7 @@ func (msg *UEContextReleaseCommand) toIes() (ies []F1apMessageIE, err error) {
 			Value:       msg.RRCDeliveryStatusRequest,
 		})
 	}
+
 	if len(msg.TargetCellsToCancel) > 0 {
 		tmp_TargetCellsToCancel := Sequence[*TargetCellListItem]{
 			c:   aper.Constraint{Lb: 1, Ub: maxnoofCHOcells},
@@ -113,6 +122,7 @@ func (msg *UEContextReleaseCommand) toIes() (ies []F1apMessageIE, err error) {
 	}
 	return
 }
+
 func (msg *UEContextReleaseCommand) Decode(wire []byte) (err error, diagList []CriticalityDiagnosticsIEItem) {
 	defer func() {
 		if err != nil {
@@ -253,7 +263,8 @@ func (decoder *UEContextReleaseCommandDecoder) decodeIE(r *aper.AperReader) (msg
 			err = utils.WrapError("Read SRBID", err)
 			return
 		}
-		msg.SRBID = (*int64)(&tmp.Value)
+		msg.SRBID = new(int64)          
+		*msg.SRBID = int64(tmp.Value)   
 	case ProtocolIEID_OldgNBDUUEF1APID:
 		tmp := INTEGER{
 			c:   aper.Constraint{Lb: 0, Ub: 4294967295},
@@ -263,14 +274,15 @@ func (decoder *UEContextReleaseCommandDecoder) decodeIE(r *aper.AperReader) (msg
 			err = utils.WrapError("Read OldgNBDUUEF1APID", err)
 			return
 		}
-		msg.OldgNBDUUEF1APID = (*int64)(&tmp.Value)
+		msg.OldgNBDUUEF1APID = new(int64)
+		*msg.OldgNBDUUEF1APID = int64(tmp.Value)
 	case ProtocolIEID_ExecuteDuplication:
 		var tmp ExecuteDuplication
 		if err = tmp.Decode(ieR); err != nil {
 			err = utils.WrapError("Read ExecuteDuplication", err)
 			return
 		}
-		msg.ExecuteDuplication = tmp
+		msg.ExecuteDuplication = &tmp
 	case ProtocolIEID_RRCDeliveryStatusRequest:
 		var tmp RRCDeliveryStatusRequest
 		if err = tmp.Decode(ieR); err != nil {

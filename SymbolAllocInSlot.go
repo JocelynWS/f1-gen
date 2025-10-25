@@ -14,7 +14,7 @@ type SymbolAllocInSlot struct {
 	AllDL       *NULL
 	AllUL       *NULL
 	BothDLAndUL *NumDLULSymbols
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *SymbolAllocInSlot) Encode(w *aper.AperWriter) (err error) {

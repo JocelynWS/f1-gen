@@ -7,7 +7,7 @@ import (
 
 type GNBRxTxTimeDiff struct {
 	RxTxTimeDiff       GNBRxTxTimeDiffMeas `mandatory`
-	AdditionalPathList *AdditionalPathList `optional`
+	AdditionalPathList *AdditionalPathItem `optional`
 	// IEExtensions * `optional`
 }
 
@@ -45,7 +45,7 @@ func (ie *GNBRxTxTimeDiff) Decode(r *aper.AperReader) (err error) {
 		return
 	}
 	if aper.IsBitSet(optionals, 1) {
-		tmp := new(AdditionalPathList)
+		tmp := new(AdditionalPathItem)
 		if err = tmp.Decode(r); err != nil {
 			err = utils.WrapError("Read AdditionalPathList", err)
 			return

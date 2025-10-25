@@ -78,7 +78,7 @@ func (msg *PositioningMeasurementRequest) toIes() (ies []F1apMessageIE, err erro
 	ies = append(ies, F1apMessageIE{
 		Id:          ProtocolIEID{Value: ProtocolIEID_PosReportCharacteristics},
 		Criticality: Criticality{Value: Criticality_PresentReject},
-		Value:       &msg.PosReportCharacteristics,
+		Value:       msg.PosReportCharacteristics,
 	})
 	if msg.PosMeasurementPeriodicity != nil {
 		ies = append(ies, F1apMessageIE{
@@ -118,7 +118,7 @@ func (msg *PositioningMeasurementRequest) toIes() (ies []F1apMessageIE, err erro
 	ies = append(ies, F1apMessageIE{
 		Id:          ProtocolIEID{Value: ProtocolIEID_SRSConfiguration},
 		Criticality: Criticality{Value: Criticality_PresentIgnore},
-		Value:       &msg.SRSConfiguration,
+		Value:       msg.SRSConfiguration,
 	})
 	if msg.MeasurementBeamInfoRequest != nil {
 		ies = append(ies, F1apMessageIE{
@@ -325,7 +325,7 @@ func (decoder *PositioningMeasurementRequestDecoder) decodeIE(r *aper.AperReader
 			err = utils.WrapError("Read PosReportCharacteristics", err)
 			return
 		}
-		msg.PosReportCharacteristics = tmp
+		msg.PosReportCharacteristics = &tmp
 	case ProtocolIEID_PosMeasurementPeriodicity:
 		var tmp MeasurementPeriodicity
 		if err = tmp.Decode(ieR); err != nil {
@@ -363,7 +363,7 @@ func (decoder *PositioningMeasurementRequestDecoder) decodeIE(r *aper.AperReader
 			err = utils.WrapError("Read SRSConfiguration", err)
 			return
 		}
-		msg.SRSConfiguration = tmp
+		msg.SRSConfiguration = &tmp
 	case ProtocolIEID_MeasurementBeamInfoRequest:
 		var tmp MeasurementBeamInfoRequest
 		if err = tmp.Decode(ieR); err != nil {

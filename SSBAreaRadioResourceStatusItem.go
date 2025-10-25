@@ -51,21 +51,24 @@ func (ie *SSBAreaRadioResourceStatusItem) Encode(w *aper.AperWriter) (err error)
 		{ie.SSBAreaULTotalPRBusage, 0, 100, "SSBAreaULTotalPRBusage"},
 	}
 	for _, t := range tmp {
-		if err = NewINTEGER(t.val, aper.Constraint{Lb: t.lb, Ub: t.ub}, false).Encode(w); err != nil {
+		tmpInt := NewINTEGER(t.val, aper.Constraint{Lb: t.lb, Ub: t.ub}, false)
+		if err = (&tmpInt).Encode(w); err != nil {
 			err = utils.WrapError("Encode "+t.name, err)
 			return
 		}
 	}
 
 	if ie.DLschedulingPDCCHCCEusage != nil {
-		if err = NewINTEGER(*ie.DLschedulingPDCCHCCEusage, aper.Constraint{Lb: 0, Ub: 100}, false).Encode(w); err != nil {
+		tmp := NewINTEGER(*ie.DLschedulingPDCCHCCEusage, aper.Constraint{Lb: 0, Ub: 100}, false)
+		if err = (&tmp).Encode(w); err != nil {
 			err = utils.WrapError("Encode DLschedulingPDCCHCCEusage", err)
 			return
 		}
 	}
 
 	if ie.ULschedulingPDCCHCCEusage != nil {
-		if err = NewINTEGER(*ie.ULschedulingPDCCHCCEusage, aper.Constraint{Lb: 0, Ub: 100}, false).Encode(w); err != nil {
+		tmpInt := NewINTEGER(*ie.ULschedulingPDCCHCCEusage, aper.Constraint{Lb: 0, Ub: 100}, false)
+		if err = (&tmpInt).Encode(w); err != nil {
 			err = utils.WrapError("Encode ULschedulingPDCCHCCEusage", err)
 			return
 		}

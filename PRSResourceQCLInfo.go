@@ -12,7 +12,7 @@ type PRSResourceQCLInfo struct {
 	Choice       uint64
 	QCLSourceSSB *PRSResourceQCLSourceSSB
 	QCLSourcePRS *PRSResourceQCLSourcePRS
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *PRSResourceQCLInfo) Encode(w *aper.AperWriter) (err error) {

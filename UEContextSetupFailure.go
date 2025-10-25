@@ -75,7 +75,7 @@ func (msg *UEContextSetupFailure) toIes() (ies []F1apMessageIE, err error) {
 	ies = append(ies, F1apMessageIE{
 		Id:          ProtocolIEID{Value: ProtocolIEID_RequestedTargetCellGlobalID},
 		Criticality: Criticality{Value: Criticality_PresentReject},
-		Value:       &msg.RequestedTargetCellGlobalID,
+		Value:       msg.RequestedTargetCellGlobalID,
 	})
 	return
 }
@@ -209,7 +209,7 @@ func (decoder *UEContextSetupFailureDecoder) decodeIE(r *aper.AperReader) (msgIe
 			err = utils.WrapError("Read RequestedTargetCellGlobalID", err)
 			return
 		}
-		msg.RequestedTargetCellGlobalID = tmp
+		msg.RequestedTargetCellGlobalID = &tmp
 	default:
 		switch msgIe.Criticality.Value {
 		case Criticality_PresentReject:

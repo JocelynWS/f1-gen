@@ -10,7 +10,7 @@ const (
 type ECIDMeasuredResultsValue struct {
 	Choice                uint64
 	ValueAngleofArrivalNR *ULAoA
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *ECIDMeasuredResultsValue) Encode(w *aper.AperWriter) (err error) {

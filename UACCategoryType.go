@@ -12,7 +12,7 @@ type UACCategoryType struct {
 	Choice             uint64
 	UACstandardized    *UACAction
 	UACOperatorDefined *UACOperatorDefined
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *UACCategoryType) Encode(w *aper.AperWriter) (err error) {

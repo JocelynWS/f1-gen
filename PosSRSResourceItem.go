@@ -16,7 +16,6 @@ type PosSRSResourceItem struct {
 	ResourceTypePos        ResourceTypePos        `mandatory`
 	SequenceId             int64                  `lb:0,ub:65535,mandatory`
 	SpatialRelationPos     *SpatialRelationPos    `optional`
-	// IEExtensions *PosSRSResourceItemExtIEs `optional`
 }
 
 func (ie *PosSRSResourceItem) Encode(w *aper.AperWriter) (err error) {
@@ -29,33 +28,49 @@ func (ie *PosSRSResourceItem) Encode(w *aper.AperWriter) (err error) {
 	}
 	w.WriteBits(optionals, 2)
 
-	if err = NewINTEGER(ie.SrsPosResourceId, aper.Constraint{Lb: 0, Ub: 63}, false).Encode(w); err != nil {
+	tmp1 := NewINTEGER(ie.SrsPosResourceId, aper.Constraint{Lb: 0, Ub: 63}, false)
+	if err = tmp1.Encode(w); err != nil {
 		return utils.WrapError("Encode SrsPosResourceId", err)
 	}
+
 	if err = ie.TransmissionCombPos.Encode(w); err != nil {
 		return utils.WrapError("Encode TransmissionCombPos", err)
 	}
-	if err = NewINTEGER(ie.StartPosition, aper.Constraint{Lb: 0, Ub: 13}, false).Encode(w); err != nil {
+
+	tmp2 := NewINTEGER(ie.StartPosition, aper.Constraint{Lb: 0, Ub: 13}, false)
+	if err = tmp2.Encode(w); err != nil {
 		return utils.WrapError("Encode StartPosition", err)
 	}
-	if err = NewENUMERATED(int64(ie.NrofSymbols), aper.Constraint{Lb: 0, Ub: 4}, false).Encode(w); err != nil {
+
+	tmp3 := NewENUMERATED(int64(ie.NrofSymbols.Value), aper.Constraint{Lb: 0, Ub: 4}, false)
+	if err = tmp3.Encode(w); err != nil {
 		return utils.WrapError("Encode NrofSymbols", err)
 	}
-	if err = NewINTEGER(ie.FreqDomainShift, aper.Constraint{Lb: 0, Ub: 268}, false).Encode(w); err != nil {
+
+	tmp4 := NewINTEGER(ie.FreqDomainShift, aper.Constraint{Lb: 0, Ub: 268}, false)
+	if err = tmp4.Encode(w); err != nil {
 		return utils.WrapError("Encode FreqDomainShift", err)
 	}
-	if err = NewINTEGER(ie.CSRS, aper.Constraint{Lb: 0, Ub: 63}, false).Encode(w); err != nil {
+
+	tmp5 := NewINTEGER(ie.CSRS, aper.Constraint{Lb: 0, Ub: 63}, false)
+	if err = tmp5.Encode(w); err != nil {
 		return utils.WrapError("Encode CSRS", err)
 	}
-	if err = NewENUMERATED(int64(ie.GroupOrSequenceHopping), aper.Constraint{Lb: 0, Ub: 2}, false).Encode(w); err != nil {
+
+	tmp6 := NewENUMERATED(int64(ie.GroupOrSequenceHopping.Value), aper.Constraint{Lb: 0, Ub: 2}, false)
+	if err = tmp6.Encode(w); err != nil {
 		return utils.WrapError("Encode GroupOrSequenceHopping", err)
 	}
+
 	if err = ie.ResourceTypePos.Encode(w); err != nil {
 		return utils.WrapError("Encode ResourceTypePos", err)
 	}
-	if err = NewINTEGER(ie.SequenceId, aper.Constraint{Lb: 0, Ub: 65535}, false).Encode(w); err != nil {
+
+	tmp7 := NewINTEGER(ie.SequenceId, aper.Constraint{Lb: 0, Ub: 65535}, false)
+	if err = tmp7.Encode(w); err != nil {
 		return utils.WrapError("Encode SequenceId", err)
 	}
+
 	if ie.SpatialRelationPos != nil {
 		if err = ie.SpatialRelationPos.Encode(w); err != nil {
 			return utils.WrapError("Encode SpatialRelationPos", err)
@@ -92,7 +107,8 @@ func (ie *PosSRSResourceItem) Decode(r *aper.AperReader) (err error) {
 	if err = tmpEnum.Decode(r); err != nil {
 		return utils.WrapError("Read NrofSymbols", err)
 	}
-	ie.NrofSymbols = NrofSymbolsEnum(tmpEnum.Value)
+	// Sửa: Tạo struct NrofSymbols với field Value
+	ie.NrofSymbols = NrofSymbols{Value: tmpEnum.Value}
 
 	tmp = INTEGER{c: aper.Constraint{Lb: 0, Ub: 268}}
 	if err = tmp.Decode(r); err != nil {
@@ -110,7 +126,7 @@ func (ie *PosSRSResourceItem) Decode(r *aper.AperReader) (err error) {
 	if err = tmpEnum.Decode(r); err != nil {
 		return utils.WrapError("Read GroupOrSequenceHopping", err)
 	}
-	ie.GroupOrSequenceHopping = GroupOrSequenceHoppingEnum(tmpEnum.Value)
+	ie.GroupOrSequenceHopping = GroupOrSequenceHopping{Value: tmpEnum.Value}
 
 	if err = ie.ResourceTypePos.Decode(r); err != nil {
 		return utils.WrapError("Read ResourceTypePos", err)

@@ -7,7 +7,7 @@ import (
 
 type NRPRSBeamInformation struct {
 	NRPRSBeamInformationList []NRPRSBeamInformationItem `lb:1,ub:maxnoofPRSResourcesPerSet,mandatory,valExt`
-	LCStoGCSTranslationList  []LCStoGCSTranslation      `lb:1,ub:maxnoofGCSs,optional,valExt`
+	LCStoGCSTranslationList  []LCStoGCSTranslation      `lb:1,ub:maxnoofLCSGCSTranslation,optional,valExt`
 	// IEExtensions * `optional`
 }
 
@@ -40,7 +40,7 @@ func (ie *NRPRSBeamInformation) Encode(w *aper.AperWriter) (err error) {
 	if len(ie.LCStoGCSTranslationList) > 0 {
 		tmp := Sequence[*LCStoGCSTranslation]{
 			Value: []*LCStoGCSTranslation{},
-			c:     aper.Constraint{Lb: 1, Ub: maxnoofGCSs},
+			c:     aper.Constraint{Lb: 1, Ub: maxnoofLCSGCSTranslation},
 			ext:   true,
 		}
 		for _, i := range ie.LCStoGCSTranslationList {
@@ -76,7 +76,7 @@ func (ie *NRPRSBeamInformation) Decode(r *aper.AperReader) (err error) {
 	}
 	if aper.IsBitSet(optionals, 1) {
 		tmp_LCStoGCSTranslationList := Sequence[*LCStoGCSTranslation]{
-			c:   aper.Constraint{Lb: 1, Ub: maxnoofGCSs},
+			c:   aper.Constraint{Lb: 1, Ub: maxnoofLCSGCSTranslation},
 			ext: true,
 		}
 		fn := func() *LCStoGCSTranslation { return new(LCStoGCSTranslation) }

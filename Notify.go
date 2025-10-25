@@ -12,7 +12,7 @@ import (
 type Notify struct {
 	GNBCUUEF1APID int64         `lb:0,ub:4294967295,mandatory,reject`
 	GNBDUUEF1APID int64         `lb:0,ub:4294967295,mandatory,reject`
-	DRBNotifyList DRBNotifyList `mandatory,reject`
+	DRBNotifyList DRBNotifyItem `mandatory,reject`
 }
 
 func (msg *Notify) Encode(w io.Writer) (err error) {
@@ -145,7 +145,7 @@ func (decoder *NotifyDecoder) decodeIE(r *aper.AperReader) (msgIe *F1apMessageIE
 		}
 		msg.GNBDUUEF1APID = int64(tmp.Value)
 	case ProtocolIEID_DRBNotifyList:
-		var tmp DRBNotifyList
+		var tmp DRBNotifyItem
 		if err = tmp.Decode(ieR); err != nil {
 			err = utils.WrapError("Read DRBNotifyList", err)
 			return

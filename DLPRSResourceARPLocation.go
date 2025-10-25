@@ -12,7 +12,7 @@ type DLPRSResourceARPLocation struct {
 	Choice                    uint64
 	RelativeGeodeticLocation  *RelativeGeodeticLocation
 	RelativeCartesianLocation *RelativeCartesianLocation
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *DLPRSResourceARPLocation) Encode(w *aper.AperWriter) (err error) {

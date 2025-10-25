@@ -12,7 +12,7 @@ type TRPPositionDefinitionType struct {
 	Choice     uint64
 	Direct     *TRPPositionDirect
 	Referenced *TRPPositionReferenced
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *TRPPositionDefinitionType) Encode(w *aper.AperWriter) (err error) {

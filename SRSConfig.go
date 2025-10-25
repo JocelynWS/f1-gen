@@ -6,10 +6,10 @@ import (
 )
 
 type SRSConfig struct {
-	SRSResourceList       []SRSResource           `lb:1,ub:maxnoofSRSResources,optional,valExt`
-	PosSRSResourceList    []PosSRSResourceItem    `lb:1,ub:maxnoofPosSRSResources,optional,valExt`
-	SRSResourceSetList    []SRSResourceSetItem    `lb:1,ub:maxnoofSRSResourceSets,optional,valExt`
-	PosSRSResourceSetList []PosSRSResourceSetItem `lb:1,ub:maxnoofPosSRSResourceSets,optional,valExt`
+	SRSResourceList       []SRSResource           `lb:1,ub:maxnoSRSResources,optional,valExt`
+	PosSRSResourceList    []PosSRSResourceItem    `lb:1,ub:maxnoSRSPosResources,optional,valExt`
+	SRSResourceSetList    []SRSResourceSetItem    `lb:1,ub:maxnoSRSResources,optional,valExt`
+	PosSRSResourceSetList []PosSRSResourceSetItem `lb:1,ub:maxnoSRSPosResourceSetss,optional,valExt`
 	// IEExtensions * `optional`
 }
 
@@ -34,7 +34,7 @@ func (ie *SRSConfig) Encode(w *aper.AperWriter) (err error) {
 	if len(ie.SRSResourceList) > 0 {
 		tmp := Sequence[*SRSResource]{
 			Value: []*SRSResource{},
-			c:     aper.Constraint{Lb: 1, Ub: maxnoofSRSResources},
+			c:     aper.Constraint{Lb: 1, Ub: maxnoSRSResources},
 			ext:   true,
 		}
 		for _, i := range ie.SRSResourceList {
@@ -48,7 +48,7 @@ func (ie *SRSConfig) Encode(w *aper.AperWriter) (err error) {
 	if len(ie.PosSRSResourceList) > 0 {
 		tmp := Sequence[*PosSRSResourceItem]{
 			Value: []*PosSRSResourceItem{},
-			c:     aper.Constraint{Lb: 1, Ub: maxnoofPosSRSResources},
+			c:     aper.Constraint{Lb: 1, Ub: maxnoSRSPosResources},
 			ext:   true,
 		}
 		for _, i := range ie.PosSRSResourceList {
@@ -62,7 +62,7 @@ func (ie *SRSConfig) Encode(w *aper.AperWriter) (err error) {
 	if len(ie.SRSResourceSetList) > 0 {
 		tmp := Sequence[*SRSResourceSetItem]{
 			Value: []*SRSResourceSetItem{},
-			c:     aper.Constraint{Lb: 1, Ub: maxnoofSRSResourceSets},
+			c:     aper.Constraint{Lb: 1, Ub: maxnoSRSResources},
 			ext:   true,
 		}
 		for _, i := range ie.SRSResourceSetList {
@@ -76,7 +76,7 @@ func (ie *SRSConfig) Encode(w *aper.AperWriter) (err error) {
 	if len(ie.PosSRSResourceSetList) > 0 {
 		tmp := Sequence[*PosSRSResourceSetItem]{
 			Value: []*PosSRSResourceSetItem{},
-			c:     aper.Constraint{Lb: 1, Ub: maxnoofPosSRSResourceSets},
+			c:     aper.Constraint{Lb: 1, Ub: maxnoSRSPosResourceSets},
 			ext:   true,
 		}
 		for _, i := range ie.PosSRSResourceSetList {
@@ -99,7 +99,7 @@ func (ie *SRSConfig) Decode(r *aper.AperReader) (err error) {
 	}
 	if aper.IsBitSet(optionals, 1) {
 		tmp_SRSResourceList := Sequence[*SRSResource]{
-			c:   aper.Constraint{Lb: 1, Ub: maxnoofSRSResources},
+			c:   aper.Constraint{Lb: 1, Ub: maxnoSRSResources},
 			ext: true,
 		}
 		fn := func() *SRSResource { return new(SRSResource) }
@@ -114,7 +114,7 @@ func (ie *SRSConfig) Decode(r *aper.AperReader) (err error) {
 	}
 	if aper.IsBitSet(optionals, 2) {
 		tmp_PosSRSResourceList := Sequence[*PosSRSResourceItem]{
-			c:   aper.Constraint{Lb: 1, Ub: maxnoofPosSRSResources},
+			c:   aper.Constraint{Lb: 1, Ub: maxnoSRSPosResources},
 			ext: true,
 		}
 		fn := func() *PosSRSResourceItem { return new(PosSRSResourceItem) }
@@ -129,7 +129,7 @@ func (ie *SRSConfig) Decode(r *aper.AperReader) (err error) {
 	}
 	if aper.IsBitSet(optionals, 3) {
 		tmp_SRSResourceSetList := Sequence[*SRSResourceSetItem]{
-			c:   aper.Constraint{Lb: 1, Ub: maxnoofSRSResourceSets},
+			c:   aper.Constraint{Lb: 1, Ub: maxnoSRSResourceSets},
 			ext: true,
 		}
 		fn := func() *SRSResourceSetItem { return new(SRSResourceSetItem) }
@@ -144,7 +144,7 @@ func (ie *SRSConfig) Decode(r *aper.AperReader) (err error) {
 	}
 	if aper.IsBitSet(optionals, 4) {
 		tmp_PosSRSResourceSetList := Sequence[*PosSRSResourceSetItem]{
-			c:   aper.Constraint{Lb: 1, Ub: maxnoofPosSRSResourceSets},
+			c:   aper.Constraint{Lb: 1, Ub: maxnoSRSPosResourceSets},
 			ext: true,
 		}
 		fn := func() *PosSRSResourceSetItem { return new(PosSRSResourceSetItem) }

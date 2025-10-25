@@ -48,8 +48,7 @@ func (ie *ResourceSetTypeAperiodic) Decode(r *aper.AperReader) (err error) {
 		err = utils.WrapError("Read SRSResourceTriggerList", err)
 		return
 	}
-	ie.SRSResourceTriggerList = tmp_SRSResourceTriggerList.Value
-
+	ie.SRSResourceTriggerList = int64(tmp_SRSResourceTriggerList.Value)
 	tmp_SlotOffset := INTEGER{
 		c:   aper.Constraint{Lb: 0, Ub: 32},
 		ext: false,
@@ -58,7 +57,7 @@ func (ie *ResourceSetTypeAperiodic) Decode(r *aper.AperReader) (err error) {
 		err = utils.WrapError("Read SlotOffset", err)
 		return
 	}
-	ie.SlotOffset = tmp_SlotOffset.Value
+	ie.SlotOffset = int64(tmp_SlotOffset.Value)
 
 	return
 }

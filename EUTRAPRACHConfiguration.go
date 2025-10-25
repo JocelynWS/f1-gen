@@ -6,11 +6,11 @@ import (
 )
 
 type EUTRAPRACHConfiguration struct {
-	RootSequenceIndex    int64   `lb:0,ub:837,mandatory`
-	ZeroCorrelationIndex int64   `lb:0,ub:15,mandatory`
-	HighSpeedFlag        BOOLEAN `mandatory`
-	PrachFreqOffset      int64   `lb:0,ub:94,mandatory`
-	PrachConfigIndex     *int64  `lb:0,ub:63,optional`
+	RootSequenceIndex    int64  `lb:0,ub:837,mandatory`
+	ZeroCorrelationIndex int64  `lb:0,ub:15,mandatory`
+	HighSpeedFlag        bool   `mandatory`
+	PrachFreqOffset      int64  `lb:0,ub:94,mandatory`
+	PrachConfigIndex     *int64 `lb:0,ub:63,optional`
 }
 
 func (ie *EUTRAPRACHConfiguration) Encode(w *aper.AperWriter) (err error) {
@@ -24,7 +24,6 @@ func (ie *EUTRAPRACHConfiguration) Encode(w *aper.AperWriter) (err error) {
 	}
 	w.WriteBits(optionals, 2)
 
-	// Encode mandatory fields
 	tmpRoot := NewINTEGER(ie.RootSequenceIndex, aper.Constraint{Lb: 0, Ub: 837}, false)
 	if err = tmpRoot.Encode(w); err != nil {
 		return utils.WrapError("Encode RootSequenceIndex", err)
@@ -35,7 +34,7 @@ func (ie *EUTRAPRACHConfiguration) Encode(w *aper.AperWriter) (err error) {
 		return utils.WrapError("Encode ZeroCorrelationIndex", err)
 	}
 
-	if err = ie.HighSpeedFlag.Encode(w); err != nil {
+	if err = w.WriteBool(ie.HighSpeedFlag); err != nil {
 		return utils.WrapError("Encode HighSpeedFlag", err)
 	}
 
@@ -44,7 +43,6 @@ func (ie *EUTRAPRACHConfiguration) Encode(w *aper.AperWriter) (err error) {
 		return utils.WrapError("Encode PrachFreqOffset", err)
 	}
 
-	// Encode optional field
 	if ie.PrachConfigIndex != nil {
 		tmpConfig := NewINTEGER(*ie.PrachConfigIndex, aper.Constraint{Lb: 0, Ub: 63}, false)
 		if err = tmpConfig.Encode(w); err != nil {
@@ -65,7 +63,6 @@ func (ie *EUTRAPRACHConfiguration) Decode(r *aper.AperReader) (err error) {
 		return
 	}
 
-	// Decode mandatory fields
 	tmpRoot := INTEGER{c: aper.Constraint{Lb: 0, Ub: 837}, ext: false}
 	if err = tmpRoot.Decode(r); err != nil {
 		return utils.WrapError("Read RootSequenceIndex", err)
@@ -78,7 +75,7 @@ func (ie *EUTRAPRACHConfiguration) Decode(r *aper.AperReader) (err error) {
 	}
 	ie.ZeroCorrelationIndex = int64(tmpZero.Value)
 
-	if err = ie.HighSpeedFlag.Decode(r); err != nil {
+	if ie.HighSpeedFlag, err = r.ReadBool(); err != nil {
 		return utils.WrapError("Read HighSpeedFlag", err)
 	}
 
@@ -88,7 +85,6 @@ func (ie *EUTRAPRACHConfiguration) Decode(r *aper.AperReader) (err error) {
 	}
 	ie.PrachFreqOffset = int64(tmpFreq.Value)
 
-	// Decode optional field
 	if aper.IsBitSet(optionals, 1) {
 		tmpConfig := INTEGER{c: aper.Constraint{Lb: 0, Ub: 63}, ext: false}
 		if err = tmpConfig.Decode(r); err != nil {

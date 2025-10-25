@@ -11,7 +11,7 @@ import (
 
 type GNBDUResourceConfiguration struct {
 	TransactionID                 int64                               `lb:0,ub:255,mandatory,reject`
-	ActivatedCellstobeUpdatedList []ActivatedCellstobeUpdatedListItem `lb:1,ub:maxnoofServedCellsIAB,mandatory,reject`
+	ActivatedCellstobeUpdatedList []ActivatedCellsToBeUpdatedListItem `lb:1,ub:maxnoofServedCellsIAB,mandatory,reject`
 	ChildNodesList                []ChildNodesListItem                `lb:1,ub:maxnoofChildIABNodes,mandatory,reject`
 }
 
@@ -34,7 +34,7 @@ func (msg *GNBDUResourceConfiguration) toIes() (ies []F1apMessageIE, err error) 
 			Value: aper.Integer(msg.TransactionID),
 		}})
 	if len(msg.ActivatedCellstobeUpdatedList) > 0 {
-		tmp_ActivatedCellstobeUpdatedList := Sequence[*ActivatedCellstobeUpdatedListItem]{
+		tmp_ActivatedCellstobeUpdatedList := Sequence[*ActivatedCellsToBeUpdatedListItem]{
 			c:   aper.Constraint{Lb: 1, Ub: maxnoofServedCellsIAB},
 			ext: false,
 		}
@@ -42,7 +42,7 @@ func (msg *GNBDUResourceConfiguration) toIes() (ies []F1apMessageIE, err error) 
 			tmp_ActivatedCellstobeUpdatedList.Value = append(tmp_ActivatedCellstobeUpdatedList.Value, &i)
 		}
 		ies = append(ies, F1apMessageIE{
-			Id:          ProtocolIEID{Value: ProtocolIEID_ActivatedCellstobeUpdatedList},
+			Id:          ProtocolIEID{Value: ProtocolIEID_ActivatedCellsToBeUpdatedList},
 			Criticality: Criticality{Value: Criticality_PresentReject},
 			Value:       &tmp_ActivatedCellstobeUpdatedList,
 		})
@@ -93,11 +93,11 @@ func (msg *GNBDUResourceConfiguration) Decode(wire []byte) (err error, diagList 
 		})
 		return
 	}
-	if _, ok := decoder.list[ProtocolIEID_ActivatedCellstobeUpdatedList]; !ok {
+	if _, ok := decoder.list[ProtocolIEID_ActivatedCellsToBeUpdatedList]; !ok {
 		err = fmt.Errorf("Mandatory field ActivatedCellstobeUpdatedList is missing")
 		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
 			IECriticality: Criticality{Value: Criticality_PresentReject},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_ActivatedCellstobeUpdatedList},
+			IEID:          ProtocolIEID{Value: ProtocolIEID_ActivatedCellsToBeUpdatedList},
 			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
 		})
 		return
@@ -155,17 +155,17 @@ func (decoder *GNBDUResourceConfigurationDecoder) decodeIE(r *aper.AperReader) (
 			return
 		}
 		msg.TransactionID = int64(tmp.Value)
-	case ProtocolIEID_ActivatedCellstobeUpdatedList:
-		tmp := Sequence[*ActivatedCellstobeUpdatedListItem]{
+	case ProtocolIEID_ActivatedCellsToBeUpdatedList:
+		tmp := Sequence[*ActivatedCellsToBeUpdatedListItem]{
 			c:   aper.Constraint{Lb: 1, Ub: maxnoofServedCellsIAB},
 			ext: false,
 		}
-		fn := func() *ActivatedCellstobeUpdatedListItem { return new(ActivatedCellstobeUpdatedListItem) }
+		fn := func() *ActivatedCellsToBeUpdatedListItem { return new(ActivatedCellsToBeUpdatedListItem) }
 		if err = tmp.Decode(ieR, fn); err != nil {
 			err = utils.WrapError("Read ActivatedCellstobeUpdatedList", err)
 			return
 		}
-		msg.ActivatedCellstobeUpdatedList = []ActivatedCellstobeUpdatedListItem{}
+		msg.ActivatedCellstobeUpdatedList = []ActivatedCellsToBeUpdatedListItem{}
 		for _, i := range tmp.Value {
 			msg.ActivatedCellstobeUpdatedList = append(msg.ActivatedCellstobeUpdatedList, *i)
 		}

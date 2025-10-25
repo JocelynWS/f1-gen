@@ -10,7 +10,7 @@ const (
 type NPNSupportInfo struct {
 	Choice          uint64
 	SNPNInformation *NID
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *NPNSupportInfo) Encode(w *aper.AperWriter) (err error) {

@@ -77,7 +77,7 @@ func (msg *UEContextModificationResponse) toIes() (ies []F1apMessageIE, err erro
 	ies = append(ies, F1apMessageIE{
 		Id:          ProtocolIEID{Value: ProtocolIEID_DUtoCURRCInformation},
 		Criticality: Criticality{Value: Criticality_PresentReject},
-		Value:       &msg.DUtoCURRCInformation,
+		Value:       msg.DUtoCURRCInformation,
 	})
 	if len(msg.DRBsSetupModList) > 0 {
 		tmp_DRBsSetupModList := Sequence[*DRBsSetupModItem]{
@@ -363,7 +363,7 @@ func (msg *UEContextModificationResponse) toIes() (ies []F1apMessageIE, err erro
 	ies = append(ies, F1apMessageIE{
 		Id:          ProtocolIEID{Value: ProtocolIEID_RequestedTargetCellGlobalID},
 		Criticality: Criticality{Value: Criticality_PresentReject},
-		Value:       &msg.RequestedTargetCellGlobalID,
+		Value:       msg.RequestedTargetCellGlobalID,
 	})
 	return
 }
@@ -524,7 +524,7 @@ func (decoder *UEContextModificationResponseDecoder) decodeIE(r *aper.AperReader
 			err = utils.WrapError("Read DUtoCURRCInformation", err)
 			return
 		}
-		msg.DUtoCURRCInformation = tmp
+		msg.DUtoCURRCInformation = &tmp
 	case ProtocolIEID_DRBsSetupModList:
 		tmp := Sequence[*DRBsSetupModItem]{
 			c:   aper.Constraint{Lb: 1, Ub: maxnoofDRBs},
@@ -800,7 +800,7 @@ func (decoder *UEContextModificationResponseDecoder) decodeIE(r *aper.AperReader
 			err = utils.WrapError("Read RequestedTargetCellGlobalID", err)
 			return
 		}
-		msg.RequestedTargetCellGlobalID = tmp
+		msg.RequestedTargetCellGlobalID = &tmp
 	default:
 		switch msgIe.Criticality.Value {
 		case Criticality_PresentReject:

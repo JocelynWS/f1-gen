@@ -25,31 +25,31 @@ func (ie *PRSResourceItem) Encode(w *aper.AperWriter) (err error) {
 	}
 	w.WriteBits(optionals, 2)
 
-	tmp := aper.NewINTEGER(ie.PRSResourceID, aper.Constraint{Lb: 0, Ub: 63}, false)
+	tmp := NewINTEGER(ie.PRSResourceID, aper.Constraint{Lb: 0, Ub: 63}, false)
 	if err = tmp.Encode(w); err != nil {
 		err = utils.WrapError("Encode PRSResourceID", err)
 		return
 	}
 
-	tmp = aper.NewINTEGER(ie.SequenceID, aper.Constraint{Lb: 0, Ub: 4095}, false)
+	tmp = NewINTEGER(ie.SequenceID, aper.Constraint{Lb: 0, Ub: 4095}, false)
 	if err = tmp.Encode(w); err != nil {
 		err = utils.WrapError("Encode SequenceID", err)
 		return
 	}
 
-	tmp = aper.NewINTEGER(ie.REOffset, aper.Constraint{Lb: 0, Ub: 11}, false)
+	tmp = NewINTEGER(ie.REOffset, aper.Constraint{Lb: 0, Ub: 11}, false)
 	if err = tmp.Encode(w); err != nil {
 		err = utils.WrapError("Encode REOffset", err)
 		return
 	}
 
-	tmp = aper.NewINTEGER(ie.ResourceSlotOffset, aper.Constraint{Lb: 0, Ub: 511}, false)
+	tmp = NewINTEGER(ie.ResourceSlotOffset, aper.Constraint{Lb: 0, Ub: 511}, false)
 	if err = tmp.Encode(w); err != nil {
 		err = utils.WrapError("Encode ResourceSlotOffset", err)
 		return
 	}
 
-	tmp = aper.NewINTEGER(ie.ResourceSymbolOffset, aper.Constraint{Lb: 0, Ub: 12}, false)
+	tmp = NewINTEGER(ie.ResourceSymbolOffset, aper.Constraint{Lb: 0, Ub: 12}, false)
 	if err = tmp.Encode(w); err != nil {
 		err = utils.WrapError("Encode ResourceSymbolOffset", err)
 		return
@@ -75,35 +75,35 @@ func (ie *PRSResourceItem) Decode(r *aper.AperReader) (err error) {
 		return
 	}
 
-	tmp := aper.INTEGER{c: aper.Constraint{Lb: 0, Ub: 63}, ext: false}
+	tmp := INTEGER{c: aper.Constraint{Lb: 0, Ub: 63}, ext: false}
 	if err = tmp.Decode(r); err != nil {
 		err = utils.WrapError("Read PRSResourceID", err)
 		return
 	}
 	ie.PRSResourceID = int64(tmp.Value)
 
-	tmp = aper.INTEGER{c: aper.Constraint{Lb: 0, Ub: 4095}, ext: false}
+	tmp = INTEGER{c: aper.Constraint{Lb: 0, Ub: 4095}, ext: false}
 	if err = tmp.Decode(r); err != nil {
 		err = utils.WrapError("Read SequenceID", err)
 		return
 	}
 	ie.SequenceID = int64(tmp.Value)
 
-	tmp = aper.INTEGER{c: aper.Constraint{Lb: 0, Ub: 11}, ext: false}
+	tmp = INTEGER{c: aper.Constraint{Lb: 0, Ub: 11}, ext: false}
 	if err = tmp.Decode(r); err != nil {
 		err = utils.WrapError("Read REOffset", err)
 		return
 	}
 	ie.REOffset = int64(tmp.Value)
 
-	tmp = aper.INTEGER{c: aper.Constraint{Lb: 0, Ub: 511}, ext: false}
+	tmp = INTEGER{c: aper.Constraint{Lb: 0, Ub: 511}, ext: false}
 	if err = tmp.Decode(r); err != nil {
 		err = utils.WrapError("Read ResourceSlotOffset", err)
 		return
 	}
 	ie.ResourceSlotOffset = int64(tmp.Value)
 
-	tmp = aper.INTEGER{c: aper.Constraint{Lb: 0, Ub: 12}, ext: false}
+	tmp = INTEGER{c: aper.Constraint{Lb: 0, Ub: 12}, ext: false}
 	if err = tmp.Decode(r); err != nil {
 		err = utils.WrapError("Read ResourceSymbolOffset", err)
 		return

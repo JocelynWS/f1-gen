@@ -5,14 +5,14 @@ import "github.com/lvdund/ngap/aper"
 const (
 	DLPRSReOurceARPLocationPresentNothing uint64 = iota
 	DLPRSReOurceARPLocationPresentRelativeGeodeticLocation
-	DLPRSReOurceARPLocationPresentRelativeCarteIanLocation
+	DLPRSReOurceARPLocationPresentRelativeCartesianLocation
 	DLPRSReOurceARPLocationPresentChoiceExtension
 )
 
 type DLPRSReOurceARPLocation struct {
-	Choice                   uint64
-	RelativeGeodeticLocation *RelativeGeodeticLocation
-	RelativeCarteIanLocation *RelativeCarteIanLocation
+	Choice                    uint64
+	RelativeGeodeticLocation  *RelativeGeodeticLocation
+	RelativeCartesianLocation *RelativeCartesianLocation
 	// ChoiceExtension *DLPRSReOurceARPLocationExtIEs
 }
 
@@ -23,8 +23,8 @@ func (ie *DLPRSReOurceARPLocation) Encode(w *aper.AperWriter) (err error) {
 	switch ie.Choice {
 	case DLPRSReOurceARPLocationPresentRelativeGeodeticLocation:
 		err = ie.RelativeGeodeticLocation.Encode(w)
-	case DLPRSReOurceARPLocationPresentRelativeCarteIanLocation:
-		err = ie.RelativeCarteIanLocation.Encode(w)
+	case DLPRSReOurceARPLocationPresentRelativeCartesianLocation:
+		err = ie.RelativeCartesianLocation.Encode(w)
 	}
 	return
 }
@@ -40,12 +40,12 @@ func (ie *DLPRSReOurceARPLocation) Decode(r *aper.AperReader) (err error) {
 			return
 		}
 		ie.RelativeGeodeticLocation = &tmp
-	case DLPRSReOurceARPLocationPresentRelativeCarteIanLocation:
-		var tmp RelativeCarteIanLocation
+	case DLPRSReOurceARPLocationPresentRelativeCartesianLocation:
+		var tmp RelativeCartesianLocation
 		if err = tmp.Decode(r); err != nil {
 			return
 		}
-		ie.RelativeCarteIanLocation = &tmp
+		ie.RelativeCartesianLocation = &tmp
 	}
 	return
 }

@@ -12,7 +12,7 @@ type EUTRAModeInfo struct {
 	Choice   uint64
 	EUTRAFDD *EUTRAFDDInfo
 	EUTRATDD *EUTRATDDInfo
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *EUTRAModeInfo) Encode(w *aper.AperWriter) (err error) {

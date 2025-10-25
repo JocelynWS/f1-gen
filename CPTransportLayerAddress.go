@@ -12,7 +12,7 @@ type CPTransportLayerAddress struct {
 	Choice                   uint64
 	EndpointIPAddress        *TransportLayerAddress
 	EndpointIPAddressAndPort *EndpointIPAddressAndPort
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *CPTransportLayerAddress) Encode(w *aper.AperWriter) (err error) {

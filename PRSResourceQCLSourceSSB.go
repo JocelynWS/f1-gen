@@ -21,7 +21,7 @@ func (ie *PRSResourceQCLSourceSSB) Encode(w *aper.AperWriter) (err error) {
 	}
 	w.WriteBits(optionals, 2)
 
-	tmp := aper.NewINTEGER(ie.PCINR, aper.Constraint{Lb: 0, Ub: 1007}, false)
+	tmp := NewINTEGER(ie.PCINR, aper.Constraint{Lb: 0, Ub: 1007}, false)
 	if err = tmp.Encode(w); err != nil {
 		err = utils.WrapError("Encode PCINR", err)
 		return
@@ -47,7 +47,7 @@ func (ie *PRSResourceQCLSourceSSB) Decode(r *aper.AperReader) (err error) {
 		return
 	}
 
-	tmp := aper.INTEGER{c: aper.Constraint{Lb: 0, Ub: 1007}, ext: false}
+	tmp := INTEGER{c: aper.Constraint{Lb: 0, Ub: 1007}, ext: false}
 	if err = tmp.Decode(r); err != nil {
 		err = utils.WrapError("Read PCINR", err)
 		return

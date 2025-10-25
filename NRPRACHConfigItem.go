@@ -7,21 +7,20 @@ import (
 
 type NRPRACHConfigItem struct {
 	NRSCS                     NRSCS              `mandatory`
-	PrachFreqStartfromCarrier int64              `lb:0,ub:maxNoOfPhysicalResourceBlocks-1,mandatory,valExt`
-	Msg1FDM                   Msg1FDM            `madatory,valExt`
+	PrachFreqStartfromCarrier int64              `lb:0,ub:maxnoofPhysicalResourceBlocks-1,mandatory,valExt`
+	Msg1FDM                   Msg1FDM            `mandatory,valExt` // Sửa: madatory -> mandatory
 	ParchConfigIndex          int64              `lb:0,ub:255,mandatory,valExt`
-	SsbPerRACHOccasion        SsbPerRACHOccasion `madatory,valExt`
+	SsbPerRACHOccasion        SSBPerRACHOccasion `mandatory,valExt` // Sửa: madatory -> mandatory
 	FreqDomainLength          FreqDomainLength   `mandatory`
 	ZeroCorrelZoneConfig      int64              `lb:0,ub:15,mandatory`
 	// IEExtension *NRPRACHConfigItemExtIEs `optional`
 }
 
-// Encode APER
 func (ie *NRPRACHConfigItem) Encode(w *aper.AperWriter) (err error) {
 	if err = w.WriteBool(aper.Zero); err != nil {
 		return
 	}
-	optionals := []byte{0x0} // currently no optional
+	optionals := []byte{0x0} 
 	w.WriteBits(optionals, 1)
 
 	if err = ie.NRSCS.Encode(w); err != nil {
@@ -31,7 +30,7 @@ func (ie *NRPRACHConfigItem) Encode(w *aper.AperWriter) (err error) {
 
 	tmp_PrachFreqStartfromCarrier := NewINTEGER(
 		ie.PrachFreqStartfromCarrier,
-		aper.Constraint{Lb: 0, Ub: maxNoOfPhysicalResourceBlocks - 1},
+		aper.Constraint{Lb: 0, Ub: maxnoofPhysicalResourceBlocks - 1},
 		true,
 	)
 	if err = tmp_PrachFreqStartfromCarrier.Encode(w); err != nil {
@@ -39,7 +38,7 @@ func (ie *NRPRACHConfigItem) Encode(w *aper.AperWriter) (err error) {
 		return
 	}
 
-	tmp_Msg1FDM := NewENUMERATED(int64(ie.Msg1FDM), aper.Constraint{Lb: 0, Ub: 3}, false)
+	tmp_Msg1FDM := NewENUMERATED(int64(ie.Msg1FDM.Value), aper.Constraint{Lb: 0, Ub: 3}, false)
 	if err = tmp_Msg1FDM.Encode(w); err != nil {
 		err = utils.WrapError("Encode Msg1FDM", err)
 		return
@@ -51,7 +50,8 @@ func (ie *NRPRACHConfigItem) Encode(w *aper.AperWriter) (err error) {
 		return
 	}
 
-	tmp_SsbPerRACHOccasion := NewENUMERATED(int64(ie.SsbPerRACHOccasion), aper.Constraint{Lb: 0, Ub: 7}, false)
+	// Sửa: Truy cập .Value của SSBPerRACHOccasion
+	tmp_SsbPerRACHOccasion := NewENUMERATED(int64(ie.SsbPerRACHOccasion.Value), aper.Constraint{Lb: 0, Ub: 7}, false)
 	if err = tmp_SsbPerRACHOccasion.Encode(w); err != nil {
 		err = utils.WrapError("Encode SsbPerRACHOccasion", err)
 		return
@@ -71,7 +71,6 @@ func (ie *NRPRACHConfigItem) Encode(w *aper.AperWriter) (err error) {
 	return
 }
 
-// Decode APER
 func (ie *NRPRACHConfigItem) Decode(r *aper.AperReader) (err error) {
 	if _, err = r.ReadBool(); err != nil {
 		return
@@ -86,7 +85,7 @@ func (ie *NRPRACHConfigItem) Decode(r *aper.AperReader) (err error) {
 	}
 
 	tmp_PrachFreqStartfromCarrier := INTEGER{
-		c:   aper.Constraint{Lb: 0, Ub: maxNoOfPhysicalResourceBlocks - 1},
+		c:   aper.Constraint{Lb: 0, Ub: maxnoofPhysicalResourceBlocks - 1},
 		ext: true,
 	}
 	if err = tmp_PrachFreqStartfromCarrier.Decode(r); err != nil {
@@ -103,7 +102,7 @@ func (ie *NRPRACHConfigItem) Decode(r *aper.AperReader) (err error) {
 		err = utils.WrapError("Read Msg1FDM", err)
 		return
 	}
-	ie.Msg1FDM = Msg1FDM(tmp_Msg1FDM.Value)
+	ie.Msg1FDM = Msg1FDM{Value: tmp_Msg1FDM.Value}
 
 	tmp_ParchConfigIndex := INTEGER{
 		c:   aper.Constraint{Lb: 0, Ub: 255},
@@ -123,7 +122,8 @@ func (ie *NRPRACHConfigItem) Decode(r *aper.AperReader) (err error) {
 		err = utils.WrapError("Read SsbPerRACHOccasion", err)
 		return
 	}
-	ie.SsbPerRACHOccasion = SsbPerRACHOccasion(tmp_SsbPerRACHOccasion.Value)
+	// Sửa: Tạo struct SSBPerRACHOccasion với field Value
+	ie.SsbPerRACHOccasion = SSBPerRACHOccasion{Value: tmp_SsbPerRACHOccasion.Value}
 
 	if err = ie.FreqDomainLength.Decode(r); err != nil {
 		err = utils.WrapError("Read FreqDomainLength", err)

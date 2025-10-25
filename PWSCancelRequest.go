@@ -12,7 +12,7 @@ import (
 type PWSCancelRequest struct {
 	TransactionID                     int64                                `lb:0,ub:255,mandatory,reject`
 	NumberofBroadcastRequest          int64                                `lb:0,ub:65535,mandatory,reject`
-	BroadcastToBeCancelledList        []BroadcastToBeCancelledListItemItem `lb:1,ub:maxCellingNBDU,optional,reject,valueExt`
+	BroadcastToBeCancelledList        []BroadcastToBeCancelledListItem `lb:1,ub:maxCellingNBDU,optional,reject,valueExt`
 	CancelallWarningMessagesIndicator *CancelallWarningMessagesIndicator   `optional,reject`
 	NotificationInformation           *NotificationInformation             `mandatory,reject`
 }
@@ -44,7 +44,7 @@ func (msg *PWSCancelRequest) toIes() (ies []F1apMessageIE, err error) {
 			Value: aper.Integer(msg.NumberofBroadcastRequest),
 		}})
 	if len(msg.BroadcastToBeCancelledList) > 0 {
-		tmp_BroadcastToBeCancelledList := Sequence[*BroadcastToBeCancelledListItemItem]{
+		tmp_BroadcastToBeCancelledList := Sequence[*BroadcastToBeCancelledListItem]{
 			c:   aper.Constraint{Lb: 1, Ub: maxCellingNBDU},
 			ext: true,
 		}
@@ -59,7 +59,7 @@ func (msg *PWSCancelRequest) toIes() (ies []F1apMessageIE, err error) {
 	}
 	if msg.CancelallWarningMessagesIndicator != nil {
 		ies = append(ies, F1apMessageIE{
-			Id:          ProtocolIEID{Value: ProtocolIEID_CancelallWarningMessagesIndicator},
+			Id:          ProtocolIEID{Value: ProtocolIEID_CancelAllWarningMessagesIndicator},
 			Criticality: Criticality{Value: Criticality_PresentReject},
 			Value:       msg.CancelallWarningMessagesIndicator,
 		})
@@ -67,7 +67,7 @@ func (msg *PWSCancelRequest) toIes() (ies []F1apMessageIE, err error) {
 	ies = append(ies, F1apMessageIE{
 		Id:          ProtocolIEID{Value: ProtocolIEID_NotificationInformation},
 		Criticality: Criticality{Value: Criticality_PresentReject},
-		Value:       &msg.NotificationInformation,
+		Value:       msg.NotificationInformation,
 	})
 	return
 }
@@ -168,20 +168,20 @@ func (decoder *PWSCancelRequestDecoder) decodeIE(r *aper.AperReader) (msgIe *F1a
 		}
 		msg.NumberofBroadcastRequest = int64(tmp.Value)
 	case ProtocolIEID_BroadcastToBeCancelledList:
-		tmp := Sequence[*BroadcastToBeCancelledListItemItem]{
+		tmp := Sequence[*BroadcastToBeCancelledListItem]{
 			c:   aper.Constraint{Lb: 1, Ub: maxCellingNBDU},
 			ext: true,
 		}
-		fn := func() *BroadcastToBeCancelledListItemItem { return new(BroadcastToBeCancelledListItemItem) }
+		fn := func() *BroadcastToBeCancelledListItem { return new(BroadcastToBeCancelledListItem) }
 		if err = tmp.Decode(ieR, fn); err != nil {
 			err = utils.WrapError("Read BroadcastToBeCancelledList", err)
 			return
 		}
-		msg.BroadcastToBeCancelledList = []BroadcastToBeCancelledListItemItem{}
+		msg.BroadcastToBeCancelledList = []BroadcastToBeCancelledListItem{}
 		for _, i := range tmp.Value {
 			msg.BroadcastToBeCancelledList = append(msg.BroadcastToBeCancelledList, *i)
 		}
-	case ProtocolIEID_CancelallWarningMessagesIndicator:
+	case ProtocolIEID_CancelAllWarningMessagesIndicator:
 		var tmp CancelallWarningMessagesIndicator
 		if err = tmp.Decode(ieR); err != nil {
 			err = utils.WrapError("Read CancelallWarningMessagesIndicator", err)
@@ -194,7 +194,7 @@ func (decoder *PWSCancelRequestDecoder) decodeIE(r *aper.AperReader) (msgIe *F1a
 			err = utils.WrapError("Read NotificationInformation", err)
 			return
 		}
-		msg.NotificationInformation = tmp
+		msg.NotificationInformation = &tmp
 	default:
 		switch msgIe.Criticality.Value {
 		case Criticality_PresentReject:

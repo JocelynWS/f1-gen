@@ -64,7 +64,7 @@ func (msg *ECIDMeasurementInitiationResponse) toIes() (ies []F1apMessageIE, err 
 	ies = append(ies, F1apMessageIE{
 		Id:          ProtocolIEID{Value: ProtocolIEID_ECIDMeasurementResult},
 		Criticality: Criticality{Value: Criticality_PresentIgnore},
-		Value:       &msg.ECIDMeasurementResult,
+		Value:       msg.ECIDMeasurementResult,
 	})
 	ies = append(ies, F1apMessageIE{
 		Id:          ProtocolIEID{Value: ProtocolIEID_CellPortionID},
@@ -77,7 +77,7 @@ func (msg *ECIDMeasurementInitiationResponse) toIes() (ies []F1apMessageIE, err 
 	ies = append(ies, F1apMessageIE{
 		Id:          ProtocolIEID{Value: ProtocolIEID_CriticalityDiagnostics},
 		Criticality: Criticality{Value: Criticality_PresentIgnore},
-		Value:       &msg.CriticalityDiagnostics,
+		Value:       msg.CriticalityDiagnostics,
 	})
 	return
 }
@@ -239,7 +239,7 @@ func (decoder *ECIDMeasurementInitiationResponseDecoder) decodeIE(r *aper.AperRe
 			err = utils.WrapError("Read ECIDMeasurementResult", err)
 			return
 		}
-		msg.ECIDMeasurementResult = tmp
+		msg.ECIDMeasurementResult = &tmp
 	case ProtocolIEID_CellPortionID:
 		tmp := INTEGER{
 			c:   aper.Constraint{Lb: 0, Ub: 4095},
@@ -256,7 +256,7 @@ func (decoder *ECIDMeasurementInitiationResponseDecoder) decodeIE(r *aper.AperRe
 			err = utils.WrapError("Read CriticalityDiagnostics", err)
 			return
 		}
-		msg.CriticalityDiagnostics = tmp
+		msg.CriticalityDiagnostics = &tmp
 	default:
 		switch msgIe.Criticality.Value {
 		case Criticality_PresentReject:

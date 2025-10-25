@@ -12,7 +12,7 @@ type BandwidthSRS struct {
 	Choice uint64
 	FR1    *FR1Bandwidth
 	FR2    *FR2Bandwidth
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *BandwidthSRS) Encode(w *aper.AperWriter) (err error) {

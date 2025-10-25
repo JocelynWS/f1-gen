@@ -31,27 +31,31 @@ func (ie *SSBTFConfiguration) Encode(w *aper.AperWriter) (err error) {
 	}
 	w.WriteBits(optionals, 3)
 
-	if err = NewINTEGER(ie.SSBFrequency, aper.Constraint{Lb: 0, Ub: 3279165}, false).Encode(w); err != nil {
+	tmp := NewINTEGER(ie.SSBFrequency, aper.Constraint{Lb: 0, Ub: 3279165}, false)
+	if err = tmp.Encode(w); err != nil {
 		return utils.WrapError("Encode SSBFrequency", err)
 	}
 
-	if err = NewENUMERATED(int64(ie.SSBSubcarrierSpacing), aper.Constraint{Lb: 0, Ub: 4}, false).Encode(w); err != nil {
+	if err = ie.SSBSubcarrierSpacing.Encode(w); err != nil {
 		return utils.WrapError("Encode SSBSubcarrierSpacing", err)
 	}
 
-	if err = NewINTEGER(ie.SSBTransmitPower, aper.Constraint{Lb: -60, Ub: 50}, false).Encode(w); err != nil {
+	tmp2 := NewINTEGER(ie.SSBTransmitPower, aper.Constraint{Lb: -60, Ub: 50}, false)
+	if err = tmp2.Encode(w); err != nil {
 		return utils.WrapError("Encode SSBTransmitPower", err)
 	}
 
-	if err = NewENUMERATED(int64(ie.SSBPeriodicity), aper.Constraint{Lb: 0, Ub: 5}, false).Encode(w); err != nil {
+	if err = ie.SSBPeriodicity.Encode(w); err != nil {
 		return utils.WrapError("Encode SSBPeriodicity", err)
 	}
 
-	if err = NewINTEGER(ie.SSBHalfFrameOffset, aper.Constraint{Lb: 0, Ub: 1}, false).Encode(w); err != nil {
+	tmp3 := NewINTEGER(ie.SSBHalfFrameOffset, aper.Constraint{Lb: 0, Ub: 1}, false)
+	if err = tmp3.Encode(w); err != nil {
 		return utils.WrapError("Encode SSBHalfFrameOffset", err)
 	}
 
-	if err = NewINTEGER(ie.SSBSFNOffset, aper.Constraint{Lb: 0, Ub: 15}, false).Encode(w); err != nil {
+	tmp4 := NewINTEGER(ie.SSBSFNOffset, aper.Constraint{Lb: 0, Ub: 15}, false)
+	if err = tmp4.Encode(w); err != nil {
 		return utils.WrapError("Encode SSBSFNOffset", err)
 	}
 
@@ -62,7 +66,8 @@ func (ie *SSBTFConfiguration) Encode(w *aper.AperWriter) (err error) {
 	}
 
 	if ie.SFNInitialisationTime != nil {
-		if err = NewBITSTRING(ie.SFNInitialisationTime, aper.Constraint{Lb: 64, Ub: 64}, false).Encode(w); err != nil {
+		tmp5 := NewBITSTRING(*ie.SFNInitialisationTime, aper.Constraint{Lb: 64, Ub: 64}, false)
+		if err = tmp5.Encode(w); err != nil {
 			return utils.WrapError("Encode SFNInitialisationTime", err)
 		}
 	}
@@ -80,37 +85,37 @@ func (ie *SSBTFConfiguration) Decode(r *aper.AperReader) (err error) {
 		return
 	}
 
-	tmp_SSBFrequency := INTEGER{c: aper.Constraint{Lb: 0, Ub: 3279165}}
+	var tmp_SSBFrequency INTEGER
+	tmp_SSBFrequency.c = aper.Constraint{Lb: 0, Ub: 3279165}
 	if err = tmp_SSBFrequency.Decode(r); err != nil {
 		return utils.WrapError("Read SSBFrequency", err)
 	}
 	ie.SSBFrequency = int64(tmp_SSBFrequency.Value)
 
-	tmp_SSBSubcarrierSpacing := ENUMERATED{c: aper.Constraint{Lb: 0, Ub: 4}}
-	if err = tmp_SSBSubcarrierSpacing.Decode(r); err != nil {
+	if err = ie.SSBSubcarrierSpacing.Decode(r); err != nil {
 		return utils.WrapError("Read SSBSubcarrierSpacing", err)
 	}
-	ie.SSBSubcarrierSpacing = SSBSubcarrierSpacing(tmp_SSBSubcarrierSpacing.Value)
 
-	tmp_SSBTransmitPower := INTEGER{c: aper.Constraint{Lb: -60, Ub: 50}}
+	var tmp_SSBTransmitPower INTEGER
+	tmp_SSBTransmitPower.c = aper.Constraint{Lb: -60, Ub: 50}
 	if err = tmp_SSBTransmitPower.Decode(r); err != nil {
 		return utils.WrapError("Read SSBTransmitPower", err)
 	}
 	ie.SSBTransmitPower = int64(tmp_SSBTransmitPower.Value)
 
-	tmp_SSBPeriodicity := ENUMERATED{c: aper.Constraint{Lb: 0, Ub: 5}}
-	if err = tmp_SSBPeriodicity.Decode(r); err != nil {
+	if err = ie.SSBPeriodicity.Decode(r); err != nil {
 		return utils.WrapError("Read SSBPeriodicity", err)
 	}
-	ie.SSBPeriodicity = SSBPeriodicity(tmp_SSBPeriodicity.Value)
 
-	tmp_SSBHalfFrameOffset := INTEGER{c: aper.Constraint{Lb: 0, Ub: 1}}
+	var tmp_SSBHalfFrameOffset INTEGER
+	tmp_SSBHalfFrameOffset.c = aper.Constraint{Lb: 0, Ub: 1}
 	if err = tmp_SSBHalfFrameOffset.Decode(r); err != nil {
 		return utils.WrapError("Read SSBHalfFrameOffset", err)
 	}
 	ie.SSBHalfFrameOffset = int64(tmp_SSBHalfFrameOffset.Value)
 
-	tmp_SSBSFNOffset := INTEGER{c: aper.Constraint{Lb: 0, Ub: 15}}
+	var tmp_SSBSFNOffset INTEGER
+	tmp_SSBSFNOffset.c = aper.Constraint{Lb: 0, Ub: 15}
 	if err = tmp_SSBSFNOffset.Decode(r); err != nil {
 		return utils.WrapError("Read SSBSFNOffset", err)
 	}
@@ -125,7 +130,8 @@ func (ie *SSBTFConfiguration) Decode(r *aper.AperReader) (err error) {
 	}
 
 	if aper.IsBitSet(optionals, 2) {
-		tmp_SFNInitialisationTime := BITSTRING{c: aper.Constraint{Lb: 64, Ub: 64}}
+		var tmp_SFNInitialisationTime BITSTRING
+		tmp_SFNInitialisationTime.c = aper.Constraint{Lb: 64, Ub: 64}
 		if err = tmp_SFNInitialisationTime.Decode(r); err != nil {
 			return utils.WrapError("Read SFNInitialisationTime", err)
 		}

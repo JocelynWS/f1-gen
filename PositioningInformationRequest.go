@@ -44,7 +44,7 @@ func (msg *PositioningInformationRequest) toIes() (ies []F1apMessageIE, err erro
 	ies = append(ies, F1apMessageIE{
 		Id:          ProtocolIEID{Value: ProtocolIEID_RequestedSRSTransmissionCharacteristics},
 		Criticality: Criticality{Value: Criticality_PresentIgnore},
-		Value:       &msg.RequestedSRSTransmissionCharacteristics,
+		Value:       msg.RequestedSRSTransmissionCharacteristics,
 	})
 	return
 }
@@ -150,7 +150,7 @@ func (decoder *PositioningInformationRequestDecoder) decodeIE(r *aper.AperReader
 			err = utils.WrapError("Read RequestedSRSTransmissionCharacteristics", err)
 			return
 		}
-		msg.RequestedSRSTransmissionCharacteristics = tmp
+		msg.RequestedSRSTransmissionCharacteristics = &tmp
 	default:
 		switch msgIe.Criticality.Value {
 		case Criticality_PresentReject:

@@ -60,12 +60,12 @@ type UEContextModificationRequest struct {
 }
 
 func (msg *UEContextModificationRequest) Encode(w io.Writer) (err error) {
-    var ies []F1apMessageIE
-    if ies, err = msg.toIes(); err != nil {
-        err = msgErrors(fmt.Errorf("UEContextModificationRequest"), err)
-        return
-    }
-    return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_UEContextModification, Criticality_PresentReject, ies)
+	var ies []F1apMessageIE
+	if ies, err = msg.toIes(); err != nil {
+		err = msgErrors(fmt.Errorf("UEContextModificationRequest"), err)
+		return
+	}
+	return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_UEContextModification, Criticality_PresentReject, ies)
 }
 func (msg *UEContextModificationRequest) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}
@@ -310,11 +310,13 @@ func (msg *UEContextModificationRequest) toIes() (ies []F1apMessageIE, err error
 				Value: aper.Integer(*msg.GNBDUUEAMBRUL),
 			}})
 	}
-	ies = append(ies, F1apMessageIE{
-		Id:          ProtocolIEID{Value: ProtocolIEID_ExecuteDuplication},
-		Criticality: Criticality{Value: Criticality_PresentIgnore},
-		Value:       &msg.ExecuteDuplication,
-	})
+	if msg.ExecuteDuplication != nil {
+		ies = append(ies, F1apMessageIE{
+			Id:          ProtocolIEID{Value: ProtocolIEID_ExecuteDuplication},
+			Criticality: Criticality{Value: Criticality_PresentIgnore},
+			Value:       msg.ExecuteDuplication,
+		})
+	}
 	if msg.RRCDeliveryStatusRequest != nil {
 		ies = append(ies, F1apMessageIE{
 			Id:          ProtocolIEID{Value: ProtocolIEID_RRCDeliveryStatusRequest},
@@ -341,7 +343,7 @@ func (msg *UEContextModificationRequest) toIes() (ies []F1apMessageIE, err error
 	}
 	if msg.NeedforGap != nil {
 		ies = append(ies, F1apMessageIE{
-			Id:          ProtocolIEID{Value: ProtocolIEID_NeedforGap},
+			Id:          ProtocolIEID{Value: ProtocolIEID_NeedForGap},
 			Criticality: Criticality{Value: Criticality_PresentIgnore},
 			Value:       msg.NeedforGap,
 		})
@@ -441,14 +443,16 @@ func (msg *UEContextModificationRequest) toIes() (ies []F1apMessageIE, err error
 			Value:       msg.LTEUESidelinkAggregateMaximumBitrate,
 		})
 	}
-	ies = append(ies, F1apMessageIE{
-		Id:          ProtocolIEID{Value: ProtocolIEID_PC5LinkAMBR},
-		Criticality: Criticality{Value: Criticality_PresentIgnore},
-		Value: &INTEGER{
-			c:     aper.Constraint{Lb: 0, Ub: 4000000000000},
-			ext:   true,
-			Value: aper.Integer(msg.PC5LinkAMBR),
-		}})
+	if msg.PC5LinkAMBR != nil {
+		ies = append(ies, F1apMessageIE{
+			Id:          ProtocolIEID{Value: ProtocolIEID_PC5LinkAMBR},
+			Criticality: Criticality{Value: Criticality_PresentIgnore},
+			Value: &INTEGER{
+				c:     aper.Constraint{Lb: 0, Ub: 4000000000000},
+				ext:   true,
+				Value: aper.Integer(*msg.PC5LinkAMBR),
+			}})
+	}
 	if len(msg.SLDRBsToBeSetupModList) > 0 {
 		tmp_SLDRBsToBeSetupModList := Sequence[*SLDRBsToBeSetupModItem]{
 			c:   aper.Constraint{Lb: 1, Ub: maxnoofSLDRBs},
@@ -491,11 +495,13 @@ func (msg *UEContextModificationRequest) toIes() (ies []F1apMessageIE, err error
 			Value:       &tmp_SLDRBsToBeReleasedList,
 		})
 	}
-	ies = append(ies, F1apMessageIE{
-		Id:          ProtocolIEID{Value: ProtocolIEID_ConditionalIntraDUMobilityInformation},
-		Criticality: Criticality{Value: Criticality_PresentReject},
-		Value:       &msg.ConditionalIntraDUMobilityInformation,
-	})
+	if msg.ConditionalIntraDUMobilityInformation != nil {
+		ies = append(ies, F1apMessageIE{
+			Id:          ProtocolIEID{Value: ProtocolIEID_ConditionalIntraDUMobilityInformation},
+			Criticality: Criticality{Value: Criticality_PresentReject},
+			Value:       msg.ConditionalIntraDUMobilityInformation,
+		})
+	}
 	if msg.F1CTransferPath != nil {
 		ies = append(ies, F1apMessageIE{
 			Id:          ProtocolIEID{Value: ProtocolIEID_F1CTransferPath},
@@ -882,7 +888,7 @@ func (decoder *UEContextModificationRequestDecoder) decodeIE(r *aper.AperReader)
 			return
 		}
 		msg.ServingCellMO = (*int64)(&tmp.Value)
-	case ProtocolIEID_NeedforGap:
+	case ProtocolIEID_NeedForGap:
 		var tmp NeedforGap
 		if err = tmp.Decode(ieR); err != nil {
 			err = utils.WrapError("Read NeedforGap", err)

@@ -31,7 +31,7 @@ func (ie *TimeStamp) Encode(w *aper.AperWriter) (err error) {
 		return
 	}
 	if ie.MeasurementTime != nil {
-		tmp_MeasurementTime := NewBITSTRING(ie.MeasurementTime, aper.Constraint{Lb: 64, Ub: 64}, false)
+		tmp_MeasurementTime := NewBITSTRING(*ie.MeasurementTime, aper.Constraint{Lb: 64, Ub: 64}, false)
 		if err = tmp_MeasurementTime.Encode(w); err != nil {
 			err = utils.WrapError("Encode MeasurementTime", err)
 			return

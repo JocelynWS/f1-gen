@@ -10,7 +10,7 @@ const (
 type QoSInformation struct {
 	Choice    uint64
 	EUTRANQoS *EUTRANQoS
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *QoSInformation) Encode(w *aper.AperWriter) (err error) {

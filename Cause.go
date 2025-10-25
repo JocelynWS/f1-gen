@@ -16,7 +16,7 @@ type Cause struct {
 	Transport    *CauseTransport
 	Protocol     *CauseProtocol
 	Misc         *CauseMisc
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *Cause) Encode(w *aper.AperWriter) (err error) {

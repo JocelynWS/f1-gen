@@ -12,7 +12,7 @@ type TRPPositionDirectAccuracy struct {
 	Choice        uint64
 	TRPPosition   *AccessPointPosition
 	TRPHAposition *NGRANHighAccuracyAccessPointPosition
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *TRPPositionDirectAccuracy) Encode(w *aper.AperWriter) (err error) {

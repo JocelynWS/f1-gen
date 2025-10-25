@@ -72,7 +72,7 @@ func (msg *DLRRCMessageTransfer) toIes() (ies []F1apMessageIE, err error) {
 	ies = append(ies, F1apMessageIE{
 		Id:          ProtocolIEID{Value: ProtocolIEID_ExecuteDuplication},
 		Criticality: Criticality{Value: Criticality_PresentIgnore},
-		Value:       &msg.ExecuteDuplication,
+		Value:       msg.ExecuteDuplication,
 	})
 	ies = append(ies, F1apMessageIE{
 		Id:          ProtocolIEID{Value: ProtocolIEID_RRCContainer},
@@ -293,7 +293,7 @@ func (decoder *DLRRCMessageTransferDecoder) decodeIE(r *aper.AperReader) (msgIe 
 			err = utils.WrapError("Read ExecuteDuplication", err)
 			return
 		}
-		msg.ExecuteDuplication = tmp
+		msg.ExecuteDuplication = &tmp
 	case ProtocolIEID_RRCContainer:
 		tmp := OCTETSTRING{
 			c:   aper.Constraint{Lb: 0, Ub: 0},

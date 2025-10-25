@@ -12,7 +12,7 @@ type DUFSlotConfigItem struct {
 	Choice         uint64
 	ExplicitFormat *ExplicitFormat
 	ImplicitFormat *ImplicitFormat
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *DUFSlotConfigItem) Encode(w *aper.AperWriter) (err error) {

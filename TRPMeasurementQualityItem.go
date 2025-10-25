@@ -12,7 +12,7 @@ type TRPMeasurementQualityItem struct {
 	Choice                   uint64
 	TimingMeasurementQuality *TimingMeasurementQuality
 	AngleMeasurementQuality  *AngleMeasurementQuality
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *TRPMeasurementQualityItem) Encode(w *aper.AperWriter) (err error) {

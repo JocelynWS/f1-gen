@@ -12,7 +12,7 @@ type PathlossReferenceSignal struct {
 	Choice uint64
 	SSB    *SSB
 	DLPRS  *DLPRS
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *PathlossReferenceSignal) Encode(w *aper.AperWriter) (err error) {

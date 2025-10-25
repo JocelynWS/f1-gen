@@ -12,7 +12,7 @@ type FreqDomainLength struct {
 	Choice uint64
 	L839   *L839Info
 	L139   *L139Info
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *FreqDomainLength) Encode(w *aper.AperWriter) (err error) {

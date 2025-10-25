@@ -20,7 +20,7 @@ type PRSResourceSetItem struct {
 	ResourceNumberofSymbols  ResourceNumberofSymbols  `madatory,valExt`
 	PRSMuting                *PRSMuting               `optional`
 	PRSResourceTransmitPower int64                    `lb:-60,ub:50,madatory`
-	PRSResourceList          PRSResourceList          `madatory`
+	PRSResourceList          PRSResourceItem          `madatory`
 	// IEExtensions *PRSResourceSetItemExtIEs `optional`
 }
 

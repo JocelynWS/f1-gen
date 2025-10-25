@@ -7,7 +7,7 @@ import (
 
 type SRSResourceSetItem struct {
 	NumSRSresourcesperset *int64                 `lb:1,ub:16,optional,valExt`
-	PeriodicityList       []PeriodicityListItem  `lb:1,ub:maxnoofPeriodicities,optional,valExt`
+	PeriodicityList       []PeriodicityListItem  `lb:1,ub:maxnoSRSResourcePerSet,optional,valExt`
 	SpatialRelationInfo   *SpatialRelationInfo   `optional`
 	PathlossReferenceInfo *PathlossReferenceInfo `optional`
 	// IEExtensions * `optional`
@@ -41,7 +41,7 @@ func (ie *SRSResourceSetItem) Encode(w *aper.AperWriter) (err error) {
 	if len(ie.PeriodicityList) > 0 {
 		tmp := Sequence[*PeriodicityListItem]{
 			Value: []*PeriodicityListItem{},
-			c:     aper.Constraint{Lb: 1, Ub: maxnoofPeriodicities},
+			c:     aper.Constraint{Lb: 1, Ub: maxnoSRSResourcePerSet},
 			ext:   true,
 		}
 		for _, i := range ie.PeriodicityList {
@@ -87,7 +87,7 @@ func (ie *SRSResourceSetItem) Decode(r *aper.AperReader) (err error) {
 	}
 	if aper.IsBitSet(optionals, 2) {
 		tmp_PeriodicityList := Sequence[*PeriodicityListItem]{
-			c:   aper.Constraint{Lb: 1, Ub: maxnoofPeriodicities},
+			c:   aper.Constraint{Lb: 1, Ub: maxnoSRSResourcePerSet},
 			ext: true,
 		}
 		fn := func() *PeriodicityListItem { return new(PeriodicityListItem) }

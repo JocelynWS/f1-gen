@@ -12,16 +12,16 @@ const (
 	SSBtransmissionPeriodicitySf640 aper.Enumerated = 6
 )
 
-type SSBtransmissionPeriodicity struct {
+type SSBTransmissionPeriodicity struct {
 	Value aper.Enumerated
 }
 
-func (ie *SSBtransmissionPeriodicity) Encode(w *aper.AperWriter) (err error) {
+func (ie *SSBTransmissionPeriodicity) Encode(w *aper.AperWriter) (err error) {
 	err = w.WriteEnumerate(uint64(ie.Value), aper.Constraint{Lb: 0, Ub: 6}, true)
 	return
 }
 
-func (ie *SSBtransmissionPeriodicity) Decode(r *aper.AperReader) (err error) {
+func (ie *SSBTransmissionPeriodicity) Decode(r *aper.AperReader) (err error) {
 	v, err := r.ReadEnumerate(aper.Constraint{Lb: 0, Ub: 6}, true)
 	ie.Value = aper.Enumerated(v)
 	return

@@ -16,7 +16,7 @@ type MeasuredResultsValue struct {
 	ULSRSRSRP        *int64
 	ULRTOA           *ULRTOAMeasurement
 	GNBRxTxTimeDiff  *GNBRxTxTimeDiff
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *MeasuredResultsValue) Encode(w *aper.AperWriter) (err error) {

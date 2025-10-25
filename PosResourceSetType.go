@@ -14,7 +14,7 @@ type PosResourceSetType struct {
 	Periodic       *PosResourceSetTypePR
 	SemiPersistent *PosResourceSetTypeSP
 	Aperiodic      *PosResourceSetTypeAP
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *PosResourceSetType) Encode(w *aper.AperWriter) (err error) {

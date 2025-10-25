@@ -10,25 +10,26 @@ import (
 )
 
 type GNBDUConfigurationUpdate struct {
-	TransactionID                   int64                             `lb:0,ub:255,mandatory,reject`
-	ServedCellsToAddList            []ServedCellsToAddItem            `lb:1,ub:maxnoofCellsingNB,optional,reject,valueExt`
-	ServedCellsToModifyList         []ServedCellsToModifyItem         `lb:1,ub:maxCellingNBDU,optional,reject,valueExt`
-	ServedCellsToDeleteList         []ServedCellsToDeleteItem         `lb:1,ub:maxCellingNBDU,optional,reject,valueExt`
-	CellsStatusList                 []CellsStatusItem                 `lb:0,ub:maxCellingNBDU,optional,reject,valueExt`
-	DedicatedSIDeliveryNeededUEList *DedicatedSIDeliveryNeededUEList  `optional,ignore`
-	GNBDUID                         *int64                            `lb:0,ub:68719476735,optional,reject`
-	GNBDUTNLAssociationToRemoveList []GNBDUTNLAssociationToRemoveItem `lb:1,ub:maxnoofTNLAssociations,optional,reject,valueExt`
-	TransportLayerAddressInfo       *TransportLayerAddressInfo        `optional,ignore`
+	TransactionID                   int64                               `lb:0,ub:255,mandatory,reject`
+	ServedCellsToAddList            []ServedCellsToAddItem              `lb:1,ub:maxnoofCellsingNB,optional,reject,valueExt`
+	ServedCellsToModifyList         []ServedCellsToModifyItem           `lb:1,ub:maxCellingNBDU,optional,reject,valueExt`
+	ServedCellsToDeleteList         []ServedCellsToDeleteItem           `lb:1,ub:maxCellingNBDU,optional,reject,valueExt`
+	CellsStatusList                 []CellsStatusItem                   `lb:0,ub:maxCellingNBDU,optional,reject,valueExt`
+	DedicatedSIDeliveryNeededUEList *DedicatedSIDeliveryNeededUEItem    `lb:1,ub:maxnoofUEs,optional,ignore`
+	GNBDUID                         *int64                              `lb:0,ub:68719476735,optional,reject`
+	GNBDUTNLAssociationToRemoveList []GNBDUTNLAssociationToRemoveItem   `lb:1,ub:maxnoofTNLAssociations,optional,reject,valueExt`
+	TransportLayerAddressInfo       *TransportLayerAddressInfo          `optional,ignore`
 }
 
 func (msg *GNBDUConfigurationUpdate) Encode(w io.Writer) (err error) {
-    var ies []F1apMessageIE
-    if ies, err = msg.toIes(); err != nil {
-        err = msgErrors(fmt.Errorf("GNBDUConfigurationUpdate"), err)
-        return
-    }
-    return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_GNBDUConfigurationUpdate, Criticality_PresentReject, ies)
+	var ies []F1apMessageIE
+	if ies, err = msg.toIes(); err != nil {
+		err = msgErrors(fmt.Errorf("GNBDUConfigurationUpdate"), err)
+		return
+	}
+	return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_GNBDUConfigurationUpdate, Criticality_PresentReject, ies)
 }
+
 func (msg *GNBDUConfigurationUpdate) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}
 	ies = append(ies, F1apMessageIE{
@@ -40,59 +41,59 @@ func (msg *GNBDUConfigurationUpdate) toIes() (ies []F1apMessageIE, err error) {
 			Value: aper.Integer(msg.TransactionID),
 		}})
 	if len(msg.ServedCellsToAddList) > 0 {
-		tmp_ServedCellsToAddList := Sequence[*ServedCellsToAddItem]{
-			c:   aper.Constraint{Lb: 1, Ub: maxnoofCellsingNB},
+		tmp := Sequence[*ServedCellsToAddItem]{
+			c:   aper.Constraint{Lb: 1, Ub: maxCellingNBDU},
 			ext: true,
 		}
 		for _, i := range msg.ServedCellsToAddList {
-			tmp_ServedCellsToAddList.Value = append(tmp_ServedCellsToAddList.Value, &i)
+			tmp.Value = append(tmp.Value, &i)
 		}
 		ies = append(ies, F1apMessageIE{
 			Id:          ProtocolIEID{Value: ProtocolIEID_ServedCellsToAddList},
 			Criticality: Criticality{Value: Criticality_PresentReject},
-			Value:       &tmp_ServedCellsToAddList,
+			Value:       &tmp,
 		})
 	}
 	if len(msg.ServedCellsToModifyList) > 0 {
-		tmp_ServedCellsToModifyList := Sequence[*ServedCellsToModifyItem]{
+		tmp := Sequence[*ServedCellsToModifyItem]{
 			c:   aper.Constraint{Lb: 1, Ub: maxCellingNBDU},
 			ext: true,
 		}
 		for _, i := range msg.ServedCellsToModifyList {
-			tmp_ServedCellsToModifyList.Value = append(tmp_ServedCellsToModifyList.Value, &i)
+			tmp.Value = append(tmp.Value, &i)
 		}
 		ies = append(ies, F1apMessageIE{
 			Id:          ProtocolIEID{Value: ProtocolIEID_ServedCellsToModifyList},
 			Criticality: Criticality{Value: Criticality_PresentReject},
-			Value:       &tmp_ServedCellsToModifyList,
+			Value:       &tmp,
 		})
 	}
 	if len(msg.ServedCellsToDeleteList) > 0 {
-		tmp_ServedCellsToDeleteList := Sequence[*ServedCellsToDeleteItem]{
+		tmp := Sequence[*ServedCellsToDeleteItem]{
 			c:   aper.Constraint{Lb: 1, Ub: maxCellingNBDU},
 			ext: true,
 		}
 		for _, i := range msg.ServedCellsToDeleteList {
-			tmp_ServedCellsToDeleteList.Value = append(tmp_ServedCellsToDeleteList.Value, &i)
+			tmp.Value = append(tmp.Value, &i)
 		}
 		ies = append(ies, F1apMessageIE{
 			Id:          ProtocolIEID{Value: ProtocolIEID_ServedCellsToDeleteList},
 			Criticality: Criticality{Value: Criticality_PresentReject},
-			Value:       &tmp_ServedCellsToDeleteList,
+			Value:       &tmp,
 		})
 	}
 	if len(msg.CellsStatusList) > 0 {
-		tmp_CellsStatusList := Sequence[*CellsStatusItem]{
+		tmp := Sequence[*CellsStatusItem]{
 			c:   aper.Constraint{Lb: 0, Ub: maxCellingNBDU},
 			ext: true,
 		}
 		for _, i := range msg.CellsStatusList {
-			tmp_CellsStatusList.Value = append(tmp_CellsStatusList.Value, &i)
+			tmp.Value = append(tmp.Value, &i)
 		}
 		ies = append(ies, F1apMessageIE{
 			Id:          ProtocolIEID{Value: ProtocolIEID_CellsStatusList},
 			Criticality: Criticality{Value: Criticality_PresentReject},
-			Value:       &tmp_CellsStatusList,
+			Value:       &tmp,
 		})
 	}
 	if msg.DedicatedSIDeliveryNeededUEList != nil {
@@ -111,19 +112,20 @@ func (msg *GNBDUConfigurationUpdate) toIes() (ies []F1apMessageIE, err error) {
 				ext:   false,
 				Value: aper.Integer(*msg.GNBDUID),
 			}})
+
 	}
 	if len(msg.GNBDUTNLAssociationToRemoveList) > 0 {
-		tmp_GNBDUTNLAssociationToRemoveList := Sequence[*GNBDUTNLAssociationToRemoveItem]{
+		tmp := Sequence[*GNBDUTNLAssociationToRemoveItem]{
 			c:   aper.Constraint{Lb: 1, Ub: maxnoofTNLAssociations},
 			ext: true,
 		}
 		for _, i := range msg.GNBDUTNLAssociationToRemoveList {
-			tmp_GNBDUTNLAssociationToRemoveList.Value = append(tmp_GNBDUTNLAssociationToRemoveList.Value, &i)
+			tmp.Value = append(tmp.Value, &i)
 		}
 		ies = append(ies, F1apMessageIE{
 			Id:          ProtocolIEID{Value: ProtocolIEID_GNBDUTNLAssociationToRemoveList},
 			Criticality: Criticality{Value: Criticality_PresentReject},
-			Value:       &tmp_GNBDUTNLAssociationToRemoveList,
+			Value:       &tmp,
 		})
 	}
 	if msg.TransportLayerAddressInfo != nil {
@@ -133,8 +135,10 @@ func (msg *GNBDUConfigurationUpdate) toIes() (ies []F1apMessageIE, err error) {
 			Value:       msg.TransportLayerAddressInfo,
 		})
 	}
+
 	return
 }
+
 func (msg *GNBDUConfigurationUpdate) Decode(wire []byte) (err error, diagList []CriticalityDiagnosticsIEItem) {
 	defer func() {
 		if err != nil {
@@ -192,6 +196,7 @@ func (decoder *GNBDUConfigurationUpdateDecoder) decodeIE(r *aper.AperReader) (ms
 	decoder.list[ieId] = msgIe
 	ieR := aper.NewReader(bytes.NewReader(buf))
 	msg := decoder.msg
+
 	switch msgIe.Id.Value {
 	case ProtocolIEID_TransactionID:
 		tmp := INTEGER{
@@ -203,9 +208,10 @@ func (decoder *GNBDUConfigurationUpdateDecoder) decodeIE(r *aper.AperReader) (ms
 			return
 		}
 		msg.TransactionID = int64(tmp.Value)
+
 	case ProtocolIEID_ServedCellsToAddList:
 		tmp := Sequence[*ServedCellsToAddItem]{
-			c:   aper.Constraint{Lb: 1, Ub: maxnoofCellsingNB},
+			c:   aper.Constraint{Lb: 1, Ub: maxCellingNBDU},
 			ext: true,
 		}
 		fn := func() *ServedCellsToAddItem { return new(ServedCellsToAddItem) }
@@ -217,6 +223,7 @@ func (decoder *GNBDUConfigurationUpdateDecoder) decodeIE(r *aper.AperReader) (ms
 		for _, i := range tmp.Value {
 			msg.ServedCellsToAddList = append(msg.ServedCellsToAddList, *i)
 		}
+
 	case ProtocolIEID_ServedCellsToModifyList:
 		tmp := Sequence[*ServedCellsToModifyItem]{
 			c:   aper.Constraint{Lb: 1, Ub: maxCellingNBDU},
@@ -231,6 +238,7 @@ func (decoder *GNBDUConfigurationUpdateDecoder) decodeIE(r *aper.AperReader) (ms
 		for _, i := range tmp.Value {
 			msg.ServedCellsToModifyList = append(msg.ServedCellsToModifyList, *i)
 		}
+
 	case ProtocolIEID_ServedCellsToDeleteList:
 		tmp := Sequence[*ServedCellsToDeleteItem]{
 			c:   aper.Constraint{Lb: 1, Ub: maxCellingNBDU},
@@ -245,6 +253,7 @@ func (decoder *GNBDUConfigurationUpdateDecoder) decodeIE(r *aper.AperReader) (ms
 		for _, i := range tmp.Value {
 			msg.ServedCellsToDeleteList = append(msg.ServedCellsToDeleteList, *i)
 		}
+
 	case ProtocolIEID_CellsStatusList:
 		tmp := Sequence[*CellsStatusItem]{
 			c:   aper.Constraint{Lb: 0, Ub: maxCellingNBDU},
@@ -259,13 +268,15 @@ func (decoder *GNBDUConfigurationUpdateDecoder) decodeIE(r *aper.AperReader) (ms
 		for _, i := range tmp.Value {
 			msg.CellsStatusList = append(msg.CellsStatusList, *i)
 		}
+
 	case ProtocolIEID_DedicatedSIDeliveryNeededUEList:
-		var tmp DedicatedSIDeliveryNeededUEList
+		var tmp DedicatedSIDeliveryNeededUEItem
 		if err = tmp.Decode(ieR); err != nil {
-			err = utils.WrapError("Read DedicatedSIDeliveryNeededUEList", err)
+			err = utils.WrapError("Read DedicatedSIDeliveryNeededUEItem", err)
 			return
 		}
 		msg.DedicatedSIDeliveryNeededUEList = &tmp
+
 	case ProtocolIEID_GNBDUID:
 		tmp := INTEGER{
 			c:   aper.Constraint{Lb: 0, Ub: 68719476735},
@@ -276,6 +287,7 @@ func (decoder *GNBDUConfigurationUpdateDecoder) decodeIE(r *aper.AperReader) (ms
 			return
 		}
 		msg.GNBDUID = (*int64)(&tmp.Value)
+
 	case ProtocolIEID_GNBDUTNLAssociationToRemoveList:
 		tmp := Sequence[*GNBDUTNLAssociationToRemoveItem]{
 			c:   aper.Constraint{Lb: 1, Ub: maxnoofTNLAssociations},
@@ -290,6 +302,7 @@ func (decoder *GNBDUConfigurationUpdateDecoder) decodeIE(r *aper.AperReader) (ms
 		for _, i := range tmp.Value {
 			msg.GNBDUTNLAssociationToRemoveList = append(msg.GNBDUTNLAssociationToRemoveList, *i)
 		}
+
 	case ProtocolIEID_TransportLayerAddressInfo:
 		var tmp TransportLayerAddressInfo
 		if err = tmp.Decode(ieR); err != nil {
@@ -297,6 +310,7 @@ func (decoder *GNBDUConfigurationUpdateDecoder) decodeIE(r *aper.AperReader) (ms
 			return
 		}
 		msg.TransportLayerAddressInfo = &tmp
+
 	default:
 		switch msgIe.Criticality.Value {
 		case Criticality_PresentReject:

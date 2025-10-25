@@ -12,7 +12,7 @@ type PagingIdentity struct {
 	Choice              uint64
 	RANUEPagingIdentity *RANUEPagingIdentity
 	CNUEPagingIdentity  *CNUEPagingIdentity
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *PagingIdentity) Encode(w *aper.AperWriter) (err error) {

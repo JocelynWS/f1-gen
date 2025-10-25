@@ -12,7 +12,7 @@ type PC5QoSCharacteristics struct {
 	Choice        uint64
 	NonDynamicPQI *NonDynamicPQIDescriptor
 	DynamicPQI    *DynamicPQIDescriptor
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *PC5QoSCharacteristics) Encode(w *aper.AperWriter) (err error) {

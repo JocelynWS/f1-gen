@@ -12,7 +12,7 @@ type QoSCharacteristics struct {
 	Choice        uint64
 	NonDynamic5QI *NonDynamic5QIDescriptor
 	Dynamic5QI    *Dynamic5QIDescriptor
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *QoSCharacteristics) Encode(w *aper.AperWriter) (err error) {

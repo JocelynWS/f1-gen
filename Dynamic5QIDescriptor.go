@@ -59,7 +59,7 @@ func (ie *Dynamic5QIDescriptor) Encode(w *aper.AperWriter) (err error) {
 	}
 
 	if ie.DelayCritical != nil {
-		tmp := NewENUMERATED(int64(*ie.DelayCritical), aper.Constraint{Lb: 0, Ub: 1}, false)
+		tmp := NewENUMERATED(int64(ie.DelayCritical.Value), aper.Constraint{Lb: 0, Ub: 1}, false)
 		if err = tmp.Encode(w); err != nil {
 			return utils.WrapError("Encode DelayCritical", err)
 		}
@@ -121,8 +121,7 @@ func (ie *Dynamic5QIDescriptor) Decode(r *aper.AperReader) (err error) {
 		if err = tmp.Decode(r); err != nil {
 			return utils.WrapError("Read DelayCritical", err)
 		}
-		dc := DelayCritical(tmp.Value)
-		ie.DelayCritical = &dc
+		ie.DelayCritical = &DelayCritical{Value: aper.Enumerated(tmp.Value)}
 	}
 
 	if aper.IsBitSet(optionals, 3) {

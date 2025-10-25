@@ -12,7 +12,7 @@ type IABDUCellResourceConfigurationModeInfo struct {
 	Choice uint64
 	FDD    *IABDUCellResourceConfigurationFDDInfo
 	TDD    *IABDUCellResourceConfigurationTDDInfo
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *IABDUCellResourceConfigurationModeInfo) Encode(w *aper.AperWriter) (err error) {

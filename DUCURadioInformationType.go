@@ -10,7 +10,7 @@ const (
 type DUCURadioInformationType struct {
 	Choice uint64
 	RIM    *DUCURIMInformation
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *DUCURadioInformationType) Encode(w *aper.AperWriter) (err error) {

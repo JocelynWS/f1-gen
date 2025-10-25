@@ -6,16 +6,16 @@ const (
 	M7LinkstologDownlink aper.Enumerated = 0
 )
 
-type M7Linkstolog struct {
+type M7LinksToLog struct {
 	Value aper.Enumerated
 }
 
-func (ie *M7Linkstolog) Encode(w *aper.AperWriter) (err error) {
+func (ie *M7LinksToLog) Encode(w *aper.AperWriter) (err error) {
 	err = w.WriteEnumerate(uint64(ie.Value), aper.Constraint{Lb: 0, Ub: 0}, true)
 	return
 }
 
-func (ie *M7Linkstolog) Decode(r *aper.AperReader) (err error) {
+func (ie *M7LinksToLog) Decode(r *aper.AperReader) (err error) {
 	v, err := r.ReadEnumerate(aper.Constraint{Lb: 0, Ub: 0}, true)
 	ie.Value = aper.Enumerated(v)
 	return

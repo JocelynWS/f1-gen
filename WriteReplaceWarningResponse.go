@@ -13,7 +13,7 @@ type WriteReplaceWarningResponse struct {
 	TransactionID                   int64                                 `lb:0,ub:255,mandatory,reject`
 	CellsBroadcastCompletedList     []CellsBroadcastCompletedItem `lb:1,ub:maxCellingNBDU,optional,reject,valueExt`
 	CriticalityDiagnostics          *CriticalityDiagnostics               `optional,ignore`
-	DedicatedSIDeliveryNeededUEList *DedicatedSIDeliveryNeededUEList      `optional,ignore`
+	DedicatedSIDeliveryNeededUEList *DedicatedSIDeliveryNeededUEItem      `optional,ignore`
 }
 
 func (msg *WriteReplaceWarningResponse) Encode(w io.Writer) (err error) {
@@ -154,7 +154,7 @@ func (decoder *WriteReplaceWarningResponseDecoder) decodeIE(r *aper.AperReader) 
 		}
 		msg.CriticalityDiagnostics = &tmp
 	case ProtocolIEID_DedicatedSIDeliveryNeededUEList:
-		var tmp DedicatedSIDeliveryNeededUEList
+		var tmp DedicatedSIDeliveryNeededUEItem
 		if err = tmp.Decode(ieR); err != nil {
 			err = utils.WrapError("Read DedicatedSIDeliveryNeededUEList", err)
 			return

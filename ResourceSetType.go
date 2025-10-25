@@ -14,7 +14,7 @@ type ResourceSetType struct {
 	Periodic       *ResourceSetTypePeriodic
 	SemiPersistent *ResourceSetTypeSemiPersistent
 	Aperiodic      *ResourceSetTypeAperiodic
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *ResourceSetType) Encode(w *aper.AperWriter) (err error) {

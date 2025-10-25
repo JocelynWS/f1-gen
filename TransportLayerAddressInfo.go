@@ -26,7 +26,7 @@ func (ie *TransportLayerAddressInfo) Encode(w *aper.AperWriter) (err error) {
 	if len(ie.TransportUPLayerAddressInfoToAddList) > 0 {
 		tmp := Sequence[*TransportUPLayerAddressInfoToAddItem]{
 			Value: []*TransportUPLayerAddressInfoToAddItem{},
-			c:     aper.Constraint{Lb: 1, Ub: maxnoofTLAIAB},
+			c:     aper.Constraint{Lb: 1, Ub: maxnoofTLAs},
 			ext:   true,
 		}
 		for _, i := range ie.TransportUPLayerAddressInfoToAddList {
@@ -40,7 +40,7 @@ func (ie *TransportLayerAddressInfo) Encode(w *aper.AperWriter) (err error) {
 	if len(ie.TransportUPLayerAddressInfoToRemoveList) > 0 {
 		tmp := Sequence[*TransportUPLayerAddressInfoToRemoveItem]{
 			Value: []*TransportUPLayerAddressInfoToRemoveItem{},
-			c:     aper.Constraint{Lb: 1, Ub: maxnoofTLAIAB},
+			c:     aper.Constraint{Lb: 1, Ub: maxnoofTLAs},
 			ext:   true,
 		}
 		for _, i := range ie.TransportUPLayerAddressInfoToRemoveList {
@@ -63,7 +63,7 @@ func (ie *TransportLayerAddressInfo) Decode(r *aper.AperReader) (err error) {
 	}
 	if aper.IsBitSet(optionals, 1) {
 		tmp_TransportUPLayerAddressInfoToAddList := Sequence[*TransportUPLayerAddressInfoToAddItem]{
-			c:   aper.Constraint{Lb: 1, Ub: maxnoofTLAIAB},
+			c:   aper.Constraint{Lb: 1, Ub: maxnoofTLAs},
 			ext: true,
 		}
 		fn := func() *TransportUPLayerAddressInfoToAddItem { return new(TransportUPLayerAddressInfoToAddItem) }
@@ -78,7 +78,7 @@ func (ie *TransportLayerAddressInfo) Decode(r *aper.AperReader) (err error) {
 	}
 	if aper.IsBitSet(optionals, 2) {
 		tmp_TransportUPLayerAddressInfoToRemoveList := Sequence[*TransportUPLayerAddressInfoToRemoveItem]{
-			c:   aper.Constraint{Lb: 1, Ub: maxnoofTLAIAB},
+			c:   aper.Constraint{Lb: 1, Ub: maxnoofTLAs},
 			ext: true,
 		}
 		fn := func() *TransportUPLayerAddressInfoToRemoveItem { return new(TransportUPLayerAddressInfoToRemoveItem) }

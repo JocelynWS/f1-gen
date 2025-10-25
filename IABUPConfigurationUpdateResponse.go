@@ -12,7 +12,7 @@ import (
 type IABUPConfigurationUpdateResponse struct {
 	TransactionID              int64                                `lb:0,ub:255,mandatory,reject`
 	CriticalityDiagnostics     *CriticalityDiagnostics              `optional,ignore`
-	DLUPTNLAddresstoUpdateList []DLUPTNLAddresstoUpdateListItemItem `lb:1,ub:maxnoofUPTNLAddresses,optional,reject,valueExt`
+	DLUPTNLAddresstoUpdateList []DLUPTNLAddressToUpdateListItem `lb:1,ub:maxnoofUPTNLAddresses,optional,reject,valueExt`
 }
 
 func (msg *IABUPConfigurationUpdateResponse) Encode(w io.Writer) (err error) {
@@ -41,7 +41,7 @@ func (msg *IABUPConfigurationUpdateResponse) toIes() (ies []F1apMessageIE, err e
 		})
 	}
 	if len(msg.DLUPTNLAddresstoUpdateList) > 0 {
-		tmp_DLUPTNLAddresstoUpdateList := Sequence[*DLUPTNLAddresstoUpdateListItemItem]{
+		tmp_DLUPTNLAddresstoUpdateList := Sequence[*DLUPTNLAddressToUpdateListItem]{
 			c:   aper.Constraint{Lb: 1, Ub: maxnoofUPTNLAddresses},
 			ext: true,
 		}
@@ -49,7 +49,7 @@ func (msg *IABUPConfigurationUpdateResponse) toIes() (ies []F1apMessageIE, err e
 			tmp_DLUPTNLAddresstoUpdateList.Value = append(tmp_DLUPTNLAddresstoUpdateList.Value, &i)
 		}
 		ies = append(ies, F1apMessageIE{
-			Id:          ProtocolIEID{Value: ProtocolIEID_DLUPTNLAddresstoUpdateList},
+			Id:          ProtocolIEID{Value: ProtocolIEID_DLUPTNLAddressToUpdateList},
 			Criticality: Criticality{Value: Criticality_PresentReject},
 			Value:       &tmp_DLUPTNLAddresstoUpdateList,
 		})
@@ -131,17 +131,17 @@ func (decoder *IABUPConfigurationUpdateResponseDecoder) decodeIE(r *aper.AperRea
 			return
 		}
 		msg.CriticalityDiagnostics = &tmp
-	case ProtocolIEID_DLUPTNLAddresstoUpdateList:
-		tmp := Sequence[*DLUPTNLAddresstoUpdateListItemItem]{
+	case ProtocolIEID_DLUPTNLAddressToUpdateList:
+		tmp := Sequence[*DLUPTNLAddressToUpdateListItem]{
 			c:   aper.Constraint{Lb: 1, Ub: maxnoofUPTNLAddresses},
 			ext: true,
 		}
-		fn := func() *DLUPTNLAddresstoUpdateListItemItem { return new(DLUPTNLAddresstoUpdateListItemItem) }
+		fn := func() *DLUPTNLAddressToUpdateListItem { return new(DLUPTNLAddressToUpdateListItem) }
 		if err = tmp.Decode(ieR, fn); err != nil {
 			err = utils.WrapError("Read DLUPTNLAddresstoUpdateList", err)
 			return
 		}
-		msg.DLUPTNLAddresstoUpdateList = []DLUPTNLAddresstoUpdateListItemItem{}
+		msg.DLUPTNLAddresstoUpdateList = []DLUPTNLAddressToUpdateListItem{}
 		for _, i := range tmp.Value {
 			msg.DLUPTNLAddresstoUpdateList = append(msg.DLUPTNLAddresstoUpdateList, *i)
 		}

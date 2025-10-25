@@ -10,20 +10,19 @@ const (
 )
 
 type TransmissionCombN2 struct {
-	CombOffset  int64 `lb:0,ub:1,mandatory"`
-	CyclicShift int64 `lb:0,ub:7,mandatory"`
+	CombOffset  int64 `lb:0,ub:1,mandatory`
+	CyclicShift int64 `lb:0,ub:7,mandatory`
 }
 
 type TransmissionCombN4 struct {
-	CombOffset  int64 `lb:0,ub:3,mandatory"`
-	CyclicShift int64 `lb:0,ub:11,mandatory"`
+	CombOffset  int64 `lb:0,ub:3,mandatory`
+	CyclicShift int64 `lb:0,ub:11,mandatory`
 }
 
 type TransmissionComb struct {
 	Choice uint64
 	N2     *TransmissionCombN2
 	N4     *TransmissionCombN4
-	// ChoiceExtension *TransmissionCombExtIEs
 }
 
 func (ie *TransmissionComb) Encode(w *aper.AperWriter) (err error) {
@@ -62,40 +61,38 @@ func (ie *TransmissionComb) Decode(r *aper.AperReader) (err error) {
 }
 
 func (n2 *TransmissionCombN2) Encode(w *aper.AperWriter) (err error) {
-	tmp1 := aper.NewINTEGER(n2.CombOffset, aper.Constraint{Lb: 0, Ub: 1}, false)
+	tmp1 := NewINTEGER(n2.CombOffset, aper.Constraint{Lb: 0, Ub: 1}, false)
 	if err = tmp1.Encode(w); err != nil {
 		return
 	}
-	tmp2 := aper.NewINTEGER(n2.CyclicShift, aper.Constraint{Lb: 0, Ub: 7}, false)
+	tmp2 := NewINTEGER(n2.CyclicShift, aper.Constraint{Lb: 0, Ub: 7}, false)
 	if err = tmp2.Encode(w); err != nil {
 		return
 	}
-
 	return
 }
 
 func (n2 *TransmissionCombN2) Decode(r *aper.AperReader) (err error) {
-	tmp1 := aper.NewINTEGER(0, aper.Constraint{Lb: 0, Ub: 1}, false)
+	tmp1 := NewINTEGER(0, aper.Constraint{Lb: 0, Ub: 1}, false)
 	if err = tmp1.Decode(r); err != nil {
 		return
 	}
-	n2.CombOffset = tmp1.Value
+	n2.CombOffset = int64(tmp1.Value)
 
-	tmp2 := aper.NewINTEGER(0, aper.Constraint{Lb: 0, Ub: 7}, false)
+	tmp2 := NewINTEGER(0, aper.Constraint{Lb: 0, Ub: 7}, false)
 	if err = tmp2.Decode(r); err != nil {
 		return
 	}
-	n2.CyclicShift = tmp2.Value
-
+	n2.CyclicShift = int64(tmp2.Value)
 	return
 }
 
 func (n4 *TransmissionCombN4) Encode(w *aper.AperWriter) (err error) {
-	tmp1 := aper.NewINTEGER(n4.CombOffset, aper.Constraint{Lb: 0, Ub: 3}, false)
+	tmp1 := NewINTEGER(n4.CombOffset, aper.Constraint{Lb: 0, Ub: 3}, false)
 	if err = tmp1.Encode(w); err != nil {
 		return
 	}
-	tmp2 := aper.NewINTEGER(n4.CyclicShift, aper.Constraint{Lb: 0, Ub: 11}, false)
+	tmp2 := NewINTEGER(n4.CyclicShift, aper.Constraint{Lb: 0, Ub: 11}, false)
 	if err = tmp2.Encode(w); err != nil {
 		return
 	}
@@ -103,17 +100,16 @@ func (n4 *TransmissionCombN4) Encode(w *aper.AperWriter) (err error) {
 }
 
 func (n4 *TransmissionCombN4) Decode(r *aper.AperReader) (err error) {
-	tmp1 := aper.NewINTEGER(0, aper.Constraint{Lb: 0, Ub: 3}, false)
+	tmp1 := NewINTEGER(0, aper.Constraint{Lb: 0, Ub: 3}, false)
 	if err = tmp1.Decode(r); err != nil {
 		return
 	}
-	n4.CombOffset = tmp1.Value
+	n4.CombOffset = int64(tmp1.Value)
 
-	tmp2 := aper.NewINTEGER(0, aper.Constraint{Lb: 0, Ub: 11}, false)
+	tmp2 := NewINTEGER(0, aper.Constraint{Lb: 0, Ub: 11}, false)
 	if err = tmp2.Decode(r); err != nil {
 		return
 	}
-	n4.CyclicShift = tmp2.Value
-
+	n4.CyclicShift = int64(tmp2.Value)
 	return
 }

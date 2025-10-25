@@ -14,7 +14,7 @@ type ResourceTypePos struct {
 	Periodic       *ResourceTypePeriodicPos
 	SemiPersistent *ResourceTypeSemiPersistentPos
 	Aperiodic      *ResourceTypeAperiodicPos
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *ResourceTypePos) Encode(w *aper.AperWriter) (err error) {

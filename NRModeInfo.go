@@ -12,7 +12,7 @@ type NRModeInfo struct {
 	Choice uint64
 	FDD    *FDDInfo
 	TDD    *TDDInfo
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *NRModeInfo) Encode(w *aper.AperWriter) (err error) {

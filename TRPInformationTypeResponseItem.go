@@ -24,7 +24,7 @@ type TRPInformationTypeResponseItem struct {
 	SFNInitialisationTime       *RelativeTime1900
 	SpatialDirectionInformation *SpatialDirectionInformation
 	GeographicalCoordinates     *GeographicalCoordinates
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *TRPInformationTypeResponseItem) Encode(w *aper.AperWriter) (err error) {

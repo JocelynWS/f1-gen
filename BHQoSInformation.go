@@ -14,7 +14,7 @@ type BHQoSInformation struct {
 	BHRLCCHQoS       *QoSFlowLevelQoSParameters
 	EUTRANBHRLCCHQoS *EUTRANQoS
 	CPTrafficType    *int64
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *BHQoSInformation) Encode(w *aper.AperWriter) (err error) {

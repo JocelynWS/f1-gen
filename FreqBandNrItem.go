@@ -6,9 +6,9 @@ import (
 )
 
 type FreqBandNrItem struct {
-	FreqBandIndicatorNr  int64    `lb:1,ub:1024,mandatory,valExt`
-	SupportedSULBandList SEQUENCE `mandatory`
-	// IEExtensions * `optional`
+	FreqBandIndicatorNr  int64                       `lb:1,ub:1024,mandatory,valExt`
+	SupportedSULBandList []SupportedSULFreqBandItem `mandatory,lb:0,ub:maxnoofNrCellBands`
+	// IEExtensions * `optional,ignore`
 }
 
 func (ie *FreqBandNrItem) Encode(w *aper.AperWriter) (err error) {
@@ -22,12 +22,15 @@ func (ie *FreqBandNrItem) Encode(w *aper.AperWriter) (err error) {
 		err = utils.WrapError("Encode FreqBandIndicatorNr", err)
 		return
 	}
-	if err = ie.SupportedSULBandList.Encode(w); err != nil {
-		err = utils.WrapError("Encode SupportedSULBandList", err)
-		return
+	for i := range ie.SupportedSULBandList {
+		if err = ie.SupportedSULBandList[i].Encode(w); err != nil {
+			err = utils.WrapError("Encode SupportedSULBandList", err)
+			return
+		}
 	}
 	return
 }
+
 func (ie *FreqBandNrItem) Decode(r *aper.AperReader) (err error) {
 	if _, err = r.ReadBool(); err != nil {
 		return
@@ -44,9 +47,11 @@ func (ie *FreqBandNrItem) Decode(r *aper.AperReader) (err error) {
 		return
 	}
 	ie.FreqBandIndicatorNr = int64(tmp_FreqBandIndicatorNr.Value)
-	if err = ie.SupportedSULBandList.Decode(r); err != nil {
-		err = utils.WrapError("Read SupportedSULBandList", err)
-		return
+	for i := range ie.SupportedSULBandList {
+		if err = ie.SupportedSULBandList[i].Decode(r); err != nil {
+			err = utils.WrapError("Read SupportedSULBandList", err)
+			return
+		}
 	}
 	return
 }

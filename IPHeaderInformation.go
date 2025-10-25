@@ -43,12 +43,13 @@ func (ie *IPHeaderInformation) Encode(w *aper.AperWriter) (err error) {
 		}
 	}
 	if ie.IPv6FlowLabel != nil {
-		tmp_IPv6FlowLabel := NewBITSTRING(ie.IPv6FlowLabel, aper.Constraint{Lb: 20, Ub: 20}, false)
+		tmp_IPv6FlowLabel := NewBITSTRING(*ie.IPv6FlowLabel, aper.Constraint{Lb: 20, Ub: 20}, false)
 		if err = tmp_IPv6FlowLabel.Encode(w); err != nil {
 			err = utils.WrapError("Encode IPv6FlowLabel", err)
 			return
 		}
 	}
+
 	return
 }
 func (ie *IPHeaderInformation) Decode(r *aper.AperReader) (err error) {

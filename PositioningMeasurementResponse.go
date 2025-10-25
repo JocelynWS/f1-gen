@@ -13,7 +13,7 @@ type PositioningMeasurementResponse struct {
 	TransactionID            int64                          `lb:0,ub:255,mandatory,reject`
 	LMFMeasurementID         int64                          `lb:1,ub:65536,mandatory,reject,valueExt`
 	RANMeasurementID         int64                          `lb:1,ub:65536,mandatory,reject,valueExt`
-	PosMeasurementResultList []PosMeasurementResultListItem `lb:1,ub:maxnoofPosMeasurements,optional,reject,valueExt`
+	PosMeasurementResultList []PosMeasurementResultListItem `lb:1,ub:maxNoOfMeasTRPs,optional,reject,valueExt`
 	CriticalityDiagnostics   *CriticalityDiagnostics        `optional,ignore`
 }
 
@@ -53,7 +53,7 @@ func (msg *PositioningMeasurementResponse) toIes() (ies []F1apMessageIE, err err
 		}})
 	if len(msg.PosMeasurementResultList) > 0 {
 		tmp_PosMeasurementResultList := Sequence[*PosMeasurementResultListItem]{
-			c:   aper.Constraint{Lb: 1, Ub: maxnoofPosMeasurements},
+			c:   aper.Constraint{Lb: 1, Ub: maxNoOfMeasTRPs},
 			ext: true,
 		}
 		for _, i := range msg.PosMeasurementResultList {
@@ -182,7 +182,7 @@ func (decoder *PositioningMeasurementResponseDecoder) decodeIE(r *aper.AperReade
 		msg.RANMeasurementID = int64(tmp.Value)
 	case ProtocolIEID_PosMeasurementResultList:
 		tmp := Sequence[*PosMeasurementResultListItem]{
-			c:   aper.Constraint{Lb: 1, Ub: maxnoofPosMeasurements},
+			c:   aper.Constraint{Lb: 1, Ub: maxNoOfMeasTRPs},
 			ext: true,
 		}
 		fn := func() *PosMeasurementResultListItem { return new(PosMeasurementResultListItem) }

@@ -46,7 +46,7 @@ func (msg *PositioningInformationResponse) toIes() (ies []F1apMessageIE, err err
 	ies = append(ies, F1apMessageIE{
 		Id:          ProtocolIEID{Value: ProtocolIEID_SRSConfiguration},
 		Criticality: Criticality{Value: Criticality_PresentIgnore},
-		Value:       &msg.SRSConfiguration,
+		Value:       msg.SRSConfiguration,
 	})
 	ies = append(ies, F1apMessageIE{
 		Id:          ProtocolIEID{Value: ProtocolIEID_SFNInitialisationTime},
@@ -177,7 +177,7 @@ func (decoder *PositioningInformationResponseDecoder) decodeIE(r *aper.AperReade
 			err = utils.WrapError("Read SRSConfiguration", err)
 			return
 		}
-		msg.SRSConfiguration = tmp
+		msg.SRSConfiguration = &tmp
 	case ProtocolIEID_SFNInitialisationTime:
 		tmp := BITSTRING{
 			c:   aper.Constraint{Lb: 64, Ub: 64},

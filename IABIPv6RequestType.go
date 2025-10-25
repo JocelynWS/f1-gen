@@ -12,7 +12,7 @@ type IABIPv6RequestType struct {
 	Choice      uint64
 	IPv6Address *IABTNLAddressesRequested
 	IPv6Prefix  *IABTNLAddressesRequested
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *IABIPv6RequestType) Encode(w *aper.AperWriter) (err error) {

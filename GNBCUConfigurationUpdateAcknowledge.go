@@ -11,11 +11,11 @@ import (
 
 type GNBCUConfigurationUpdateAcknowledge struct {
 	TransactionID                        int64                                  `lb:0,ub:255,mandatory,reject`
-	CellsFailedtobeActivatedList         []CellsFailedtobeActivatedListItemItem `lb:1,ub:maxCellingNBDU,mandatory,reject,valueExt`
+	CellsFailedtobeActivatedList         []CellsFailedToBeActivatedListItem `lb:1,ub:maxCellingNBDU,mandatory,reject,valueExt`
 	CriticalityDiagnostics               *CriticalityDiagnostics                `optional,ignore`
-	GNBCUTNLAssociationSetupList         []GNBCUTNLAssociationSetupItemItem     `lb:1,ub:maxnoofTNLAssociations,optional,ignore,valueExt`
+	GNBCUTNLAssociationSetupList         []GNBCUTNLAssociationSetupItem     `lb:1,ub:maxnoofTNLAssociations,optional,ignore,valueExt`
 	GNBCUTNLAssociationFailedToSetupList []GNBCUTNLAssociationFailedToSetupItem `lb:1,ub:maxnoofTNLAssociations,optional,ignore,valueExt`
-	DedicatedSIDeliveryNeededUEList      *DedicatedSIDeliveryNeededUEList       `optional,ignore`
+	DedicatedSIDeliveryNeededUEList      *DedicatedSIDeliveryNeededUEItem       `optional,ignore`
 	TransportLayerAddressInfo            *TransportLayerAddressInfo             `optional,ignore`
 }
 
@@ -38,7 +38,7 @@ func (msg *GNBCUConfigurationUpdateAcknowledge) toIes() (ies []F1apMessageIE, er
 			Value: aper.Integer(msg.TransactionID),
 		}})
 	if len(msg.CellsFailedtobeActivatedList) > 0 {
-		tmp_CellsFailedtobeActivatedList := Sequence[*CellsFailedtobeActivatedListItemItem]{
+		tmp_CellsFailedtobeActivatedList := Sequence[*CellsFailedToBeActivatedListItem]{
 			c:   aper.Constraint{Lb: 1, Ub: maxCellingNBDU},
 			ext: true,
 		}
@@ -46,7 +46,7 @@ func (msg *GNBCUConfigurationUpdateAcknowledge) toIes() (ies []F1apMessageIE, er
 			tmp_CellsFailedtobeActivatedList.Value = append(tmp_CellsFailedtobeActivatedList.Value, &i)
 		}
 		ies = append(ies, F1apMessageIE{
-			Id:          ProtocolIEID{Value: ProtocolIEID_CellsFailedtobeActivatedList},
+			Id:          ProtocolIEID{Value: ProtocolIEID_CellsFailedToBeActivatedList},
 			Criticality: Criticality{Value: Criticality_PresentReject},
 			Value:       &tmp_CellsFailedtobeActivatedList,
 		})
@@ -62,7 +62,7 @@ func (msg *GNBCUConfigurationUpdateAcknowledge) toIes() (ies []F1apMessageIE, er
 		})
 	}
 	if len(msg.GNBCUTNLAssociationSetupList) > 0 {
-		tmp_GNBCUTNLAssociationSetupList := Sequence[*GNBCUTNLAssociationSetupItemItem]{
+		tmp_GNBCUTNLAssociationSetupList := Sequence[*GNBCUTNLAssociationSetupItem]{
 			c:   aper.Constraint{Lb: 1, Ub: maxnoofTNLAssociations},
 			ext: true,
 		}
@@ -129,11 +129,11 @@ func (msg *GNBCUConfigurationUpdateAcknowledge) Decode(wire []byte) (err error, 
 		})
 		return
 	}
-	if _, ok := decoder.list[ProtocolIEID_CellsFailedtobeActivatedList]; !ok {
+	if _, ok := decoder.list[ProtocolIEID_CellsFailedToBeActivatedList]; !ok {
 		err = fmt.Errorf("Mandatory field CellsFailedtobeActivatedList is missing")
 		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
 			IECriticality: Criticality{Value: Criticality_PresentReject},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_CellsFailedtobeActivatedList},
+			IEID:          ProtocolIEID{Value: ProtocolIEID_CellsFailedToBeActivatedList},
 			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
 		})
 		return
@@ -182,17 +182,17 @@ func (decoder *GNBCUConfigurationUpdateAcknowledgeDecoder) decodeIE(r *aper.Aper
 			return
 		}
 		msg.TransactionID = int64(tmp.Value)
-	case ProtocolIEID_CellsFailedtobeActivatedList:
-		tmp := Sequence[*CellsFailedtobeActivatedListItemItem]{
+	case ProtocolIEID_CellsFailedToBeActivatedList:
+		tmp := Sequence[*CellsFailedToBeActivatedListItem]{
 			c:   aper.Constraint{Lb: 1, Ub: maxCellingNBDU},
 			ext: true,
 		}
-		fn := func() *CellsFailedtobeActivatedListItemItem { return new(CellsFailedtobeActivatedListItemItem) }
+		fn := func() *CellsFailedToBeActivatedListItem { return new(CellsFailedToBeActivatedListItem) }
 		if err = tmp.Decode(ieR, fn); err != nil {
 			err = utils.WrapError("Read CellsFailedtobeActivatedList", err)
 			return
 		}
-		msg.CellsFailedtobeActivatedList = []CellsFailedtobeActivatedListItemItem{}
+		msg.CellsFailedtobeActivatedList = []CellsFailedToBeActivatedListItem{}
 		for _, i := range tmp.Value {
 			msg.CellsFailedtobeActivatedList = append(msg.CellsFailedtobeActivatedList, *i)
 		}
@@ -204,16 +204,16 @@ func (decoder *GNBCUConfigurationUpdateAcknowledgeDecoder) decodeIE(r *aper.Aper
 		}
 		msg.CriticalityDiagnostics = &tmp
 	case ProtocolIEID_GNBCUTNLAssociationSetupList:
-		tmp := Sequence[*GNBCUTNLAssociationSetupItemItem]{
+		tmp := Sequence[*GNBCUTNLAssociationSetupItem]{
 			c:   aper.Constraint{Lb: 1, Ub: maxnoofTNLAssociations},
 			ext: true,
 		}
-		fn := func() *GNBCUTNLAssociationSetupItemItem { return new(GNBCUTNLAssociationSetupItemItem) }
+		fn := func() *GNBCUTNLAssociationSetupItem { return new(GNBCUTNLAssociationSetupItem) }
 		if err = tmp.Decode(ieR, fn); err != nil {
 			err = utils.WrapError("Read GNBCUTNLAssociationSetupList", err)
 			return
 		}
-		msg.GNBCUTNLAssociationSetupList = []GNBCUTNLAssociationSetupItemItem{}
+		msg.GNBCUTNLAssociationSetupList = []GNBCUTNLAssociationSetupItem{}
 		for _, i := range tmp.Value {
 			msg.GNBCUTNLAssociationSetupList = append(msg.GNBCUTNLAssociationSetupList, *i)
 		}
@@ -232,7 +232,7 @@ func (decoder *GNBCUConfigurationUpdateAcknowledgeDecoder) decodeIE(r *aper.Aper
 			msg.GNBCUTNLAssociationFailedToSetupList = append(msg.GNBCUTNLAssociationFailedToSetupList, *i)
 		}
 	case ProtocolIEID_DedicatedSIDeliveryNeededUEList:
-		var tmp DedicatedSIDeliveryNeededUEList
+		var tmp DedicatedSIDeliveryNeededUEItem
 		if err = tmp.Decode(ieR); err != nil {
 			err = utils.WrapError("Read DedicatedSIDeliveryNeededUEList", err)
 			return

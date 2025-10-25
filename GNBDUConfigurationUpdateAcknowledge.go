@@ -13,7 +13,7 @@ type GNBDUConfigurationUpdateAcknowledge struct {
 	TransactionID             int64                          `lb:0,ub:255,mandatory,reject`
 	CellstobeActivatedList    []CellstobeActivatedListItem   `lb:1,ub:maxCellingNBDU,optional,reject,valueExt`
 	CriticalityDiagnostics    *CriticalityDiagnostics        `optional,ignore`
-	CellstobeDeactivatedList  []CellstobeDeactivatedListItem `lb:1,ub:maxCellingNBDU,optional,reject,valueExt`
+	CellstobeDeactivatedList  []CellsToBeDeactivatedListItem `lb:1,ub:maxCellingNBDU,optional,reject,valueExt`
 	TransportLayerAddressInfo *TransportLayerAddressInfo     `optional,ignore`
 	ULBHNonUPTrafficMapping   *ULBHNonUPTrafficMapping       `optional,reject`
 	BAPAddress                *aper.BitString                `lb:10,ub:10,optional,ignore`
@@ -59,7 +59,7 @@ func (msg *GNBDUConfigurationUpdateAcknowledge) toIes() (ies []F1apMessageIE, er
 		})
 	}
 	if len(msg.CellstobeDeactivatedList) > 0 {
-		tmp_CellstobeDeactivatedList := Sequence[*CellstobeDeactivatedListItem]{
+		tmp_CellstobeDeactivatedList := Sequence[*CellsToBeDeactivatedListItem]{
 			c:   aper.Constraint{Lb: 1, Ub: maxCellingNBDU},
 			ext: true,
 		}
@@ -67,7 +67,7 @@ func (msg *GNBDUConfigurationUpdateAcknowledge) toIes() (ies []F1apMessageIE, er
 			tmp_CellstobeDeactivatedList.Value = append(tmp_CellstobeDeactivatedList.Value, &i)
 		}
 		ies = append(ies, F1apMessageIE{
-			Id:          ProtocolIEID{Value: ProtocolIEID_CellstobeDeactivatedList},
+			Id:          ProtocolIEID{Value: ProtocolIEID_CellsToBeDeactivatedList},
 			Criticality: Criticality{Value: Criticality_PresentReject},
 			Value:       &tmp_CellstobeDeactivatedList,
 		})
@@ -188,17 +188,17 @@ func (decoder *GNBDUConfigurationUpdateAcknowledgeDecoder) decodeIE(r *aper.Aper
 			return
 		}
 		msg.CriticalityDiagnostics = &tmp
-	case ProtocolIEID_CellstobeDeactivatedList:
-		tmp := Sequence[*CellstobeDeactivatedListItem]{
+	case ProtocolIEID_CellsToBeDeactivatedList:
+		tmp := Sequence[*CellsToBeDeactivatedListItem]{
 			c:   aper.Constraint{Lb: 1, Ub: maxCellingNBDU},
 			ext: true,
 		}
-		fn := func() *CellstobeDeactivatedListItem { return new(CellstobeDeactivatedListItem) }
+		fn := func() *CellsToBeDeactivatedListItem { return new(CellsToBeDeactivatedListItem) }
 		if err = tmp.Decode(ieR, fn); err != nil {
 			err = utils.WrapError("Read CellstobeDeactivatedList", err)
 			return
 		}
-		msg.CellstobeDeactivatedList = []CellstobeDeactivatedListItem{}
+		msg.CellstobeDeactivatedList = []CellsToBeDeactivatedListItem{}
 		for _, i := range tmp.Value {
 			msg.CellstobeDeactivatedList = append(msg.CellstobeDeactivatedList, *i)
 		}

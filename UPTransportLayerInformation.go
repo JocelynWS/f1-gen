@@ -10,7 +10,7 @@ const (
 type UPTransportLayerInformation struct {
 	Choice    uint64
 	GTPTunnel *GTPTunnel
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *UPTransportLayerInformation) Encode(w *aper.AperWriter) (err error) {

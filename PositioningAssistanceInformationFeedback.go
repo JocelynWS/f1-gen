@@ -71,7 +71,7 @@ func (msg *PositioningAssistanceInformationFeedback) toIes() (ies []F1apMessageI
 	ies = append(ies, F1apMessageIE{
 		Id:          ProtocolIEID{Value: ProtocolIEID_CriticalityDiagnostics},
 		Criticality: Criticality{Value: Criticality_PresentIgnore},
-		Value:       &msg.CriticalityDiagnostics,
+		Value:       msg.CriticalityDiagnostics,
 	})
 	return
 }
@@ -219,7 +219,7 @@ func (decoder *PositioningAssistanceInformationFeedbackDecoder) decodeIE(r *aper
 			err = utils.WrapError("Read CriticalityDiagnostics", err)
 			return
 		}
-		msg.CriticalityDiagnostics = tmp
+		msg.CriticalityDiagnostics = &tmp
 	default:
 		switch msgIe.Criticality.Value {
 		case Criticality_PresentReject:

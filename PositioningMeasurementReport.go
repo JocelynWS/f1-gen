@@ -52,7 +52,7 @@ func (msg *PositioningMeasurementReport) toIes() (ies []F1apMessageIE, err error
 		}})
 	if len(msg.PosMeasurementResultList) > 0 {
 		tmp_PosMeasurementResultList := Sequence[*PosMeasurementResultListItem]{
-			c:   aper.Constraint{Lb: 1, Ub: maxnoofPosMeasurements},
+			c:   aper.Constraint{Lb: 1, Ub: maxNoOfMeasTRPs},
 			ext: true,
 		}
 		for _, i := range msg.PosMeasurementResultList {
@@ -186,7 +186,7 @@ func (decoder *PositioningMeasurementReportDecoder) decodeIE(r *aper.AperReader)
 		msg.RANMeasurementID = int64(tmp.Value)
 	case ProtocolIEID_PosMeasurementResultList:
 		tmp := Sequence[*PosMeasurementResultListItem]{
-			c:   aper.Constraint{Lb: 1, Ub: maxnoofPosMeasurements},
+			c:   aper.Constraint{Lb: 1, Ub: maxNoOfMeasTRPs},
 			ext: true,
 		}
 		fn := func() *PosMeasurementResultListItem { return new(PosMeasurementResultListItem) }

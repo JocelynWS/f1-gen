@@ -12,11 +12,11 @@ import (
 type GNBCUConfigurationUpdate struct {
 	TransactionID                   int64                             `lb:0,ub:255,mandatory,reject`
 	CellstobeActivatedList          []CellstobeActivatedListItem      `lb:1,ub:maxCellingNBDU,optional,reject,valueExt`
-	CellstobeDeactivatedList        []CellstobeDeactivatedListItem    `lb:1,ub:maxCellingNBDU,optional,reject,valueExt`
+	CellstobeDeactivatedList        []CellsToBeDeactivatedListItem    `lb:1,ub:maxCellingNBDU,optional,reject,valueExt`
 	GNBCUTNLAssociationToAddList    []GNBCUTNLAssociationToAddItem    `lb:1,ub:maxnoofTNLAssociations,optional,ignore,valueExt`
 	GNBCUTNLAssociationToRemoveList []GNBCUTNLAssociationToRemoveItem `lb:1,ub:maxnoofTNLAssociations,optional,ignore,valueExt`
 	GNBCUTNLAssociationToUpdateList []GNBCUTNLAssociationToUpdateItem `lb:1,ub:maxnoofTNLAssociations,optional,ignore,valueExt`
-	CellstobeBarredList             []CellstobeBarredItem             `lb:1,ub:maxCellingNBDU,optional,ignore,valueExt`
+	CellstobeBarredList             []CellsToBeBarredItem             `lb:1,ub:maxCellingNBDU,optional,ignore,valueExt`
 	ProtectedEUTRAResourcesList     []ProtectedEUTRAResourcesItem     `lb:1,ub:maxCellineNB,optional,reject,valueExt`
 	NeighbourCellInformationList    []NeighbourCellInformationItem    `lb:1,ub:maxCellingNBDU,optional,ignore,valueExt`
 	TransportLayerAddressInfo       *TransportLayerAddressInfo        `optional,ignore`
@@ -57,7 +57,7 @@ func (msg *GNBCUConfigurationUpdate) toIes() (ies []F1apMessageIE, err error) {
 		})
 	}
 	if len(msg.CellstobeDeactivatedList) > 0 {
-		tmp_CellstobeDeactivatedList := Sequence[*CellstobeDeactivatedListItem]{
+		tmp_CellstobeDeactivatedList := Sequence[*CellsToBeDeactivatedListItem]{
 			c:   aper.Constraint{Lb: 1, Ub: maxCellingNBDU},
 			ext: true,
 		}
@@ -65,7 +65,7 @@ func (msg *GNBCUConfigurationUpdate) toIes() (ies []F1apMessageIE, err error) {
 			tmp_CellstobeDeactivatedList.Value = append(tmp_CellstobeDeactivatedList.Value, &i)
 		}
 		ies = append(ies, F1apMessageIE{
-			Id:          ProtocolIEID{Value: ProtocolIEID_CellstobeDeactivatedList},
+			Id:          ProtocolIEID{Value: ProtocolIEID_CellsToBeDeactivatedList},
 			Criticality: Criticality{Value: Criticality_PresentReject},
 			Value:       &tmp_CellstobeDeactivatedList,
 		})
@@ -113,7 +113,7 @@ func (msg *GNBCUConfigurationUpdate) toIes() (ies []F1apMessageIE, err error) {
 		})
 	}
 	if len(msg.CellstobeBarredList) > 0 {
-		tmp_CellstobeBarredList := Sequence[*CellstobeBarredItem]{
+		tmp_CellstobeBarredList := Sequence[*CellsToBeBarredItem]{
 			c:   aper.Constraint{Lb: 1, Ub: maxCellingNBDU},
 			ext: true,
 		}
@@ -121,7 +121,7 @@ func (msg *GNBCUConfigurationUpdate) toIes() (ies []F1apMessageIE, err error) {
 			tmp_CellstobeBarredList.Value = append(tmp_CellstobeBarredList.Value, &i)
 		}
 		ies = append(ies, F1apMessageIE{
-			Id:          ProtocolIEID{Value: ProtocolIEID_CellstobeBarredList},
+			Id:          ProtocolIEID{Value: ProtocolIEID_CellsToBeBarredList},
 			Criticality: Criticality{Value: Criticality_PresentIgnore},
 			Value:       &tmp_CellstobeBarredList,
 		})
@@ -263,17 +263,17 @@ func (decoder *GNBCUConfigurationUpdateDecoder) decodeIE(r *aper.AperReader) (ms
 		for _, i := range tmp.Value {
 			msg.CellstobeActivatedList = append(msg.CellstobeActivatedList, *i)
 		}
-	case ProtocolIEID_CellstobeDeactivatedList:
-		tmp := Sequence[*CellstobeDeactivatedListItem]{
+	case ProtocolIEID_CellsToBeDeactivatedList:
+		tmp := Sequence[*CellsToBeDeactivatedListItem]{
 			c:   aper.Constraint{Lb: 1, Ub: maxCellingNBDU},
 			ext: true,
 		}
-		fn := func() *CellstobeDeactivatedListItem { return new(CellstobeDeactivatedListItem) }
+		fn := func() *CellsToBeDeactivatedListItem { return new(CellsToBeDeactivatedListItem) }
 		if err = tmp.Decode(ieR, fn); err != nil {
 			err = utils.WrapError("Read CellstobeDeactivatedList", err)
 			return
 		}
-		msg.CellstobeDeactivatedList = []CellstobeDeactivatedListItem{}
+		msg.CellstobeDeactivatedList = []CellsToBeDeactivatedListItem{}
 		for _, i := range tmp.Value {
 			msg.CellstobeDeactivatedList = append(msg.CellstobeDeactivatedList, *i)
 		}
@@ -319,17 +319,17 @@ func (decoder *GNBCUConfigurationUpdateDecoder) decodeIE(r *aper.AperReader) (ms
 		for _, i := range tmp.Value {
 			msg.GNBCUTNLAssociationToUpdateList = append(msg.GNBCUTNLAssociationToUpdateList, *i)
 		}
-	case ProtocolIEID_CellstobeBarredList:
-		tmp := Sequence[*CellstobeBarredItem]{
+	case ProtocolIEID_CellsToBeBarredList:
+		tmp := Sequence[*CellsToBeBarredItem]{
 			c:   aper.Constraint{Lb: 1, Ub: maxCellingNBDU},
 			ext: true,
 		}
-		fn := func() *CellstobeBarredItem { return new(CellstobeBarredItem) }
+		fn := func() *CellsToBeBarredItem { return new(CellsToBeBarredItem) }
 		if err = tmp.Decode(ieR, fn); err != nil {
 			err = utils.WrapError("Read CellstobeBarredList", err)
 			return
 		}
-		msg.CellstobeBarredList = []CellstobeBarredItem{}
+		msg.CellstobeBarredList = []CellsToBeBarredItem{}
 		for _, i := range tmp.Value {
 			msg.CellstobeBarredList = append(msg.CellstobeBarredList, *i)
 		}

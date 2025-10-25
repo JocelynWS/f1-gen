@@ -20,7 +20,7 @@ func (ie *L839Info) Encode(w *aper.AperWriter) (err error) {
 		return utils.WrapError("Encode RootSequenceIndex", err)
 	}
 
-	tmp_RestrictedSetConfig := NewENUMERATED(int64(ie.RestrictedSetConfig), aper.Constraint{Lb: 0, Ub: 2}, false)
+	tmp_RestrictedSetConfig := NewENUMERATED(int64(ie.RestrictedSetConfig.Value), aper.Constraint{Lb: 0, Ub: 2}, false)
 	if err = tmp_RestrictedSetConfig.Encode(w); err != nil {
 		return utils.WrapError("Encode RestrictedSetConfig", err)
 	}
@@ -43,7 +43,6 @@ func (ie *L839Info) Decode(r *aper.AperReader) (err error) {
 	if err = tmp_RestrictedSetConfig.Decode(r); err != nil {
 		return utils.WrapError("Read RestrictedSetConfig", err)
 	}
-	ie.RestrictedSetConfig = RestrictedSetConfig(tmp_RestrictedSetConfig.Value)
-
+	ie.RestrictedSetConfig = RestrictedSetConfig{Value: tmp_RestrictedSetConfig.Value}
 	return
 }

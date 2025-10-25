@@ -195,16 +195,16 @@ func (decoder *WriteReplaceWarningRequestDecoder) decodeIE(r *aper.AperReader) (
 		}
 		msg.NumberofBroadcastRequest = int64(tmp.Value)
 	case ProtocolIEID_CellsToBeBroadcastList:
-		tmp := Sequence[*CellsToBeBroadcastItem]{
+		tmp := Sequence[*CellsToBeBroadcastListItem]{
 			c:   aper.Constraint{Lb: 1, Ub: maxCellingNBDU},
 			ext: true,
 		}
-		fn := func() *CellsToBeBroadcastItem { return new(CellsToBeBroadcastItem) }
+		fn := func() *CellsToBeBroadcastListItem { return new(CellsToBeBroadcastListItem) }
 		if err = tmp.Decode(ieR, fn); err != nil {
 			err = utils.WrapError("Read CellsToBeBroadcastList", err)
 			return
 		}
-		msg.CellsToBeBroadcastList = []CellsToBeBroadcastItem{}
+		msg.CellsToBeBroadcastList = []CellsToBeBroadcastListItem{}
 		for _, i := range tmp.Value {
 			msg.CellsToBeBroadcastList = append(msg.CellsToBeBroadcastList, *i)
 		}

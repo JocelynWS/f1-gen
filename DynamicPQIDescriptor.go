@@ -34,7 +34,7 @@ func (ie *DynamicPQIDescriptor) Encode(w *aper.AperWriter) (err error) {
 
 	// Encode optional ResourceType
 	if ie.ResourceType != nil {
-		tmp := NewENUMERATED(int64(*ie.ResourceType), aper.Constraint{Lb: 0, Ub: 2}, false)
+		tmp := NewENUMERATED(int64(ie.ResourceType.Value), aper.Constraint{Lb: 0, Ub: 2}, false)
 		if err = tmp.Encode(w); err != nil {
 			return utils.WrapError("Encode ResourceType", err)
 		}
@@ -88,8 +88,7 @@ func (ie *DynamicPQIDescriptor) Decode(r *aper.AperReader) (err error) {
 		if err = tmp.Decode(r); err != nil {
 			return utils.WrapError("Read ResourceType", err)
 		}
-		rt := ResourceType(tmp.Value)
-		ie.ResourceType = &rt
+		ie.ResourceType = &ResourceType{Value: aper.Enumerated(tmp.Value)}
 	}
 
 	// Decode mandatory fields

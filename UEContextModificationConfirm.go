@@ -94,7 +94,7 @@ func (msg *UEContextModificationConfirm) toIes() (ies []F1apMessageIE, err error
 	ies = append(ies, F1apMessageIE{
 		Id:          ProtocolIEID{Value: ProtocolIEID_ExecuteDuplication},
 		Criticality: Criticality{Value: Criticality_PresentIgnore},
-		Value:       &msg.ExecuteDuplication,
+		Value:       msg.ExecuteDuplication,
 	})
 	if msg.ResourceCoordinationTransferInformation != nil {
 		ies = append(ies, F1apMessageIE{
@@ -283,7 +283,7 @@ func (decoder *UEContextModificationConfirmDecoder) decodeIE(r *aper.AperReader)
 			err = utils.WrapError("Read ExecuteDuplication", err)
 			return
 		}
-		msg.ExecuteDuplication = tmp
+		msg.ExecuteDuplication = &tmp
 	case ProtocolIEID_ResourceCoordinationTransferInformation:
 		var tmp ResourceCoordinationTransferInformation
 		if err = tmp.Decode(ieR); err != nil {

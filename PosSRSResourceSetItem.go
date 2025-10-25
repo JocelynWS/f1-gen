@@ -7,7 +7,7 @@ import (
 
 type PosSRSResourceSetItem struct {
 	PossrsResourceSetID  int64              `lb:0,ub:15,mandatory`
-	PossRSResourceIDList []SRSPosResourceID `lb:1,ub:maxnoofPosSRSResources,mandatory,valExt`
+	PossRSResourceIDList []SRSPosResourceID `lb:1,ub:maxnoSRSPosResourcePerSet,mandatory,valExt`
 	PosresourceSetType   PosResourceSetType `mandatory`
 	// IEExtensions * `optional`
 }
@@ -27,7 +27,7 @@ func (ie *PosSRSResourceSetItem) Encode(w *aper.AperWriter) (err error) {
 	if len(ie.PossRSResourceIDList) > 0 {
 		tmp := Sequence[*SRSPosResourceID]{
 			Value: []*SRSPosResourceID{},
-			c:     aper.Constraint{Lb: 1, Ub: maxnoofPosSRSResources},
+			c:     aper.Constraint{Lb: 1, Ub: maxnoSRSPosResourcePerSet},
 			ext:   true,
 		}
 		for i := range ie.PossRSResourceIDList {
@@ -66,7 +66,7 @@ func (ie *PosSRSResourceSetItem) Decode(r *aper.AperReader) (err error) {
 	}
 	ie.PossrsResourceSetID = int64(tmp_PossrsResourceSetID.Value)
 	tmp_PossRSResourceIDList := Sequence[*SRSPosResourceID]{
-		c:   aper.Constraint{Lb: 1, Ub: maxnoofPosSRSResources},
+		c:   aper.Constraint{Lb: 1, Ub: maxnoSRSPosResourcePerSet},
 		ext: true,
 	}
 	fn := func() *SRSPosResourceID { return new(SRSPosResourceID) }

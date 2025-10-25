@@ -12,7 +12,7 @@ type SpatialRelationPos struct {
 	Choice            uint64
 	SSBPos            *SSB
 	PRSInformationPos *PRSInformationPos
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *SpatialRelationPos) Encode(w *aper.AperWriter) (err error) {

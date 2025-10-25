@@ -63,7 +63,7 @@ func (msg *UEContextModificationRequired) toIes() (ies []F1apMessageIE, err erro
 	ies = append(ies, F1apMessageIE{
 		Id:          ProtocolIEID{Value: ProtocolIEID_DUtoCURRCInformation},
 		Criticality: Criticality{Value: Criticality_PresentReject},
-		Value:       &msg.DUtoCURRCInformation,
+		Value:       msg.DUtoCURRCInformation,
 	})
 	if len(msg.DRBsRequiredToBeModifiedList) > 0 {
 		tmp_DRBsRequiredToBeModifiedList := Sequence[*DRBsRequiredToBeModifiedItem]{
@@ -375,7 +375,7 @@ func (decoder *UEContextModificationRequiredDecoder) decodeIE(r *aper.AperReader
 			err = utils.WrapError("Read DUtoCURRCInformation", err)
 			return
 		}
-		msg.DUtoCURRCInformation = tmp
+		msg.DUtoCURRCInformation = &tmp
 	case ProtocolIEID_DRBsRequiredToBeModifiedList:
 		tmp := Sequence[*DRBsRequiredToBeModifiedItem]{
 			c:   aper.Constraint{Lb: 1, Ub: maxnoofDRBs},

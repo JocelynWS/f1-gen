@@ -12,7 +12,7 @@ type RATFrequencyPriorityInformation struct {
 	Choice uint64
 	ENDC   *int64
 	NGRAN  *int64
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *RATFrequencyPriorityInformation) Encode(w *aper.AperWriter) (err error) {

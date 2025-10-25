@@ -12,7 +12,7 @@ type TrafficMappingInfo struct {
 	Choice                          uint64
 	IPtolayer2TrafficMappingInfo    *IPtolayer2TrafficMappingInfo
 	BAPlayerBHRLCchannelMappingInfo *BAPlayerBHRLCchannelMappingInfo
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *TrafficMappingInfo) Encode(w *aper.AperWriter) (err error) {

@@ -56,7 +56,7 @@ func (msg *IABUPConfigurationUpdateRequest) toIes() (ies []F1apMessageIE, err er
 			tmp_ULUPTNLAddresstoUpdateList.Value = append(tmp_ULUPTNLAddresstoUpdateList.Value, &i)
 		}
 		ies = append(ies, F1apMessageIE{
-			Id:          ProtocolIEID{Value: ProtocolIEID_ULUPTNLAddresstoUpdateList},
+			Id:          ProtocolIEID{Value: ProtocolIEID_ULUPTNLAddressToUpdateList},
 			Criticality: Criticality{Value: Criticality_PresentIgnore},
 			Value:       &tmp_ULUPTNLAddresstoUpdateList,
 		})
@@ -145,7 +145,7 @@ func (decoder *IABUPConfigurationUpdateRequestDecoder) decodeIE(r *aper.AperRead
 		for _, i := range tmp.Value {
 			msg.ULUPTNLInformationtoUpdateList = append(msg.ULUPTNLInformationtoUpdateList, *i)
 		}
-	case ProtocolIEID_ULUPTNLAddresstoUpdateList:
+	case ProtocolIEID_ULUPTNLAddressToUpdateList:
 		tmp := Sequence[*ULUPTNLInformationtoUpdateListItem]{
 			c:   aper.Constraint{Lb: 1, Ub: maxnoofUPTNLAddresses},
 			ext: true,

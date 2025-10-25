@@ -12,7 +12,7 @@ type TRPReferencePointType struct {
 	Choice                       uint64
 	TRPPositionRelativeGeodetic  *RelativeGeodeticLocation
 	TRPPositionRelativeCartesian *RelativeCartesianLocation
-	// ChoiceExtension // ChoiceExtensions
+	// ChoiceExtension
 }
 
 func (ie *TRPReferencePointType) Encode(w *aper.AperWriter) (err error) {
