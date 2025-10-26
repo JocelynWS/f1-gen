@@ -6,8 +6,8 @@ import (
 )
 
 type ChildNodesListItem struct {
-	GNBCUUEF1APID     int64               `lb:0,ub:4294967295,mandatory,reject`
-	GNBDUUEF1APID     int64               `lb:0,ub:4294967295,mandatory,reject`
+	GNBCUUEF1APID      int64               `lb:0,ub:4294967295,mandatory,reject`
+	GNBDUUEF1APID      int64               `lb:0,ub:4294967295,mandatory,reject`
 	ChildNodeCellsItem *ChildNodeCellsItem `lb:1,ub:maxnoofChildIABNodes,optional`
 	// IEExtensions           *ProtocolExtensionContainer `optional,ignore`
 }

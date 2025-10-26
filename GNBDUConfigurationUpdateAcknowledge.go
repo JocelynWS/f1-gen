@@ -16,16 +16,15 @@ type GNBDUConfigurationUpdateAcknowledge struct {
 	CellstobeDeactivatedList  []CellsToBeDeactivatedListItem `lb:1,ub:maxCellingNBDU,optional,reject,valueExt`
 	TransportLayerAddressInfo *TransportLayerAddressInfo     `optional,ignore`
 	ULBHNonUPTrafficMapping   *ULBHNonUPTrafficMapping       `optional,reject`
-	BAPAddress                *aper.BitString                `lb:10,ub:10,optional,ignore`
 }
 
 func (msg *GNBDUConfigurationUpdateAcknowledge) Encode(w io.Writer) (err error) {
-    var ies []F1apMessageIE
-    if ies, err = msg.toIes(); err != nil {
-        err = msgErrors(fmt.Errorf("GNBDUConfigurationUpdateAcknowledge"), err)
-        return
-    }
-    return encodeMessage(w, F1apPduSuccessfulOutcome, ProcedureCode_GNBDUConfigurationUpdate, Criticality_PresentReject, ies)
+	var ies []F1apMessageIE
+	if ies, err = msg.toIes(); err != nil {
+		err = msgErrors(fmt.Errorf("GNBDUConfigurationUpdateAcknowledge"), err)
+		return
+	}
+	return encodeMessage(w, F1apPduSuccessfulOutcome, ProcedureCode_GNBDUConfigurationUpdate, Criticality_PresentReject, ies)
 }
 func (msg *GNBDUConfigurationUpdateAcknowledge) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}
@@ -85,17 +84,6 @@ func (msg *GNBDUConfigurationUpdateAcknowledge) toIes() (ies []F1apMessageIE, er
 			Criticality: Criticality{Value: Criticality_PresentReject},
 			Value:       msg.ULBHNonUPTrafficMapping,
 		})
-	}
-	if msg.BAPAddress != nil {
-		ies = append(ies, F1apMessageIE{
-			Id:          ProtocolIEID{Value: ProtocolIEID_BAPAddress},
-			Criticality: Criticality{Value: Criticality_PresentIgnore},
-			Value: &BITSTRING{
-				c:   aper.Constraint{Lb: 10, Ub: 10},
-				ext: false,
-				Value: aper.BitString{
-					Bytes: msg.BAPAddress.Bytes, NumBits: msg.BAPAddress.NumBits},
-			}})
 	}
 	return
 }
@@ -216,16 +204,6 @@ func (decoder *GNBDUConfigurationUpdateAcknowledgeDecoder) decodeIE(r *aper.Aper
 			return
 		}
 		msg.ULBHNonUPTrafficMapping = &tmp
-	case ProtocolIEID_BAPAddress:
-		tmp := BITSTRING{
-			c:   aper.Constraint{Lb: 10, Ub: 10},
-			ext: false,
-		}
-		if err = tmp.Decode(ieR); err != nil {
-			err = utils.WrapError("Read BAPAddress", err)
-			return
-		}
-		msg.BAPAddress = &aper.BitString{Bytes: tmp.Value.Bytes, NumBits: tmp.Value.NumBits}
 	default:
 		switch msgIe.Criticality.Value {
 		case Criticality_PresentReject:

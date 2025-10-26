@@ -36,7 +36,6 @@ type CRNTI struct {
 	Value int64 `lb:0,ub:65535,ext`
 }
 
-
 type CGConfig struct {
 	Value []byte
 }
@@ -205,16 +204,13 @@ type MessageIdentifier struct {
 	Value aper.BitString `lb:16,ub:16`
 }
 
-
 type NRCellIdentity struct {
 	Value aper.BitString `lb:36,ub:36`
 }
 
-
 type NRUERLFReportContainer struct {
 	Value []byte
 }
-
 
 type NoofDownlinkSymbols struct {
 	Value int64 `lb:0,ub:14`
@@ -452,7 +448,6 @@ type SRBID struct {
 	Value int64 `lb:0,ub:3,ext`
 }
 
-
 type SRSResourceID struct {
 	Value int64 `lb:0,ub:63`
 }
@@ -544,4 +539,3 @@ type Uncertainty struct {
 type UplinkTxDirectCurrentListInformation struct {
 	Value []byte
 }
-

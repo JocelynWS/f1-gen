@@ -10,19 +10,19 @@ import (
 )
 
 type WriteReplaceWarningResponse struct {
-	TransactionID                   int64                                 `lb:0,ub:255,mandatory,reject`
-	CellsBroadcastCompletedList     []CellsBroadcastCompletedItem `lb:1,ub:maxCellingNBDU,optional,reject,valueExt`
-	CriticalityDiagnostics          *CriticalityDiagnostics               `optional,ignore`
-	DedicatedSIDeliveryNeededUEList *DedicatedSIDeliveryNeededUEItem      `optional,ignore`
+	TransactionID                   int64                            `lb:0,ub:255,mandatory,reject`
+	CellsBroadcastCompletedList     []CellsBroadcastCompletedItem    `lb:1,ub:maxCellingNBDU,optional,reject,valueExt`
+	CriticalityDiagnostics          *CriticalityDiagnostics          `optional,ignore`
+	DedicatedSIDeliveryNeededUEList *DedicatedSIDeliveryNeededUEItem `optional,ignore`
 }
 
 func (msg *WriteReplaceWarningResponse) Encode(w io.Writer) (err error) {
-    var ies []F1apMessageIE
-    if ies, err = msg.toIes(); err != nil {
-        err = msgErrors(fmt.Errorf("WriteReplaceWarningResponse"), err)
-        return
-    }
-    return encodeMessage(w, F1apPduSuccessfulOutcome, ProcedureCode_WriteReplaceWarning, Criticality_PresentReject, ies)
+	var ies []F1apMessageIE
+	if ies, err = msg.toIes(); err != nil {
+		err = msgErrors(fmt.Errorf("WriteReplaceWarningResponse"), err)
+		return
+	}
+	return encodeMessage(w, F1apPduSuccessfulOutcome, ProcedureCode_WriteReplaceWarning, Criticality_PresentReject, ies)
 }
 func (msg *WriteReplaceWarningResponse) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}

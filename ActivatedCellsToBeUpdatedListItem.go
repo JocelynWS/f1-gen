@@ -6,7 +6,7 @@ import (
 )
 
 type ActivatedCellsToBeUpdatedListItem struct {
-	NRCGI NRCGI
+	NRCGI                                  NRCGI
 	IABDUCellResourceConfigurationModeInfo IABDUCellResourceConfigurationModeInfo
 	// iE-Extensions ProtocolExtensionContainer { { Activated-Cells-to-be-Updated-List-Item-ExtIEs} } OPTIONAL
 }
@@ -41,6 +41,6 @@ func (ie *ActivatedCellsToBeUpdatedListItem) Decode(r *aper.AperReader) (err err
 
 	if ext {
 	}
-	
+
 	return
 }

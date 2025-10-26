@@ -31,12 +31,12 @@ type UEContextSetupResponse struct {
 }
 
 func (msg *UEContextSetupResponse) Encode(w io.Writer) (err error) {
-    var ies []F1apMessageIE
-    if ies, err = msg.toIes(); err != nil {
-        err = msgErrors(fmt.Errorf("UEContextSetupResponse"), err)
-        return
-    }
-    return encodeMessage(w, F1apPduSuccessfulOutcome, ProcedureCode_UEContextSetup, Criticality_PresentReject, ies)
+	var ies []F1apMessageIE
+	if ies, err = msg.toIes(); err != nil {
+		err = msgErrors(fmt.Errorf("UEContextSetupResponse"), err)
+		return
+	}
+	return encodeMessage(w, F1apPduSuccessfulOutcome, ProcedureCode_UEContextSetup, Criticality_PresentReject, ies)
 }
 func (msg *UEContextSetupResponse) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}

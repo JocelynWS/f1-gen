@@ -4,10 +4,9 @@ import (
 	"github.com/lvdund/ngap/aper"
 )
 
-
 type EndpointIPAddressAndPort struct {
 	EndpointIPAddress TransportLayerAddress `mandatory,ignore`
-	//IEExtensions      *ProtocolExtensionContainer `optional,ignore` 
+	//IEExtensions      *ProtocolExtensionContainer `optional,ignore`
 }
 
 func (e *EndpointIPAddressAndPort) Encode(w *aper.AperWriter) error {

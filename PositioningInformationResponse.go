@@ -18,12 +18,12 @@ type PositioningInformationResponse struct {
 }
 
 func (msg *PositioningInformationResponse) Encode(w io.Writer) (err error) {
-    var ies []F1apMessageIE
-    if ies, err = msg.toIes(); err != nil {
-        err = msgErrors(fmt.Errorf("PositioningInformationResponse"), err)
-        return
-    }
-    return encodeMessage(w, F1apPduSuccessfulOutcome, ProcedureCode_PositioningInformationExchange, Criticality_PresentReject, ies)
+	var ies []F1apMessageIE
+	if ies, err = msg.toIes(); err != nil {
+		err = msgErrors(fmt.Errorf("PositioningInformationResponse"), err)
+		return
+	}
+	return encodeMessage(w, F1apPduSuccessfulOutcome, ProcedureCode_PositioningInformationExchange, Criticality_PresentReject, ies)
 }
 func (msg *PositioningInformationResponse) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}

@@ -16,12 +16,12 @@ type TRPInformationRequest struct {
 }
 
 func (msg *TRPInformationRequest) Encode(w io.Writer) (err error) {
-    var ies []F1apMessageIE
-    if ies, err = msg.toIes(); err != nil {
-        err = msgErrors(fmt.Errorf("TRPInformationRequest"), err)
-        return
-    }
-    return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_TRPInformationExchange, Criticality_PresentReject, ies)
+	var ies []F1apMessageIE
+	if ies, err = msg.toIes(); err != nil {
+		err = msgErrors(fmt.Errorf("TRPInformationRequest"), err)
+		return
+	}
+	return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_TRPInformationExchange, Criticality_PresentReject, ies)
 }
 func (msg *TRPInformationRequest) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}

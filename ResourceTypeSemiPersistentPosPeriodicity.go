@@ -22,8 +22,9 @@ const (
 	ResourceTypeSemiPersistentPosPeriodicitySlot2560  aper.Enumerated = 16
 	ResourceTypeSemiPersistentPosPeriodicitySlot5120  aper.Enumerated = 17
 	ResourceTypeSemiPersistentPosPeriodicitySlot10240 aper.Enumerated = 18
-	ResourceTypeSemiPersistentPosPeriodicitySlot40960 aper.Enumerated = 19
-	ResourceTypeSemiPersistentPosPeriodicitySlot81920 aper.Enumerated = 20
+	ResourceTypeSemiPersistentPosPeriodicitySlot20480 aper.Enumerated = 19
+	ResourceTypeSemiPersistentPosPeriodicitySlot40960 aper.Enumerated = 20
+	ResourceTypeSemiPersistentPosPeriodicitySlot81920 aper.Enumerated = 21
 )
 
 type ResourceTypeSemiPersistentPosPeriodicity struct {

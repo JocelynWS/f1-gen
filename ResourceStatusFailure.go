@@ -18,12 +18,12 @@ type ResourceStatusFailure struct {
 }
 
 func (msg *ResourceStatusFailure) Encode(w io.Writer) (err error) {
-    var ies []F1apMessageIE
-    if ies, err = msg.toIes(); err != nil {
-        err = msgErrors(fmt.Errorf("ResourceStatusFailure"), err)
-        return
-    }
-    return encodeMessage(w, F1apPduUnsuccessfulOutcome, ProcedureCode_ResourceStatusReportingInitiation, Criticality_PresentReject, ies)
+	var ies []F1apMessageIE
+	if ies, err = msg.toIes(); err != nil {
+		err = msgErrors(fmt.Errorf("ResourceStatusFailure"), err)
+		return
+	}
+	return encodeMessage(w, F1apPduUnsuccessfulOutcome, ProcedureCode_ResourceStatusReportingInitiation, Criticality_PresentReject, ies)
 }
 func (msg *ResourceStatusFailure) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}

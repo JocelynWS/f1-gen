@@ -5,38 +5,39 @@ import (
 	"github.com/reogac/utils"
 )
 
-type ConditionalInterDUMobilityInformation struct {
-	ChoTrigger          CHOtriggerInterDU `mandatory`
-	TargetgNBDUUEF1APID *int64            `lb:0,ub:4294967295,optional`
-	// IEExtensions *ProtocolExtensionContainer `optional`
+type ConditionalIntraDUMobilityInformation struct {
+	ChoTriggerIntraDU   CHOtriggerIntraDU   `mandatory`
+	TargetCellsTocancel *TargetCellListItem `optional`
+	//IEExtensions 		*ProtocolExtensionContainer `optional` // IEExtensions
 }
 
-func (ie *ConditionalInterDUMobilityInformation) Encode(w *aper.AperWriter) (err error) {
+func (ie *ConditionalIntraDUMobilityInformation) Encode(w *aper.AperWriter) (err error) {
 	if err = w.WriteBool(aper.Zero); err != nil {
 		return
 	}
+
 	optionals := []byte{0x0}
-	if ie.TargetgNBDUUEF1APID != nil {
-		aper.SetBit(optionals, 1)
+	if ie.TargetCellsTocancel != nil {
+		aper.SetBit(optionals, 0)
 	}
 	w.WriteBits(optionals, 2)
 
-	if err = ie.ChoTrigger.Encode(w); err != nil {
-		err = utils.WrapError("Encode ChoTrigger", err)
+	if err = ie.ChoTriggerIntraDU.Encode(w); err != nil {
+		err = utils.WrapError("Encode ChoTriggerIntraDU", err)
 		return
 	}
 
-	if ie.TargetgNBDUUEF1APID != nil {
-		tmp := NewINTEGER(*ie.TargetgNBDUUEF1APID, aper.Constraint{Lb: 0, Ub: 4294967295}, false)
-		if err = tmp.Encode(w); err != nil {
-			err = utils.WrapError("Encode TargetgNBDUUEF1APID", err)
+	if ie.TargetCellsTocancel != nil {
+		if err = ie.TargetCellsTocancel.Encode(w); err != nil {
+			err = utils.WrapError("Encode TargetCellsTocancel", err)
 			return
 		}
 	}
+
 	return
 }
 
-func (ie *ConditionalInterDUMobilityInformation) Decode(r *aper.AperReader) (err error) {
+func (ie *ConditionalIntraDUMobilityInformation) Decode(r *aper.AperReader) (err error) {
 	if _, err = r.ReadBool(); err != nil {
 		return
 	}
@@ -46,21 +47,18 @@ func (ie *ConditionalInterDUMobilityInformation) Decode(r *aper.AperReader) (err
 		return
 	}
 
-	if err = ie.ChoTrigger.Decode(r); err != nil {
-		err = utils.WrapError("Read ChoTrigger", err)
+	if err = ie.ChoTriggerIntraDU.Decode(r); err != nil {
+		err = utils.WrapError("Decode ChoTriggerIntraDU", err)
 		return
 	}
 
-	if aper.IsBitSet(optionals, 1) {
-		tmp := INTEGER{
-			c:   aper.Constraint{Lb: 0, Ub: 4294967295},
-			ext: false,
-		}
-		if err = tmp.Decode(r); err != nil {
-			err = utils.WrapError("Read TargetgNBDUUEF1APID", err)
+	if aper.IsBitSet(optionals, 0) {
+		ie.TargetCellsTocancel = new(TargetCellListItem)
+		if err = ie.TargetCellsTocancel.Decode(r); err != nil {
+			err = utils.WrapError("Decode TargetCellsTocancel", err)
 			return
 		}
-		ie.TargetgNBDUUEF1APID = (*int64)(&tmp.Value)
 	}
+
 	return
 }

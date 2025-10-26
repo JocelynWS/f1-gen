@@ -22,12 +22,12 @@ type UEContextModificationConfirm struct {
 }
 
 func (msg *UEContextModificationConfirm) Encode(w io.Writer) (err error) {
-    var ies []F1apMessageIE
-    if ies, err = msg.toIes(); err != nil {
-        err = msgErrors(fmt.Errorf("UEContextModificationConfirm"), err)
-        return
-    }
-    return encodeMessage(w, F1apPduSuccessfulOutcome, ProcedureCode_UEContextModification, Criticality_PresentReject, ies)
+	var ies []F1apMessageIE
+	if ies, err = msg.toIes(); err != nil {
+		err = msgErrors(fmt.Errorf("UEContextModificationConfirm"), err)
+		return
+	}
+	return encodeMessage(w, F1apPduSuccessfulOutcome, ProcedureCode_UEContextModification, Criticality_PresentReject, ies)
 }
 func (msg *UEContextModificationConfirm) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}

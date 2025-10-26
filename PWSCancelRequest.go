@@ -10,20 +10,20 @@ import (
 )
 
 type PWSCancelRequest struct {
-	TransactionID                     int64                                `lb:0,ub:255,mandatory,reject`
-	NumberofBroadcastRequest          int64                                `lb:0,ub:65535,mandatory,reject`
-	BroadcastToBeCancelledList        []BroadcastToBeCancelledListItem `lb:1,ub:maxCellingNBDU,optional,reject,valueExt`
-	CancelallWarningMessagesIndicator *CancelallWarningMessagesIndicator   `optional,reject`
-	NotificationInformation           *NotificationInformation             `mandatory,reject`
+	TransactionID                     int64                              `lb:0,ub:255,mandatory,reject`
+	NumberofBroadcastRequest          int64                              `lb:0,ub:65535,mandatory,reject`
+	BroadcastToBeCancelledList        []BroadcastToBeCancelledListItem   `lb:1,ub:maxCellingNBDU,optional,reject,valueExt`
+	CancelallWarningMessagesIndicator *CancelallWarningMessagesIndicator `optional,reject`
+	NotificationInformation           *NotificationInformation           `mandatory,reject`
 }
 
 func (msg *PWSCancelRequest) Encode(w io.Writer) (err error) {
-    var ies []F1apMessageIE
-    if ies, err = msg.toIes(); err != nil {
-        err = msgErrors(fmt.Errorf("PWSCancelRequest"), err)
-        return
-    }
-    return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_PWSCancel, Criticality_PresentReject, ies)
+	var ies []F1apMessageIE
+	if ies, err = msg.toIes(); err != nil {
+		err = msgErrors(fmt.Errorf("PWSCancelRequest"), err)
+		return
+	}
+	return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_PWSCancel, Criticality_PresentReject, ies)
 }
 func (msg *PWSCancelRequest) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}

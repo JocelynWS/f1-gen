@@ -18,7 +18,7 @@ func (ie *IPtolayer2TrafficMappingInfoItem) Encode(w *aper.AperWriter) (err erro
 	}
 
 	optionals := []byte{0x0}
-	w.WriteBits(optionals, 1) 
+	w.WriteBits(optionals, 1)
 
 	tmp_MappingInformationIndex := NewBITSTRING(ie.MappingInformationIndex, aper.Constraint{Lb: 1, Ub: 65536}, true)
 	if err = tmp_MappingInformationIndex.Encode(w); err != nil {
@@ -44,7 +44,7 @@ func (ie *IPtolayer2TrafficMappingInfoItem) Decode(r *aper.AperReader) (err erro
 		return
 	}
 
-	if _, err = r.ReadBits(1); err != nil { 
+	if _, err = r.ReadBits(1); err != nil {
 		return
 	}
 

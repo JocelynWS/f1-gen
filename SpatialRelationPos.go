@@ -10,7 +10,7 @@ const (
 
 type SpatialRelationPos struct {
 	Choice            uint64
-	SSBPos            *SSB
+	SSBPos            *SSBPos
 	PRSInformationPos *PRSInformationPos
 	// ChoiceExtension
 }
@@ -34,7 +34,7 @@ func (ie *SpatialRelationPos) Decode(r *aper.AperReader) (err error) {
 	}
 	switch ie.Choice {
 	case SpatialRelationPosPresentSSBPos:
-		var tmp SSB
+		var tmp SSBPos
 		if err = tmp.Decode(r); err != nil {
 			return
 		}

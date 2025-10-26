@@ -27,7 +27,7 @@ func (ie *MeasuredResultsValue) Encode(w *aper.AperWriter) (err error) {
 	case MeasuredResultsValuePresentULAngleOfArrival:
 		err = ie.ULAngleOfArrival.Encode(w)
 	case MeasuredResultsValuePresentULSRSRSRP:
-		tmp := NewINTEGER(*ie.ULSRSRSRP, aper.Constraint{Lb: 0, Ub: 126}, false)
+		tmp := NewINTEGER(*ie.ULSRSRSRP, aper.Constraint{Lb: 0, Ub: 127}, false)
 		err = tmp.Encode(w)
 	case MeasuredResultsValuePresentULRTOA:
 		err = ie.ULRTOA.Encode(w)
@@ -49,7 +49,7 @@ func (ie *MeasuredResultsValue) Decode(r *aper.AperReader) (err error) {
 		}
 		ie.ULAngleOfArrival = &tmp
 	case MeasuredResultsValuePresentULSRSRSRP:
-		tmp := NewINTEGER(0, aper.Constraint{Lb: 0, Ub: 126}, false)
+		tmp := NewINTEGER(0, aper.Constraint{Lb: 0, Ub: 127}, false)
 		if err = tmp.Decode(r); err != nil {
 			return
 		}

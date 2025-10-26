@@ -12,11 +12,11 @@ const (
 
 type TimeStampSlotIndex struct {
 	Choice uint64
-	SCS15  *int64 
-	SCS30  *int64 
-	SCS60  *int64 
-	SCS120 *int64 
-    // ChoiceExtension
+	SCS15  *int64
+	SCS30  *int64
+	SCS60  *int64
+	SCS120 *int64
+	// ChoiceExtension
 }
 
 func (ie *TimeStampSlotIndex) Encode(w *aper.AperWriter) (err error) {

@@ -19,12 +19,12 @@ type ResourceStatusUpdate struct {
 }
 
 func (msg *ResourceStatusUpdate) Encode(w io.Writer) (err error) {
-    var ies []F1apMessageIE
-    if ies, err = msg.toIes(); err != nil {
-        err = msgErrors(fmt.Errorf("ResourceStatusUpdate"), err)
-        return
-    }
-    return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_ResourceStatusReporting, Criticality_PresentIgnore, ies)
+	var ies []F1apMessageIE
+	if ies, err = msg.toIes(); err != nil {
+		err = msgErrors(fmt.Errorf("ResourceStatusUpdate"), err)
+		return
+	}
+	return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_ResourceStatusReporting, Criticality_PresentIgnore, ies)
 }
 func (msg *ResourceStatusUpdate) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}

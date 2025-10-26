@@ -15,7 +15,7 @@ type CellTrafficTrace struct {
 	TraceID                        TraceID               `mandatory,ignore`
 	TraceCollectionEntityIPAddress TransportLayerAddress `mandatory,ignore`
 	PrivacyIndicator               *PrivacyIndicator     `optional,ignore`
-	TraceCollectionEntityURI       []byte                `optional,ignore` 
+	TraceCollectionEntityURI       []byte                `optional,ignore`
 }
 
 func (msg *CellTrafficTrace) Encode(w io.Writer) (err error) {
@@ -161,7 +161,7 @@ func (decoder *CellTrafficTraceDecoder) decodeIE(r *aper.AperReader) (msgIe *F1a
 			err = utils.WrapError("Read GNBCUUEF1APID", err)
 			return
 		}
-		msg.GNBCUUEF1APID = int64(tmp.Value) 
+		msg.GNBCUUEF1APID = int64(tmp.Value)
 
 	case ProtocolIEID_GNBDUUEF1APID:
 		tmp := INTEGER{c: aper.Constraint{Lb: 0, Ub: 4294967295}, ext: false}
@@ -169,7 +169,7 @@ func (decoder *CellTrafficTraceDecoder) decodeIE(r *aper.AperReader) (msgIe *F1a
 			err = utils.WrapError("Read GNBDUUEF1APID", err)
 			return
 		}
-		msg.GNBDUUEF1APID = int64(tmp.Value) 
+		msg.GNBDUUEF1APID = int64(tmp.Value)
 
 	case ProtocolIEID_TraceID:
 		var tmp TraceID

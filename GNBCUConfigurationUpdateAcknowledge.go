@@ -11,21 +11,21 @@ import (
 
 type GNBCUConfigurationUpdateAcknowledge struct {
 	TransactionID                        int64                                  `lb:0,ub:255,mandatory,reject`
-	CellsFailedtobeActivatedList         []CellsFailedToBeActivatedListItem `lb:1,ub:maxCellingNBDU,mandatory,reject,valueExt`
+	CellsFailedtobeActivatedList         []CellsFailedToBeActivatedListItem     `lb:1,ub:maxCellingNBDU,mandatory,reject,valueExt`
 	CriticalityDiagnostics               *CriticalityDiagnostics                `optional,ignore`
-	GNBCUTNLAssociationSetupList         []GNBCUTNLAssociationSetupItem     `lb:1,ub:maxnoofTNLAssociations,optional,ignore,valueExt`
+	GNBCUTNLAssociationSetupList         []GNBCUTNLAssociationSetupItem         `lb:1,ub:maxnoofTNLAssociations,optional,ignore,valueExt`
 	GNBCUTNLAssociationFailedToSetupList []GNBCUTNLAssociationFailedToSetupItem `lb:1,ub:maxnoofTNLAssociations,optional,ignore,valueExt`
 	DedicatedSIDeliveryNeededUEList      *DedicatedSIDeliveryNeededUEItem       `optional,ignore`
 	TransportLayerAddressInfo            *TransportLayerAddressInfo             `optional,ignore`
 }
 
 func (msg *GNBCUConfigurationUpdateAcknowledge) Encode(w io.Writer) (err error) {
-    var ies []F1apMessageIE
-    if ies, err = msg.toIes(); err != nil {
-        err = msgErrors(fmt.Errorf("GNBCUConfigurationUpdateAcknowledge"), err)
-        return
-    }
-    return encodeMessage(w, F1apPduSuccessfulOutcome, ProcedureCode_GNBCUConfigurationUpdate, Criticality_PresentReject, ies)
+	var ies []F1apMessageIE
+	if ies, err = msg.toIes(); err != nil {
+		err = msgErrors(fmt.Errorf("GNBCUConfigurationUpdateAcknowledge"), err)
+		return
+	}
+	return encodeMessage(w, F1apPduSuccessfulOutcome, ProcedureCode_GNBCUConfigurationUpdate, Criticality_PresentReject, ies)
 }
 func (msg *GNBCUConfigurationUpdateAcknowledge) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}

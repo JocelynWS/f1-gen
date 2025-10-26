@@ -21,12 +21,12 @@ type F1SetupResponse struct {
 }
 
 func (msg *F1SetupResponse) Encode(w io.Writer) (err error) {
-    var ies []F1apMessageIE
-    if ies, err = msg.toIes(); err != nil {
-        err = msgErrors(fmt.Errorf("F1SetupResponse"), err)
-        return
-    }
-    return encodeMessage(w, F1apPduSuccessfulOutcome, ProcedureCode_F1Setup, Criticality_PresentReject, ies)
+	var ies []F1apMessageIE
+	if ies, err = msg.toIes(); err != nil {
+		err = msgErrors(fmt.Errorf("F1SetupResponse"), err)
+		return
+	}
+	return encodeMessage(w, F1apPduSuccessfulOutcome, ProcedureCode_F1Setup, Criticality_PresentReject, ies)
 }
 func (msg *F1SetupResponse) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}

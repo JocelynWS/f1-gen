@@ -5,7 +5,6 @@ import (
 	"github.com/reogac/utils"
 )
 
-
 type RLCDuplicationStateItem struct {
 	DuplicationState DuplicationState `mandatory`
 	// IEExtensions *ProtocolExtensionContainerRLCDuplicationStateItemExtIEs `optional`

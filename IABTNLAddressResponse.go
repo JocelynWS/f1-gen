@@ -15,12 +15,12 @@ type IABTNLAddressResponse struct {
 }
 
 func (msg *IABTNLAddressResponse) Encode(w io.Writer) (err error) {
-    var ies []F1apMessageIE
-    if ies, err = msg.toIes(); err != nil {
-        err = msgErrors(fmt.Errorf("IABTNLAddressResponse"), err)
-        return
-    }
-    return encodeMessage(w, F1apPduSuccessfulOutcome, ProcedureCode_IABTNLAddressAllocation, Criticality_PresentReject, ies)
+	var ies []F1apMessageIE
+	if ies, err = msg.toIes(); err != nil {
+		err = msgErrors(fmt.Errorf("IABTNLAddressResponse"), err)
+		return
+	}
+	return encodeMessage(w, F1apPduSuccessfulOutcome, ProcedureCode_IABTNLAddressAllocation, Criticality_PresentReject, ies)
 }
 func (msg *IABTNLAddressResponse) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}

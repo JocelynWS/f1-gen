@@ -6,9 +6,9 @@ import (
 )
 
 type DLPRSResourceSetARP struct {
-	DlPRSResourceSetID          PRSResourceSetID             `mandatory`
+	DlPRSResourceSetID          PRSResourceSetID            `mandatory`
 	DLPRSResourceSetARPLocation DLPRSResourceSetARPLocation `mandatory`
-	ListofDLPRSResourceARP      []DLPRSResourceARP           `mandatory,lb:1,ub:maxnoofPRSResourcesPerSet`
+	ListofDLPRSResourceARP      []DLPRSResourceARP          `mandatory,lb:1,ub:maxnoofPRSResourcesPerSet`
 	// IEExtensions * `optional,ignore`
 }
 

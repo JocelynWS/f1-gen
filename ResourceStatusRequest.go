@@ -10,13 +10,13 @@ import (
 )
 
 type ResourceStatusRequest struct {
-	TransactionID         int64                  `lb:0,ub:255,mandatory,reject`
-	GNBCUMeasurementID    int64                  `lb:0,ub:4095,mandatory,reject,valueExt`
-	GNBDUMeasurementID    *int64                 `lb:0,ub:4095,conditional,ignore,valueExt`
-	RegistrationRequest   RegistrationRequest    `mandatory,ignore`
-	ReportCharacteristics *aper.BitString        `lb:32,ub:32,conditional,ignore`
-	CellToReportList      []CellToReportItem     `lb:1,ub:maxCellingNBDU,optional,ignore,valueExt`
-	ReportingPeriodicity  *ReportingPeriodicity  `optional,ignore`
+	TransactionID         int64                 `lb:0,ub:255,mandatory,reject`
+	GNBCUMeasurementID    int64                 `lb:0,ub:4095,mandatory,reject,valueExt`
+	GNBDUMeasurementID    *int64                `lb:0,ub:4095,conditional,ignore,valueExt`
+	RegistrationRequest   RegistrationRequest   `mandatory,ignore`
+	ReportCharacteristics *aper.BitString       `lb:32,ub:32,conditional,ignore`
+	CellToReportList      []CellToReportItem    `lb:1,ub:maxCellingNBDU,optional,ignore,valueExt`
+	ReportingPeriodicity  *ReportingPeriodicity `optional,ignore`
 }
 
 func (msg *ResourceStatusRequest) Encode(w io.Writer) (err error) {
@@ -77,7 +77,7 @@ func (msg *ResourceStatusRequest) toIes() (ies []F1apMessageIE, err error) {
 				c:   aper.Constraint{Lb: 32, Ub: 32},
 				ext: false,
 				Value: aper.BitString{
-					Bytes: msg.ReportCharacteristics.Bytes,
+					Bytes:   msg.ReportCharacteristics.Bytes,
 					NumBits: msg.ReportCharacteristics.NumBits,
 				},
 			},
@@ -252,7 +252,7 @@ func (decoder *ResourceStatusRequestDecoder) decodeIE(r *aper.AperReader) (msgIe
 			return
 		}
 		msg.ReportCharacteristics = &aper.BitString{
-			Bytes: tmp.Value.Bytes,
+			Bytes:   tmp.Value.Bytes,
 			NumBits: tmp.Value.NumBits,
 		}
 

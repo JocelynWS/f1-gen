@@ -17,12 +17,12 @@ type UEContextReleaseRequest struct {
 }
 
 func (msg *UEContextReleaseRequest) Encode(w io.Writer) (err error) {
-    var ies []F1apMessageIE
-    if ies, err = msg.toIes(); err != nil {
-        err = msgErrors(fmt.Errorf("UEContextReleaseRequest"), err)
-        return
-    }
-    return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_UEContextReleaseRequest, Criticality_PresentIgnore, ies)
+	var ies []F1apMessageIE
+	if ies, err = msg.toIes(); err != nil {
+		err = msgErrors(fmt.Errorf("UEContextReleaseRequest"), err)
+		return
+	}
+	return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_UEContextReleaseRequest, Criticality_PresentIgnore, ies)
 }
 func (msg *UEContextReleaseRequest) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}

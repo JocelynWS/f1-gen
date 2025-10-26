@@ -1,50 +1,81 @@
 package ies
 
-import "github.com/lvdund/ngap/aper"
-
-const (
-	PRSResourceQCLInfoPresentNothing uint64 = iota
-	PRSResourceQCLInfoPresentQCLSourceSSB
-	PRSResourceQCLInfoPresentQCLSourcePRS
+import (
+	"github.com/lvdund/ngap/aper"
+	"github.com/reogac/utils"
 )
 
 type PRSResourceQCLInfo struct {
-	Choice       uint64
-	QCLSourceSSB *PRSResourceQCLSourceSSB
-	QCLSourcePRS *PRSResourceQCLSourcePRS
-	// ChoiceExtension
+	QCLSourceSSBIndex *int64                       `lb:0,ub:63,optional`
+	QCLSourcePRSInfo  *PRSResourceQCLSourcePRSInfo `optional`
+	// IEExtensions *ProtocolExtensionContainerPRSResourceQCLInfoExtIEs `optional`
 }
 
 func (ie *PRSResourceQCLInfo) Encode(w *aper.AperWriter) (err error) {
-	if err = w.WriteChoice(ie.Choice, 2, false); err != nil {
+	if err = w.WriteBool(aper.Zero); err != nil {
 		return
 	}
-	switch ie.Choice {
-	case PRSResourceQCLInfoPresentQCLSourceSSB:
-		err = ie.QCLSourceSSB.Encode(w)
-	case PRSResourceQCLInfoPresentQCLSourcePRS:
-		err = ie.QCLSourcePRS.Encode(w)
+
+	optionals := []byte{0x0}
+	if ie.QCLSourceSSBIndex != nil {
+		aper.SetBit(optionals, 0)
 	}
+	if ie.QCLSourcePRSInfo != nil {
+		aper.SetBit(optionals, 1)
+	}
+	w.WriteBits(optionals, 2)
+
+	if ie.QCLSourceSSBIndex != nil {
+		tmpSSB := INTEGER{
+			Value: aper.Integer(*ie.QCLSourceSSBIndex),
+			c:     aper.Constraint{Lb: 0, Ub: 63},
+			ext:   false,
+		}
+		if err = tmpSSB.Encode(w); err != nil {
+			err = utils.WrapError("Encode QCLSourceSSBIndex", err)
+			return
+		}
+	}
+
+	if ie.QCLSourcePRSInfo != nil {
+		if err = ie.QCLSourcePRSInfo.Encode(w); err != nil {
+			err = utils.WrapError("Encode QCLSourcePRSInfo", err)
+			return
+		}
+	}
+
 	return
 }
 
 func (ie *PRSResourceQCLInfo) Decode(r *aper.AperReader) (err error) {
-	if ie.Choice, err = r.ReadChoice(2, false); err != nil {
+	if _, err = r.ReadBool(); err != nil {
 		return
 	}
-	switch ie.Choice {
-	case PRSResourceQCLInfoPresentQCLSourceSSB:
-		var tmp PRSResourceQCLSourceSSB
-		if err = tmp.Decode(r); err != nil {
-			return
-		}
-		ie.QCLSourceSSB = &tmp
-	case PRSResourceQCLInfoPresentQCLSourcePRS:
-		var tmp PRSResourceQCLSourcePRS
-		if err = tmp.Decode(r); err != nil {
-			return
-		}
-		ie.QCLSourcePRS = &tmp
+
+	var optionals []byte
+	if optionals, err = r.ReadBits(2); err != nil {
+		return
 	}
+
+	if aper.IsBitSet(optionals, 0) {
+		tmpSSB := INTEGER{
+			c:   aper.Constraint{Lb: 0, Ub: 63},
+			ext: false,
+		}
+		if err = tmpSSB.Decode(r); err != nil {
+			err = utils.WrapError("Read QCLSourceSSBIndex", err)
+			return
+		}
+		ie.QCLSourceSSBIndex = (*int64)(&tmpSSB.Value)
+	}
+
+	if aper.IsBitSet(optionals, 1) {
+		ie.QCLSourcePRSInfo = new(PRSResourceQCLSourcePRSInfo)
+		if err = ie.QCLSourcePRSInfo.Decode(r); err != nil {
+			err = utils.WrapError("Read QCLSourcePRSInfo", err)
+			return
+		}
+	}
+
 	return
 }

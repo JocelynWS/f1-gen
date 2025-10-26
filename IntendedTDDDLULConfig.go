@@ -6,75 +6,88 @@ import (
 )
 
 type IntendedTDDDLULConfig struct {
-	NRSCS                 NRSCS                   `madatory,valExt`
-	NRCP                  NRCP                    `madatory,valExt`
-	NRDLULTxPeriodicity   NRDLULTxPeriodicity     `madatory,valExt`
-	SlotConfigurationList []SlotConfigurationItem `lb:1,ub:maxnoofSlots,mandatory,valExt`
-	// IEExtensions *IntendedTDDDLULConfigExtIEs `optional`
+	NRSCS                 NRSCS                   `mandatory`
+	NRCP                  NRCP                    `mandatory`
+	NRDLULTxPeriodicity   NRDLULTxPeriodicity     `mandatory`
+	SlotConfigurationList []SlotConfigurationItem `lb:1,ub:maxnoofslots,mandatory`
+	// IEExtensions *ProtocolExtensionContainerIntendedTDDDLULConfigExtIEs `optional`
 }
 
 func (ie *IntendedTDDDLULConfig) Encode(w *aper.AperWriter) (err error) {
+	if err = w.WriteBool(aper.Zero); err != nil {
+		return
+	}
+
 	optionals := []byte{0x0}
 	w.WriteBits(optionals, 1)
 
-	if err = NewENUMERATED(int64(ie.NRSCS), aper.Constraint{Lb: 0, Ub: 3}, false).Encode(w); err != nil {
-		return utils.WrapError("Encode NRSCS", err)
-	}
-	if err = NewENUMERATED(int64(ie.NRCP), aper.Constraint{Lb: 0, Ub: 1}, false).Encode(w); err != nil {
-		return utils.WrapError("Encode NRCP", err)
-	}
-	if err = NewENUMERATED(int64(ie.NRDLULTxPeriodicity), aper.Constraint{Lb: 0, Ub: 17}, false).Encode(w); err != nil {
-		return utils.WrapError("Encode NRDLULTxPeriodicity", err)
+	if err = ie.NRSCS.Encode(w); err != nil {
+		err = utils.WrapError("Encode NRSCS", err)
+		return
 	}
 
-	tmp := Sequence[*SlotConfigurationItem]{
-		Value: []*SlotConfigurationItem{},
-		c:     aper.Constraint{Lb: 1, Ub: maxnoofSlots},
-		ext:   true,
+	if err = ie.NRCP.Encode(w); err != nil {
+		err = utils.WrapError("Encode NRCP", err)
+		return
 	}
-	for _, i := range ie.SlotConfigurationList {
-		tmp.Value = append(tmp.Value, &i)
+
+	if err = ie.NRDLULTxPeriodicity.Encode(w); err != nil {
+		err = utils.WrapError("Encode NRDLULTxPeriodicity", err)
+		return
 	}
-	if err = tmp.Encode(w); err != nil {
-		return utils.WrapError("Encode SlotConfigurationList", err)
+
+	tmpList := Sequence[*SlotConfigurationItem]{
+		c:   aper.Constraint{Lb: 1, Ub: maxnoofslots},
+		ext: false,
 	}
+	for i := range ie.SlotConfigurationList {
+		tmpList.Value = append(tmpList.Value, &ie.SlotConfigurationList[i])
+	}
+	if err = tmpList.Encode(w); err != nil {
+		err = utils.WrapError("Encode SlotConfigurationList", err)
+		return
+	}
+
 	return
 }
 
 func (ie *IntendedTDDDLULConfig) Decode(r *aper.AperReader) (err error) {
+	if _, err = r.ReadBool(); err != nil {
+		return
+	}
+
 	if _, err = r.ReadBits(1); err != nil {
 		return
 	}
 
-	tmpNRSCS := ENUMERATED{c: aper.Constraint{Lb: 0, Ub: 3}, ext: false}
-	if err = tmpNRSCS.Decode(r); err != nil {
-		return utils.WrapError("Read NRSCS", err)
-	}
-	ie.NRSCS = NRSCS(tmpNRSCS.Value)
-
-	tmpNRCP := ENUMERATED{c: aper.Constraint{Lb: 0, Ub: 1}, ext: false}
-	if err = tmpNRCP.Decode(r); err != nil {
-		return utils.WrapError("Read NRCP", err)
-	}
-	ie.NRCP = NRCP(tmpNRCP.Value)
-
-	tmpNRDLULTx := ENUMERATED{c: aper.Constraint{Lb: 0, Ub: 17}, ext: false}
-	if err = tmpNRDLULTx.Decode(r); err != nil {
-		return utils.WrapError("Read NRDLULTxPeriodicity", err)
-	}
-	ie.NRDLULTxPeriodicity = NRDLULTxPeriodicity(tmpNRDLULTx.Value)
-
-	tmpSlotList := Sequence[*SlotConfigurationItem]{
-		c: aper.Constraint{Lb: 1, Ub: maxnoofSlots}, ext: true,
-	}
-	fn := func() *SlotConfigurationItem { return new(SlotConfigurationItem) }
-	if err = tmpSlotList.Decode(r, fn); err != nil {
-		return utils.WrapError("Read SlotConfigurationList", err)
+	if err = ie.NRSCS.Decode(r); err != nil {
+		err = utils.WrapError("Read NRSCS", err)
+		return
 	}
 
-	ie.SlotConfigurationList = []SlotConfigurationItem{}
-	for _, i := range tmpSlotList.Value {
-		ie.SlotConfigurationList = append(ie.SlotConfigurationList, *i)
+	if err = ie.NRCP.Decode(r); err != nil {
+		err = utils.WrapError("Read NRCP", err)
+		return
 	}
+
+	if err = ie.NRDLULTxPeriodicity.Decode(r); err != nil {
+		err = utils.WrapError("Read NRDLULTxPeriodicity", err)
+		return
+	}
+
+	var tmpList Sequence[*SlotConfigurationItem]
+	tmpList.c = aper.Constraint{Lb: 1, Ub: maxnoofslots}
+	tmpList.ext = false
+	if err = tmpList.Decode(r, func() *SlotConfigurationItem {
+		return new(SlotConfigurationItem)
+	}); err != nil {
+		err = utils.WrapError("Read SlotConfigurationList", err)
+		return
+	}
+	ie.SlotConfigurationList = make([]SlotConfigurationItem, len(tmpList.Value))
+	for i, item := range tmpList.Value {
+		ie.SlotConfigurationList[i] = *item
+	}
+
 	return
 }

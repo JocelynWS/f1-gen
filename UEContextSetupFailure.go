@@ -19,12 +19,12 @@ type UEContextSetupFailure struct {
 }
 
 func (msg *UEContextSetupFailure) Encode(w io.Writer) (err error) {
-    var ies []F1apMessageIE
-    if ies, err = msg.toIes(); err != nil {
-        err = msgErrors(fmt.Errorf("UEContextSetupFailure"), err)
-        return
-    }
-    return encodeMessage(w, F1apPduUnsuccessfulOutcome, ProcedureCode_UEContextSetup, Criticality_PresentReject, ies)
+	var ies []F1apMessageIE
+	if ies, err = msg.toIes(); err != nil {
+		err = msgErrors(fmt.Errorf("UEContextSetupFailure"), err)
+		return
+	}
+	return encodeMessage(w, F1apPduUnsuccessfulOutcome, ProcedureCode_UEContextSetup, Criticality_PresentReject, ies)
 }
 func (msg *UEContextSetupFailure) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}

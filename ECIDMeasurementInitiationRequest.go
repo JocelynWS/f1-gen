@@ -15,17 +15,17 @@ type ECIDMeasurementInitiationRequest struct {
 	LMFUEMeasurementID         int64                           `lb:1,ub:256,mandatory,reject,valueExt`
 	RANUEMeasurementID         int64                           `lb:1,ub:256,mandatory,reject,valueExt`
 	ECIDReportCharacteristics  ECIDReportCharacteristics       `mandatory,reject`
-	ECIDMeasurementPeriodicity *MeasurementPeriodicity         `conditional,reject`
+	ECIDMeasurementPeriodicity *ECIDMeasurementPeriodicity     `conditional,reject`
 	ECIDMeasurementQuantities  []ECIDMeasurementQuantitiesItem `lb:1,ub:maxnoofMeasECID,mandatory,reject,valueExt`
 }
 
 func (msg *ECIDMeasurementInitiationRequest) Encode(w io.Writer) (err error) {
-    var ies []F1apMessageIE
-    if ies, err = msg.toIes(); err != nil {
-        err = msgErrors(fmt.Errorf("ECIDMeasurementInitiationRequest"), err)
-        return
-    }
-    return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_ECIDMeasurementInitiation, Criticality_PresentReject, ies)
+	var ies []F1apMessageIE
+	if ies, err = msg.toIes(); err != nil {
+		err = msgErrors(fmt.Errorf("ECIDMeasurementInitiationRequest"), err)
+		return
+	}
+	return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_ECIDMeasurementInitiation, Criticality_PresentReject, ies)
 }
 func (msg *ECIDMeasurementInitiationRequest) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}
@@ -243,7 +243,7 @@ func (decoder *ECIDMeasurementInitiationRequestDecoder) decodeIE(r *aper.AperRea
 		}
 		msg.ECIDReportCharacteristics = tmp
 	case ProtocolIEID_ECIDMeasurementPeriodicity:
-		var tmp MeasurementPeriodicity
+		var tmp ECIDMeasurementPeriodicity
 		if err = tmp.Decode(ieR); err != nil {
 			err = utils.WrapError("Read ECIDMeasurementPeriodicity", err)
 			return

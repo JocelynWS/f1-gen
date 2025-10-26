@@ -10,18 +10,18 @@ import (
 )
 
 type IABUPConfigurationUpdateResponse struct {
-	TransactionID              int64                                `lb:0,ub:255,mandatory,reject`
-	CriticalityDiagnostics     *CriticalityDiagnostics              `optional,ignore`
+	TransactionID              int64                            `lb:0,ub:255,mandatory,reject`
+	CriticalityDiagnostics     *CriticalityDiagnostics          `optional,ignore`
 	DLUPTNLAddresstoUpdateList []DLUPTNLAddressToUpdateListItem `lb:1,ub:maxnoofUPTNLAddresses,optional,reject,valueExt`
 }
 
 func (msg *IABUPConfigurationUpdateResponse) Encode(w io.Writer) (err error) {
-    var ies []F1apMessageIE
-    if ies, err = msg.toIes(); err != nil {
-        err = msgErrors(fmt.Errorf("IABUPConfigurationUpdateResponse"), err)
-        return
-    }
-    return encodeMessage(w, F1apPduSuccessfulOutcome, ProcedureCode_IABUPConfigurationUpdate, Criticality_PresentReject, ies)
+	var ies []F1apMessageIE
+	if ies, err = msg.toIes(); err != nil {
+		err = msgErrors(fmt.Errorf("IABUPConfigurationUpdateResponse"), err)
+		return
+	}
+	return encodeMessage(w, F1apPduSuccessfulOutcome, ProcedureCode_IABUPConfigurationUpdate, Criticality_PresentReject, ies)
 }
 func (msg *IABUPConfigurationUpdateResponse) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}

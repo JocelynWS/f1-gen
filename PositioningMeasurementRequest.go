@@ -15,7 +15,7 @@ type PositioningMeasurementRequest struct {
 	RANMeasurementID           int64                          `lb:1,ub:65536,mandatory,reject,valueExt`
 	TRPMeasurementRequestList  []TRPMeasurementRequestItem    `lb:1,ub:maxnoofTRPs,mandatory,reject,valueExt`
 	PosReportCharacteristics   *PosReportCharacteristics      `mandatory,reject`
-	PosMeasurementPeriodicity  *MeasurementPeriodicity        `conditional,reject`
+	PosMeasurementPeriodicity  *PosMeasurementPeriodicity     `conditional,reject`
 	PosMeasurementQuantities   []PosMeasurementQuantitiesItem `lb:1,ub:maxnoofPosMeas,mandatory,reject,valueExt`
 	SFNInitialisationTime      *aper.BitString                `lb:64,ub:64,optional,ignore`
 	SRSConfiguration           *SRSConfiguration              `mandatory,ignore`
@@ -25,12 +25,12 @@ type PositioningMeasurementRequest struct {
 }
 
 func (msg *PositioningMeasurementRequest) Encode(w io.Writer) (err error) {
-    var ies []F1apMessageIE
-    if ies, err = msg.toIes(); err != nil {
-        err = msgErrors(fmt.Errorf("PositioningMeasurementRequest"), err)
-        return
-    }
-    return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_PositioningMeasurementExchange, Criticality_PresentReject, ies)
+	var ies []F1apMessageIE
+	if ies, err = msg.toIes(); err != nil {
+		err = msgErrors(fmt.Errorf("PositioningMeasurementRequest"), err)
+		return
+	}
+	return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_PositioningMeasurementExchange, Criticality_PresentReject, ies)
 }
 func (msg *PositioningMeasurementRequest) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}
@@ -327,7 +327,7 @@ func (decoder *PositioningMeasurementRequestDecoder) decodeIE(r *aper.AperReader
 		}
 		msg.PosReportCharacteristics = &tmp
 	case ProtocolIEID_PosMeasurementPeriodicity:
-		var tmp MeasurementPeriodicity
+		var tmp PosMeasurementPeriodicity
 		if err = tmp.Decode(ieR); err != nil {
 			err = utils.WrapError("Read PosMeasurementPeriodicity", err)
 			return

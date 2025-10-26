@@ -6,7 +6,6 @@ const (
 	QosMonitoringRequestUl   aper.Enumerated = 0
 	QosMonitoringRequestDl   aper.Enumerated = 1
 	QosMonitoringRequestBoth aper.Enumerated = 2
-	QosMonitoringRequestStop aper.Enumerated = 3
 )
 
 type QosMonitoringRequest struct {
@@ -14,12 +13,12 @@ type QosMonitoringRequest struct {
 }
 
 func (ie *QosMonitoringRequest) Encode(w *aper.AperWriter) (err error) {
-	err = w.WriteEnumerate(uint64(ie.Value), aper.Constraint{Lb: 0, Ub: 3}, true)
+	err = w.WriteEnumerate(uint64(ie.Value), aper.Constraint{Lb: 0, Ub: 2}, true)
 	return
 }
 
 func (ie *QosMonitoringRequest) Decode(r *aper.AperReader) (err error) {
-	v, err := r.ReadEnumerate(aper.Constraint{Lb: 0, Ub: 3}, true)
+	v, err := r.ReadEnumerate(aper.Constraint{Lb: 0, Ub: 2}, true)
 	ie.Value = aper.Enumerated(v)
 	return
 }

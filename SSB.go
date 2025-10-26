@@ -7,8 +7,7 @@ import (
 
 type SSB struct {
 	PCINR    NRPCI     `mandatory`
-	SsbIndex *SSBIndex `optional`
-	// IEExtensions * `optional`
+	SSBIndex *SSBIndex `optional`
 }
 
 func (ie *SSB) Encode(w *aper.AperWriter) (err error) {
@@ -16,41 +15,45 @@ func (ie *SSB) Encode(w *aper.AperWriter) (err error) {
 		return
 	}
 	optionals := []byte{0x0}
-	if ie.SsbIndex != nil {
-		aper.SetBit(optionals, 1)
+	if ie.SSBIndex != nil {
+		aper.SetBit(optionals, 0)
 	}
-	w.WriteBits(optionals, 2)
+	w.WriteBits(optionals, 1)
+
 	if err = ie.PCINR.Encode(w); err != nil {
 		err = utils.WrapError("Encode PCINR", err)
 		return
 	}
-	if ie.SsbIndex != nil {
-		if err = ie.SsbIndex.Encode(w); err != nil {
-			err = utils.WrapError("Encode SsbIndex", err)
+
+	if ie.SSBIndex != nil {
+		if err = ie.SSBIndex.Encode(w); err != nil {
+			err = utils.WrapError("Encode SSBIndex", err)
 			return
 		}
 	}
 	return
 }
+
 func (ie *SSB) Decode(r *aper.AperReader) (err error) {
 	if _, err = r.ReadBool(); err != nil {
 		return
 	}
 	var optionals []byte
-	if optionals, err = r.ReadBits(2); err != nil {
+	if optionals, err = r.ReadBits(1); err != nil {
 		return
 	}
+
 	if err = ie.PCINR.Decode(r); err != nil {
-		err = utils.WrapError("Read PCINR", err)
+		err = utils.WrapError("Decode PCINR", err)
 		return
 	}
-	if aper.IsBitSet(optionals, 1) {
-		tmp := new(SSBIndex)
-		if err = tmp.Decode(r); err != nil {
-			err = utils.WrapError("Read SsbIndex", err)
+
+	if aper.IsBitSet(optionals, 0) {
+		ie.SSBIndex = new(SSBIndex)
+		if err = ie.SSBIndex.Decode(r); err != nil {
+			err = utils.WrapError("Decode SSBIndex", err)
 			return
 		}
-		ie.SsbIndex = tmp
 	}
 	return
 }

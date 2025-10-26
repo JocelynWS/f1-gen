@@ -18,7 +18,7 @@ func NewNID(bits []byte) NID {
 
 func (i *NID) Encode(w *aper.AperWriter) (err error) {
 	bits := aper.BitString{
-		Bytes: i.Value,
+		Bytes:   i.Value,
 		NumBits: 44,
 	}
 

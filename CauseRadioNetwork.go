@@ -33,9 +33,6 @@ const (
 	CauseRadioNetworkExistingmeasurementid                  aper.Enumerated = 27
 	CauseRadioNetworkMeasurementtemporarilynotavailable     aper.Enumerated = 28
 	CauseRadioNetworkMeasurementnotsupportedfortheobject    aper.Enumerated = 29
-	CauseRadioNetworkUnknownbhaddress                       aper.Enumerated = 30
-	CauseRadioNetworkUnknownbaproutingid                    aper.Enumerated = 31
-	CauseRadioNetworkInsufficientuecapabilities             aper.Enumerated = 32
 )
 
 type CauseRadioNetwork struct {
@@ -43,12 +40,12 @@ type CauseRadioNetwork struct {
 }
 
 func (ie *CauseRadioNetwork) Encode(w *aper.AperWriter) (err error) {
-	err = w.WriteEnumerate(uint64(ie.Value), aper.Constraint{Lb: 0, Ub: 32}, true)
+	err = w.WriteEnumerate(uint64(ie.Value), aper.Constraint{Lb: 0, Ub: 29}, true)
 	return
 }
 
 func (ie *CauseRadioNetwork) Decode(r *aper.AperReader) (err error) {
-	v, err := r.ReadEnumerate(aper.Constraint{Lb: 0, Ub: 32}, true)
+	v, err := r.ReadEnumerate(aper.Constraint{Lb: 0, Ub: 29}, true)
 	ie.Value = aper.Enumerated(v)
 	return
 }

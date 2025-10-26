@@ -470,7 +470,7 @@ const (
 	ProtocolIEID_NeedForGap                                     = 215
 	ProtocolIEID_PagingOrigin                                   = 216
 	ProtocolIEID_NewgNBCUUEF1APID                               = 217
-	ProtocolIEID_RedirectedRRCmessage                          = 218
+	ProtocolIEID_RedirectedRRCmessage                           = 218
 	ProtocolIEID_NewgNBDUUEF1APID                               = 219
 	ProtocolIEID_NotificationInformation                        = 220
 	ProtocolIEID_PLMNAssistanceInfoForNetShar                   = 221

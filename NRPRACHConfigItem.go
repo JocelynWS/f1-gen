@@ -20,7 +20,7 @@ func (ie *NRPRACHConfigItem) Encode(w *aper.AperWriter) (err error) {
 	if err = w.WriteBool(aper.Zero); err != nil {
 		return
 	}
-	optionals := []byte{0x0} 
+	optionals := []byte{0x0}
 	w.WriteBits(optionals, 1)
 
 	if err = ie.NRSCS.Encode(w); err != nil {

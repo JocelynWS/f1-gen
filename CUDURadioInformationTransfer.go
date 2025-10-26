@@ -15,12 +15,12 @@ type CUDURadioInformationTransfer struct {
 }
 
 func (msg *CUDURadioInformationTransfer) Encode(w io.Writer) (err error) {
-    var ies []F1apMessageIE
-    if ies, err = msg.toIes(); err != nil {
-        err = msgErrors(fmt.Errorf("CUDURadioInformationTransfer"), err)
-        return
-    }
-    return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_CUDURadioInformationTransfer, Criticality_PresentIgnore, ies)
+	var ies []F1apMessageIE
+	if ies, err = msg.toIes(); err != nil {
+		err = msgErrors(fmt.Errorf("CUDURadioInformationTransfer"), err)
+		return
+	}
+	return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_CUDURadioInformationTransfer, Criticality_PresentIgnore, ies)
 }
 func (msg *CUDURadioInformationTransfer) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}

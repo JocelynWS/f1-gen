@@ -17,12 +17,12 @@ type PositioningInformationUpdate struct {
 }
 
 func (msg *PositioningInformationUpdate) Encode(w io.Writer) (err error) {
-    var ies []F1apMessageIE
-    if ies, err = msg.toIes(); err != nil {
-        err = msgErrors(fmt.Errorf("PositioningInformationUpdate"), err)
-        return
-    }
-    return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_PositioningInformationUpdate, Criticality_PresentIgnore, ies)
+	var ies []F1apMessageIE
+	if ies, err = msg.toIes(); err != nil {
+		err = msgErrors(fmt.Errorf("PositioningInformationUpdate"), err)
+		return
+	}
+	return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_PositioningInformationUpdate, Criticality_PresentIgnore, ies)
 }
 func (msg *PositioningInformationUpdate) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}

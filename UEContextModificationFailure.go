@@ -18,12 +18,12 @@ type UEContextModificationFailure struct {
 }
 
 func (msg *UEContextModificationFailure) Encode(w io.Writer) (err error) {
-    var ies []F1apMessageIE
-    if ies, err = msg.toIes(); err != nil {
-        err = msgErrors(fmt.Errorf("UEContextModificationFailure"), err)
-        return
-    }
-    return encodeMessage(w, F1apPduUnsuccessfulOutcome, ProcedureCode_UEContextModification, Criticality_PresentReject, ies)
+	var ies []F1apMessageIE
+	if ies, err = msg.toIes(); err != nil {
+		err = msgErrors(fmt.Errorf("UEContextModificationFailure"), err)
+		return
+	}
+	return encodeMessage(w, F1apPduUnsuccessfulOutcome, ProcedureCode_UEContextModification, Criticality_PresentReject, ies)
 }
 func (msg *UEContextModificationFailure) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}

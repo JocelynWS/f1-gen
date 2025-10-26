@@ -14,12 +14,12 @@ type GNBDUResourceCoordinationResponse struct {
 }
 
 func (msg *GNBDUResourceCoordinationResponse) Encode(w io.Writer) (err error) {
-    var ies []F1apMessageIE
-    if ies, err = msg.toIes(); err != nil {
-        err = msgErrors(fmt.Errorf("GNBDUResourceCoordinationResponse"), err)
-        return
-    }
-    return encodeMessage(w, F1apPduSuccessfulOutcome, ProcedureCode_GNBDUResourceCoordination, Criticality_PresentReject, ies)
+	var ies []F1apMessageIE
+	if ies, err = msg.toIes(); err != nil {
+		err = msgErrors(fmt.Errorf("GNBDUResourceCoordinationResponse"), err)
+		return
+	}
+	return encodeMessage(w, F1apPduSuccessfulOutcome, ProcedureCode_GNBDUResourceCoordination, Criticality_PresentReject, ies)
 }
 func (msg *GNBDUResourceCoordinationResponse) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}

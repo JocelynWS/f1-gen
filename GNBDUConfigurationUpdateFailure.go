@@ -17,12 +17,12 @@ type GNBDUConfigurationUpdateFailure struct {
 }
 
 func (msg *GNBDUConfigurationUpdateFailure) Encode(w io.Writer) (err error) {
-    var ies []F1apMessageIE
-    if ies, err = msg.toIes(); err != nil {
-        err = msgErrors(fmt.Errorf("GNBDUConfigurationUpdateFailure"), err)
-        return
-    }
-    return encodeMessage(w, F1apPduUnsuccessfulOutcome, ProcedureCode_GNBDUConfigurationUpdate, Criticality_PresentReject, ies)
+	var ies []F1apMessageIE
+	if ies, err = msg.toIes(); err != nil {
+		err = msgErrors(fmt.Errorf("GNBDUConfigurationUpdateFailure"), err)
+		return
+	}
+	return encodeMessage(w, F1apPduUnsuccessfulOutcome, ProcedureCode_GNBDUConfigurationUpdate, Criticality_PresentReject, ies)
 }
 func (msg *GNBDUConfigurationUpdateFailure) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}

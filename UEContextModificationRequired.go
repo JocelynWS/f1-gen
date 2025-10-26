@@ -25,12 +25,12 @@ type UEContextModificationRequired struct {
 }
 
 func (msg *UEContextModificationRequired) Encode(w io.Writer) (err error) {
-    var ies []F1apMessageIE
-    if ies, err = msg.toIes(); err != nil {
-        err = msgErrors(fmt.Errorf("UEContextModificationRequired"), err)
-        return
-    }
-    return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_UEContextModificationRequired, Criticality_PresentReject, ies)
+	var ies []F1apMessageIE
+	if ies, err = msg.toIes(); err != nil {
+		err = msgErrors(fmt.Errorf("UEContextModificationRequired"), err)
+		return
+	}
+	return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_UEContextModificationRequired, Criticality_PresentReject, ies)
 }
 func (msg *UEContextModificationRequired) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}

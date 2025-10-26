@@ -5,7 +5,6 @@ import (
 	"github.com/reogac/utils"
 )
 
-
 type AvailableSNPNIDListItem struct {
 	PLMNIdentity     []byte `lb:3,ub:3,mandatory`
 	AvailableNIDList []NID  `lb:1,ub:maxnoofNIDsupported,mandatory`

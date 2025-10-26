@@ -46,16 +46,15 @@ type UEContextSetupRequest struct {
 	ConditionalInterDUMobilityInformation   *ConditionalInterDUMobilityInformation   `mandatory,reject`
 	ManagementBasedMDTPLMNList              []PLMNIdentity                           `lb:1,ub:maxnoofMDTPLMNs,optional,ignore`
 	ServingNID                              *aper.BitString                          `lb:44,ub:44,optional,reject`
-	F1CTransferPath                         *F1CTransferPath                         `optional,reject`
 }
 
 func (msg *UEContextSetupRequest) Encode(w io.Writer) (err error) {
-    var ies []F1apMessageIE
-    if ies, err = msg.toIes(); err != nil {
-        err = msgErrors(fmt.Errorf("UEContextSetupRequest"), err)
-        return
-    }
-    return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_UEContextSetup, Criticality_PresentReject, ies)
+	var ies []F1apMessageIE
+	if ies, err = msg.toIes(); err != nil {
+		err = msgErrors(fmt.Errorf("UEContextSetupRequest"), err)
+		return
+	}
+	return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_UEContextSetup, Criticality_PresentReject, ies)
 }
 func (msg *UEContextSetupRequest) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}
@@ -396,13 +395,6 @@ func (msg *UEContextSetupRequest) toIes() (ies []F1apMessageIE, err error) {
 				Value: aper.BitString{
 					Bytes: msg.ServingNID.Bytes, NumBits: msg.ServingNID.NumBits},
 			}})
-	}
-	if msg.F1CTransferPath != nil {
-		ies = append(ies, F1apMessageIE{
-			Id:          ProtocolIEID{Value: ProtocolIEID_F1CTransferPath},
-			Criticality: Criticality{Value: Criticality_PresentReject},
-			Value:       msg.F1CTransferPath,
-		})
 	}
 	return
 }
@@ -855,29 +847,7 @@ func (decoder *UEContextSetupRequestDecoder) decodeIE(r *aper.AperReader) (msgIe
 			return
 		}
 		msg.ServingNID = &aper.BitString{Bytes: tmp.Value.Bytes, NumBits: tmp.Value.NumBits}
-	case ProtocolIEID_F1CTransferPath:
-		var tmp F1CTransferPath
-		if err = tmp.Decode(ieR); err != nil {
-			err = utils.WrapError("Read F1CTransferPath", err)
-			return
-		}
-		msg.F1CTransferPath = &tmp
 	default:
-		switch msgIe.Criticality.Value {
-		case Criticality_PresentReject:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: reject)", msgIe.Id.Value)
-		case Criticality_PresentIgnore:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: ignore)", msgIe.Id.Value)
-		case Criticality_PresentNotify:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: notify)", msgIe.Id.Value)
-		}
-		if msgIe.Criticality.Value != Criticality_PresentIgnore {
-			decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-				IECriticality: msgIe.Criticality,
-				IEID:          msgIe.Id,
-				TypeOfError:   TypeOfError{Value: TypeOfErrorNotunderstood},
-			})
-		}
 	}
 	return
 }

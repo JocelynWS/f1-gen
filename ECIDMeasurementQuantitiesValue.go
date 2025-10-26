@@ -3,7 +3,7 @@ package ies
 import "github.com/lvdund/ngap/aper"
 
 const (
-	ECIDMeasurementQuantitiesValueDefault          aper.Enumerated = 0
+	ECIDMeasurementQuantitiesValueCellPortion      aper.Enumerated = 0
 	ECIDMeasurementQuantitiesValueAngleofarrivalnr aper.Enumerated = 1
 )
 

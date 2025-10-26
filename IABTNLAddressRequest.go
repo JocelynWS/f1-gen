@@ -17,12 +17,12 @@ type IABTNLAddressRequest struct {
 }
 
 func (msg *IABTNLAddressRequest) Encode(w io.Writer) (err error) {
-    var ies []F1apMessageIE
-    if ies, err = msg.toIes(); err != nil {
-        err = msgErrors(fmt.Errorf("IABTNLAddressRequest"), err)
-        return
-    }
-    return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_IABTNLAddressAllocation, Criticality_PresentReject, ies)
+	var ies []F1apMessageIE
+	if ies, err = msg.toIes(); err != nil {
+		err = msgErrors(fmt.Errorf("IABTNLAddressRequest"), err)
+		return
+	}
+	return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_IABTNLAddressAllocation, Criticality_PresentReject, ies)
 }
 func (msg *IABTNLAddressRequest) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}

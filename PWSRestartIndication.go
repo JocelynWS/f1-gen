@@ -15,12 +15,12 @@ type PWSRestartIndication struct {
 }
 
 func (msg *PWSRestartIndication) Encode(w io.Writer) (err error) {
-    var ies []F1apMessageIE
-    if ies, err = msg.toIes(); err != nil {
-        err = msgErrors(fmt.Errorf("PWSRestartIndication"), err)
-        return
-    }
-    return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_PWSRestartIndication, Criticality_PresentIgnore, ies)
+	var ies []F1apMessageIE
+	if ies, err = msg.toIes(); err != nil {
+		err = msgErrors(fmt.Errorf("PWSRestartIndication"), err)
+		return
+	}
+	return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_PWSRestartIndication, Criticality_PresentIgnore, ies)
 }
 func (msg *PWSRestartIndication) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}

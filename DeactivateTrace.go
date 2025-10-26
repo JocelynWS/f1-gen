@@ -16,12 +16,12 @@ type DeactivateTrace struct {
 }
 
 func (msg *DeactivateTrace) Encode(w io.Writer) (err error) {
-    var ies []F1apMessageIE
-    if ies, err = msg.toIes(); err != nil {
-        err = msgErrors(fmt.Errorf("DeactivateTrace"), err)
-        return
-    }
-    return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_DeactivateTrace, Criticality_PresentIgnore, ies)
+	var ies []F1apMessageIE
+	if ies, err = msg.toIes(); err != nil {
+		err = msgErrors(fmt.Errorf("DeactivateTrace"), err)
+		return
+	}
+	return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_DeactivateTrace, Criticality_PresentIgnore, ies)
 }
 func (msg *DeactivateTrace) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}

@@ -168,7 +168,6 @@ func (n *NULL) Decode(r *aper.AperReader) (err error) {
 	return
 }
 
-
 // temparory
 type TAC struct {
 	Value []byte

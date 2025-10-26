@@ -15,12 +15,12 @@ type GNBDUStatusIndication struct {
 }
 
 func (msg *GNBDUStatusIndication) Encode(w io.Writer) (err error) {
-    var ies []F1apMessageIE
-    if ies, err = msg.toIes(); err != nil {
-        err = msgErrors(fmt.Errorf("GNBDUStatusIndication"), err)
-        return
-    }
-    return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_GNBDUStatusIndication, Criticality_PresentIgnore, ies)
+	var ies []F1apMessageIE
+	if ies, err = msg.toIes(); err != nil {
+		err = msgErrors(fmt.Errorf("GNBDUStatusIndication"), err)
+		return
+	}
+	return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_GNBDUStatusIndication, Criticality_PresentIgnore, ies)
 }
 func (msg *GNBDUStatusIndication) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}

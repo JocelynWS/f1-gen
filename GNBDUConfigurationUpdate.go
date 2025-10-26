@@ -10,15 +10,15 @@ import (
 )
 
 type GNBDUConfigurationUpdate struct {
-	TransactionID                   int64                               `lb:0,ub:255,mandatory,reject`
-	ServedCellsToAddList            []ServedCellsToAddItem              `lb:1,ub:maxnoofCellsingNB,optional,reject,valueExt`
-	ServedCellsToModifyList         []ServedCellsToModifyItem           `lb:1,ub:maxCellingNBDU,optional,reject,valueExt`
-	ServedCellsToDeleteList         []ServedCellsToDeleteItem           `lb:1,ub:maxCellingNBDU,optional,reject,valueExt`
-	CellsStatusList                 []CellsStatusItem                   `lb:0,ub:maxCellingNBDU,optional,reject,valueExt`
-	DedicatedSIDeliveryNeededUEList *DedicatedSIDeliveryNeededUEItem    `lb:1,ub:maxnoofUEs,optional,ignore`
-	GNBDUID                         *int64                              `lb:0,ub:68719476735,optional,reject`
-	GNBDUTNLAssociationToRemoveList []GNBDUTNLAssociationToRemoveItem   `lb:1,ub:maxnoofTNLAssociations,optional,reject,valueExt`
-	TransportLayerAddressInfo       *TransportLayerAddressInfo          `optional,ignore`
+	TransactionID                   int64                             `lb:0,ub:255,mandatory,reject`
+	ServedCellsToAddList            []ServedCellsToAddItem            `lb:1,ub:maxnoofCellsingNB,optional,reject,valueExt`
+	ServedCellsToModifyList         []ServedCellsToModifyItem         `lb:1,ub:maxCellingNBDU,optional,reject,valueExt`
+	ServedCellsToDeleteList         []ServedCellsToDeleteItem         `lb:1,ub:maxCellingNBDU,optional,reject,valueExt`
+	CellsStatusList                 []CellsStatusItem                 `lb:0,ub:maxCellingNBDU,optional,reject,valueExt`
+	DedicatedSIDeliveryNeededUEList *DedicatedSIDeliveryNeededUEItem  `lb:1,ub:maxnoofUEs,optional,ignore`
+	GNBDUID                         *int64                            `lb:0,ub:68719476735,optional,reject`
+	GNBDUTNLAssociationToRemoveList []GNBDUTNLAssociationToRemoveItem `lb:1,ub:maxnoofTNLAssociations,optional,reject,valueExt`
+	TransportLayerAddressInfo       *TransportLayerAddressInfo        `optional,ignore`
 }
 
 func (msg *GNBDUConfigurationUpdate) Encode(w io.Writer) (err error) {
