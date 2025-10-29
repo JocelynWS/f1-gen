@@ -2,6 +2,17 @@ package f1ap
 
 import "github.com/JocelynWS/f1-gen/ies"
 
+type F1apPdu struct {
+	Present uint8
+	Message F1apMessage
+}
+
+type F1apMessage struct {
+	ProcedureCode ies.ProcedureCode
+	Criticality   ies.Criticality
+	Msg           MessageUnmarshaller
+}
+
 func createMessage(present uint8, procedureCode ies.ProcedureCode) MessageUnmarshaller {
 	switch present {
 	case ies.F1apPduInitiatingMessage:

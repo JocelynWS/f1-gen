@@ -3,7 +3,6 @@ package f1ap
 import (
 	"bytes"
 	"fmt"
-	"io"
 
 	"github.com/JocelynWS/f1-gen/ies"
 	"github.com/lvdund/ngap/aper"
@@ -56,14 +55,6 @@ func F1apDecode(buf []byte) (pdu F1apPdu, err error, diagnostics *ies.Criticalit
 	}
 	if len(diagnosticsItems) > 0 {
 		diagnostics = ies.BuildDiagnostics(present, procedureCode, criticality, int64(procedureCode.Value), diagnosticsItems)
-	}
-	return
-}
-
-func TransferDecode(ioR io.Reader) (pdu F1apPdu, err error, diagnostics *ies.CriticalityDiagnostics) {
-	r := aper.NewReader(ioR)
-	if _, err = r.ReadBool(); err != nil {
-		return
 	}
 	return
 }

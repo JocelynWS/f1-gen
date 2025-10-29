@@ -1,6 +1,9 @@
 package f1ap
 
-import "bytes"
+import (
+	"bytes"
+	"io"
+)
 
 func F1apEncode(msg F1apMessageEncoder) (wire []byte, err error) {
 	var buf bytes.Buffer
@@ -8,4 +11,8 @@ func F1apEncode(msg F1apMessageEncoder) (wire []byte, err error) {
 		wire = buf.Bytes()
 	}
 	return
+}
+
+type F1apMessageEncoder interface {
+	Encode(io.Writer) error
 }
