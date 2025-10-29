@@ -1,4 +1,4 @@
-package ies
+package f1ap
 
 import (
 	"bytes"
@@ -34,8 +34,8 @@ func encodeMessage(w io.Writer, present uint8, procedureCode int64, criticality 
 	}
 
 	var buf bytes.Buffer
-	cW := aper.NewWriter(&buf) // container writer
-	cW.WriteBool(aper.Zero)
+	cW := aper.NewWriter(&buf)
+	//cW.WriteBool(aper.Zero)
 	if err = aper.WriteSequenceOf[F1apMessageIE](ies, cW, &aper.Constraint{
 		Lb: 0,
 		Ub: int64(aper.POW_16 - 1),
@@ -53,31 +53,25 @@ func encodeMessage(w io.Writer, present uint8, procedureCode int64, criticality 
 	return
 }
 
-// represent an IE in F1ap messages
 type F1apMessageIE struct {
-	Id          ProtocolIEID // protocol IE identity
+	Id          ProtocolIEID
 	Criticality Criticality
-	Value       aper.AperMarshaller // open type
+	Value       aper.AperMarshaller
 }
 
 func (ie F1apMessageIE) Encode(w *aper.AperWriter) (err error) {
-	//1. encode protocol Ie Id
 	if err = ie.Id.Encode(w); err != nil {
 		return
 	}
-	//2. encode criticality
 	if err = ie.Criticality.Encode(w); err != nil {
 		return
 	}
-	//3. encode F1apIE
-	//encode IE into a byte array first
 	var buf bytes.Buffer
 	ieW := aper.NewWriter(&buf)
 	if err = ie.Value.Encode(ieW); err != nil {
 		return
 	}
 	ieW.Close()
-	//then write the array as open type
 	err = w.WriteOpenType(buf.Bytes())
 	return
 }
@@ -157,10 +151,6 @@ func (ie *ProtocolIEID) Encode(r *aper.AperWriter) (err error) {
 	}
 	return nil
 }
-
-// type TransactionID struct {
-// 	Value aper.Integer `aper:"valueLB:0,valueUB:255"`
-// }
 
 func BuildDiagnostics(present uint8, procedureCode ProcedureCode, criticality Criticality, transactionID int64, diagnosticsItems []CriticalityDiagnosticsIEItem) *CriticalityDiagnostics {
 	procCodeValue := int64(procedureCode.Value)

@@ -1,4 +1,4 @@
-package ies
+package f1ap
 
 import (
 	"bytes"
@@ -109,7 +109,7 @@ func (msg *F1SetupRequest) Decode(wire []byte) (err error, diagList []Criticalit
 		}
 	}()
 	r := aper.NewReader(bytes.NewReader(wire))
-	r.ReadBool()
+	//r.ReadBool()
 	decoder := F1SetupRequestDecoder{
 		msg:  msg,
 		list: make(map[aper.Integer]*F1apMessageIE),

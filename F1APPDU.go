@@ -1,4 +1,4 @@
-package ies
+package f1ap
 
 import (
 	"io"
@@ -17,9 +17,9 @@ type F1apMessage struct {
 	Msg           MessageUnmarshaller
 }
 
-type MessageUnmarshaller interface {
-	Decode([]byte) (error, []ies.CriticalityDiagnosticsIEItem)
-}
+// type MessageUnmarshaller interface {
+// 	Decode([]byte) (error, []ies.CriticalityDiagnosticsIEItem)
+// }
 
 type F1apMessageEncoder interface {
 	Encode(io.Writer) error

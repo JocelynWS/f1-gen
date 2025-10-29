@@ -1,7 +1,8 @@
-package ies
+package f1ap
 
 import (
 	"fmt"
+
 	"github.com/lvdund/ngap/aper"
 	"github.com/reogac/utils"
 )
