@@ -3,7 +3,7 @@ package f1ap
 import (
 	"io"
 
-	"github.com/lvdund/ngap/ies"
+	"github.com/JocelynWS/f1-gen/ies"
 )
 
 type F1apPdu struct {

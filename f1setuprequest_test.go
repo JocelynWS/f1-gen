@@ -5,10 +5,11 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/JocelynWS/f1-gen/ies"
 	"github.com/lvdund/ngap/aper"
 )
 
-func TestF1SetupRequestMandatory(t *testing.T) {
+func Test_F1SetupRequestMandatory(t *testing.T) {
 	// ------------------------
 	// TransactionID
 	// ------------------------
@@ -80,10 +81,10 @@ func TestF1SetupRequestMandatory(t *testing.T) {
 }
 
 func Test_F1SetupRequest(t *testing.T) {
-	msg := F1SetupRequest{
+	msg := ies.F1SetupRequest{
 		TransactionID: 1,
 		GNBDUID:       1,
-		GNBDURRCVersion: RRCVersion{
+		GNBDURRCVersion: ies.RRCVersion{
 			LatestRRCVersion: aper.BitString{
 				Bytes:   []byte{0x02, 0xf8, 0x39},
 				NumBits: 3,
@@ -99,42 +100,11 @@ func Test_F1SetupRequest(t *testing.T) {
 	}
 }
 
-// func Test_F1SetupRequest_Decode(t *testing.T) {
-// 	// Encode
-// 	msg := F1SetupRequest{
-// 		TransactionID: 1,
-// 		GNBDUID:       1,
-// 		GNBDURRCVersion: RRCVersion{
-// 			LatestRRCVersion: aper.BitString{
-// 				Bytes:   []byte{0x02, 0xf8, 0x39},
-// 				NumBits: 3,
-// 			},
-// 		},
-// 	}
-// 	var buf bytes.Buffer
-// 	err := msg.Encode(&buf)
-// 	if err != nil {
-// 		fmt.Println("Encode error:", err)
-// 		return
-// 	}
-
-// 	// Decode
-// 	decoded := F1SetupRequest{}
-// 	err, diagList := decoded.Decode(buf.Bytes())
-// 	if err != nil {
-// 		fmt.Println("Decode error:", err)
-// 		fmt.Println("Diagnostics:", diagList)
-// 	} else {
-// 		fmt.Printf("TransactionID: %d\n", decoded.TransactionID)
-// 		fmt.Printf("GNBDUID: %d\n", decoded.GNBDUID)
-// 	}
-// }
-
-func Test_F1SetupRequest_Decode(t *testing.T) {
-	msg := F1SetupRequest{
+func Test_F1SetupRequest_Encode_Decode(t *testing.T) {
+	msg := ies.F1SetupRequest{
 		TransactionID: 1,
 		GNBDUID:       1,
-		GNBDURRCVersion: RRCVersion{
+		GNBDURRCVersion: ies.RRCVersion{
 			LatestRRCVersion: aper.BitString{
 				Bytes:   []byte{0x02, 0xf8, 0x39},
 				NumBits: 3,
@@ -155,7 +125,7 @@ func Test_F1SetupRequest_Decode(t *testing.T) {
 		t.Fatalf("Decode error: %v, diagnostics: %v", err, diagnostics)
 	}
 
-	decoded := pdu.Message.Msg.(*F1SetupRequest)
+	decoded := pdu.Message.Msg.(*ies.F1SetupRequest)
 	fmt.Printf("TransactionID: %d\n", decoded.TransactionID)
 	fmt.Printf("GNBDUID: %d\n", decoded.GNBDUID)
 

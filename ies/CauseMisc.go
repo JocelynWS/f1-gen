@@ -1,0 +1,26 @@
+package ies
+
+import "github.com/lvdund/ngap/aper"
+
+const (
+	CauseMiscControlprocessingoverload             aper.Enumerated = 0
+	CauseMiscNotenoughuserplaneprocessingresources aper.Enumerated = 1
+	CauseMiscHardwarefailure                       aper.Enumerated = 2
+	CauseMiscOmintervention                        aper.Enumerated = 3
+	CauseMiscUnspecified                           aper.Enumerated = 4
+)
+
+type CauseMisc struct {
+	Value aper.Enumerated
+}
+
+func (ie *CauseMisc) Encode(w *aper.AperWriter) (err error) {
+	err = w.WriteEnumerate(uint64(ie.Value), aper.Constraint{Lb: 0, Ub: 4}, true)
+	return
+}
+
+func (ie *CauseMisc) Decode(r *aper.AperReader) (err error) {
+	v, err := r.ReadEnumerate(aper.Constraint{Lb: 0, Ub: 4}, true)
+	ie.Value = aper.Enumerated(v)
+	return
+}

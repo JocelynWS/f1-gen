@@ -1,4 +1,4 @@
-module gen_all
+module github.com/JocelynWS/f1-gen
 
 go 1.23.1
 
