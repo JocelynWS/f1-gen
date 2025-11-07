@@ -3,12 +3,12 @@ package ies
 import "github.com/lvdund/ngap/aper"
 
 const (
-	CauseProtocolTransfersyntaxerror                          aper.Enumerated = 0
-	CauseProtocolAbstractsyntaxerrorreject                    aper.Enumerated = 1
-	CauseProtocolAbstractsyntaxerrorignoreandnotify           aper.Enumerated = 2
-	CauseProtocolMessagenotcompatiblewithreceiverstate        aper.Enumerated = 3
+	CauseProtocolTransferSyntaxError                          aper.Enumerated = 0
+	CauseProtocolAbstractSyntaxErrorReject                    aper.Enumerated = 1
+	CauseProtocolAbstractSyntaxErrorIgnoreAndNotify           aper.Enumerated = 2
+	CauseProtocolMessageNotCompatibleWithReceiverState        aper.Enumerated = 3
 	CauseProtocolSemanticerror                                aper.Enumerated = 4
-	CauseProtocolAbstractsyntaxerrorfalselyconstructedmessage aper.Enumerated = 5
+	CauseProtocolAbstractSyntaxErrorFalselyConstructedMessage aper.Enumerated = 5
 	CauseProtocolUnspecified                                  aper.Enumerated = 6
 )
 

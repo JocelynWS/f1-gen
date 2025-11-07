@@ -7,8 +7,8 @@ import (
 
 type CellToReportItem struct {
 	CellID            NRCGI               `mandatory`
-	SSBToReportList   []SSBToReportItem   `lb:1,ub:maxnoofSSBs,optional,valExt`
-	SliceToReportList []SliceToReportItem `lb:1,ub:maxnoofSliceItems,optional,valExt`
+	SSBToReportList   []SSBToReportItem   `lb:1,ubmaxnoofSSBAreas,optional,valExt`
+	SliceToReportList []SliceToReportItem `lb:1,ub:maxnoofBPLMNsNR,optional,valExt`
 	// IEExtensions * `optional`
 }
 
@@ -31,7 +31,7 @@ func (ie *CellToReportItem) Encode(w *aper.AperWriter) (err error) {
 	if len(ie.SSBToReportList) > 0 {
 		tmp := Sequence[*SSBToReportItem]{
 			Value: []*SSBToReportItem{},
-			c:     aper.Constraint{Lb: 1, Ub: maxnoofSSBs},
+			c:     aper.Constraint{Lb: 1, Ub: maxnoofSSBAreas},
 			ext:   true,
 		}
 		for _, i := range ie.SSBToReportList {
@@ -45,7 +45,7 @@ func (ie *CellToReportItem) Encode(w *aper.AperWriter) (err error) {
 	if len(ie.SliceToReportList) > 0 {
 		tmp := Sequence[*SliceToReportItem]{
 			Value: []*SliceToReportItem{},
-			c:     aper.Constraint{Lb: 1, Ub: maxnoofSliceItems},
+			c:     aper.Constraint{Lb: 1, Ub: maxnoofBPLMNsNR},
 			ext:   true,
 		}
 		for _, i := range ie.SliceToReportList {
@@ -72,7 +72,7 @@ func (ie *CellToReportItem) Decode(r *aper.AperReader) (err error) {
 	}
 	if aper.IsBitSet(optionals, 1) {
 		tmp_SSBToReportList := Sequence[*SSBToReportItem]{
-			c:   aper.Constraint{Lb: 1, Ub: maxnoofSSBs},
+			c:   aper.Constraint{Lb: 1, Ub: maxnoofSSBAreas},
 			ext: true,
 		}
 		fn := func() *SSBToReportItem { return new(SSBToReportItem) }
@@ -87,7 +87,7 @@ func (ie *CellToReportItem) Decode(r *aper.AperReader) (err error) {
 	}
 	if aper.IsBitSet(optionals, 2) {
 		tmp_SliceToReportList := Sequence[*SliceToReportItem]{
-			c:   aper.Constraint{Lb: 1, Ub: maxnoofSliceItems},
+			c:   aper.Constraint{Lb: 1, Ub: maxnoofBPLMNsNR},
 			ext: true,
 		}
 		fn := func() *SliceToReportItem { return new(SliceToReportItem) }

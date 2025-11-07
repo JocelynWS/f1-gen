@@ -151,7 +151,7 @@ func (msg *DLRRCMessageTransfer) Decode(wire []byte) (err error, diagList []Crit
 		}
 	}()
 	r := aper.NewReader(bytes.NewReader(wire))
-	r.ReadBool()
+	//r.ReadBool()
 	decoder := DLRRCMessageTransferDecoder{
 		msg:  msg,
 		list: make(map[aper.Integer]*F1apMessageIE),

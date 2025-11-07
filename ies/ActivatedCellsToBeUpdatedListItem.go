@@ -8,7 +8,7 @@ import (
 type ActivatedCellsToBeUpdatedListItem struct {
 	NRCGI                                  NRCGI
 	IABDUCellResourceConfigurationModeInfo IABDUCellResourceConfigurationModeInfo
-	// iE-Extensions ProtocolExtensionContainer { { Activated-Cells-to-be-Updated-List-Item-ExtIEs} } OPTIONAL
+	// iEExtensions OPTIONAL
 }
 
 func (ie *ActivatedCellsToBeUpdatedListItem) Encode(w *aper.AperWriter) (err error) {

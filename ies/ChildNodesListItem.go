@@ -8,7 +8,7 @@ import (
 type ChildNodesListItem struct {
 	GNBCUUEF1APID      int64               `lb:0,ub:4294967295,mandatory,reject`
 	GNBDUUEF1APID      int64               `lb:0,ub:4294967295,mandatory,reject`
-	ChildNodeCellsItem *ChildNodeCellsItem `lb:1,ub:maxnoofChildIABNodes,optional`
+	ChildNodeCellsList *ChildNodeCellsItem `lb:1,ub:maxnoofChildIABNodes,optional`
 	// IEExtensions           *ProtocolExtensionContainer `optional,ignore`
 }
 
@@ -18,7 +18,7 @@ func (ie *ChildNodesListItem) Encode(w *aper.AperWriter) (err error) {
 	}
 
 	optionals := []byte{0x0}
-	if ie.ChildNodeCellsItem != nil {
+	if ie.ChildNodeCellsList != nil {
 		aper.SetBit(optionals, 1)
 	}
 	w.WriteBits(optionals, 2)
@@ -30,13 +30,13 @@ func (ie *ChildNodesListItem) Encode(w *aper.AperWriter) (err error) {
 		return utils.WrapError("Encode GNBDUUEF1APID", err)
 	}
 
-	if ie.ChildNodeCellsItem != nil && len(ie.ChildNodeCellsItem.Value) > 0 {
+	if ie.ChildNodeCellsList != nil && len(ie.ChildNodeCellsList.Value) > 0 {
 		tmp := Sequence[*ChildNodesListItem]{
 			Value: []*ChildNodesListItem{},
 			c:     aper.Constraint{Lb: 1, Ub: maxnoofChildIABNodes},
 			ext:   false,
 		}
-		for _, item := range ie.ChildNodeCellsItem.Value {
+		for _, item := range ie.ChildNodeCellsList.Value {
 			tmp.Value = append(tmp.Value, item)
 		}
 		if err = tmp.Encode(w); err != nil {
@@ -73,9 +73,9 @@ func (ie *ChildNodesListItem) Decode(r *aper.AperReader) (err error) {
 		if err = tmp_ChildNodeCellsItem.Decode(r, fn); err != nil {
 			return utils.WrapError("Decode ChildNodeCellsItem", err)
 		}
-		ie.ChildNodeCellsItem = &ChildNodeCellsItem{}
+		ie.ChildNodeCellsList = &ChildNodeCellsItem{}
 		for _, item := range tmp_ChildNodeCellsItem.Value {
-			ie.ChildNodeCellsItem.Value = append(ie.ChildNodeCellsItem.Value, item)
+			ie.ChildNodeCellsList.Value = append(ie.ChildNodeCellsList.Value, item)
 		}
 	}
 

@@ -89,7 +89,7 @@ func (msg *ULRRCMessageTransfer) Decode(wire []byte) (err error, diagList []Crit
 		}
 	}()
 	r := aper.NewReader(bytes.NewReader(wire))
-	r.ReadBool()
+	//r.ReadBool()
 	decoder := ULRRCMessageTransferDecoder{
 		msg:  msg,
 		list: make(map[aper.Integer]*F1apMessageIE),

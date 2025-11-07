@@ -7,7 +7,7 @@ import (
 
 type CapacityValue struct {
 	CapacityValue            int64                      `lb:0,ub:100,mandatory`
-	SSBAreaCapacityValueList []SSBAreaCapacityValueItem `lb:1,ub:maxnoofSSBs,optional,valExt`
+	SSBAreaCapacityValueList []SSBAreaCapacityValueItem `lb:1,ub:maxnoofSSBAreas,optional,valExt`
 	// IEExtensions * `optional`
 }
 
@@ -28,7 +28,7 @@ func (ie *CapacityValue) Encode(w *aper.AperWriter) (err error) {
 	if len(ie.SSBAreaCapacityValueList) > 0 {
 		tmp := Sequence[*SSBAreaCapacityValueItem]{
 			Value: []*SSBAreaCapacityValueItem{},
-			c:     aper.Constraint{Lb: 1, Ub: maxnoofSSBs},
+			c:     aper.Constraint{Lb: 1, Ub: maxnoofSSBAreas},
 			ext:   true,
 		}
 		for _, i := range ie.SSBAreaCapacityValueList {
@@ -60,7 +60,7 @@ func (ie *CapacityValue) Decode(r *aper.AperReader) (err error) {
 	ie.CapacityValue = int64(tmp_CapacityValue.Value)
 	if aper.IsBitSet(optionals, 1) {
 		tmp_SSBAreaCapacityValueList := Sequence[*SSBAreaCapacityValueItem]{
-			c:   aper.Constraint{Lb: 1, Ub: maxnoofSSBs},
+			c:   aper.Constraint{Lb: 1, Ub: maxnoofSSBAreas},
 			ext: true,
 		}
 		fn := func() *SSBAreaCapacityValueItem { return new(SSBAreaCapacityValueItem) }
