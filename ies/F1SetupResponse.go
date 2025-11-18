@@ -108,7 +108,9 @@ func (msg *F1SetupResponse) Decode(wire []byte) (err error, diagList []Criticali
 		}
 	}()
 	r := aper.NewReader(bytes.NewReader(wire))
-	r.ReadBool()
+	if _, err = r.ReadBool(); err != nil {
+    return
+}
 	decoder := F1SetupResponseDecoder{
 		msg:  msg,
 		list: make(map[aper.Integer]*F1apMessageIE),
