@@ -103,19 +103,35 @@ func (msg *F1SetupResponse) toIes() (ies []F1apMessageIE, err error) {
 }
 func (msg *F1SetupResponse) Decode(wire []byte) (err error, diagList []CriticalityDiagnosticsIEItem) {
 	defer func() {
+		if r := recover(); r != nil {
+			err = fmt.Errorf("F1SetupResponse: panic during decode: %v", r)
+		}
 		if err != nil {
 			err = msgErrors(fmt.Errorf("F1SetupResponse"), err)
 		}
 	}()
+
 	r := aper.NewReader(bytes.NewReader(wire))
-	r.ReadBool()
+
 	decoder := F1SetupResponseDecoder{
 		msg:  msg,
 		list: make(map[aper.Integer]*F1apMessageIE),
 	}
-	if _, err = aper.ReadSequenceOf[F1apMessageIE](decoder.decodeIE, r, &aper.Constraint{Lb: 0, Ub: int64(aper.POW_16 - 1)}, false); err != nil {
+
+	for {
+		_, err = decoder.decodeIE(r)
+		if err != nil {
+			if err.Error() == "EOF" {
+				err = nil
+			}
+			break
+		}
+	}
+
+	if err != nil {
 		return
 	}
+
 	if _, ok := decoder.list[ProtocolIEID_TransactionID]; !ok {
 		err = fmt.Errorf("Mandatory field TransactionID is missing")
 		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
@@ -125,6 +141,7 @@ func (msg *F1SetupResponse) Decode(wire []byte) (err error, diagList []Criticali
 		})
 		return
 	}
+
 	if _, ok := decoder.list[ProtocolIEID_GNBCURRCVersion]; !ok {
 		err = fmt.Errorf("Mandatory field GNBCURRCVersion is missing")
 		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
@@ -134,6 +151,7 @@ func (msg *F1SetupResponse) Decode(wire []byte) (err error, diagList []Criticali
 		})
 		return
 	}
+
 	return
 }
 
