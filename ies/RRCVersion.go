@@ -16,7 +16,9 @@ func (ie *RRCVersion) Encode(w *aper.AperWriter) (err error) {
 	}
 
 	optionals := []byte{0x0}
-	w.WriteBits(optionals, 1)
+	if err = w.WriteBits(optionals, 1); err != nil {
+	return
+}
 
 	tmp_LatestRRCVersion := NewBITSTRING(ie.LatestRRCVersion, aper.Constraint{Lb: 3, Ub: 3}, false)
 	if err = tmp_LatestRRCVersion.Encode(w); err != nil {
