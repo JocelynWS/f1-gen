@@ -151,7 +151,7 @@ func (msg *DLRRCMessageTransfer) Decode(wire []byte) (err error, diagList []Crit
 		}
 	}()
 	r := aper.NewReader(bytes.NewReader(wire))
-	//r.ReadBool()
+	r.ReadBool()
 	decoder := DLRRCMessageTransferDecoder{
 		msg:  msg,
 		list: make(map[aper.Integer]*F1apMessageIE),
@@ -248,6 +248,7 @@ func (decoder *DLRRCMessageTransferDecoder) decodeIE(r *aper.AperReader) (msgIe 
 	msg := decoder.msg
 	switch msgIe.Id.Value {
 	case ProtocolIEID_GNBCUUEF1APID:
+		fmt.Println("=====================")
 		tmp := INTEGER{
 			c:   aper.Constraint{Lb: 0, Ub: 4294967295},
 			ext: false,
