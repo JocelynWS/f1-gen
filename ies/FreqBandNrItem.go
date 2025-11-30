@@ -22,11 +22,13 @@ func (ie *FreqBandNrItem) Encode(w *aper.AperWriter) (err error) {
 		err = utils.WrapError("Encode FreqBandIndicatorNr", err)
 		return
 	}
+	tmp := Sequence[*SupportedSULFreqBandItem]{Value: []*SupportedSULFreqBandItem{}, c: aper.Constraint{Lb: 0, Ub: maxnoofNrCellBands}, ext: false}
 	for i := range ie.SupportedSULBandList {
-		if err = ie.SupportedSULBandList[i].Encode(w); err != nil {
-			err = utils.WrapError("Encode SupportedSULBandList", err)
-			return
-		}
+		tmp.Value = append(tmp.Value, &ie.SupportedSULBandList[i])
+	}
+	if err = tmp.Encode(w); err != nil {
+		err = utils.WrapError("Encode SupportedSULBandList", err)
+		return
 	}
 	return
 }
@@ -47,11 +49,15 @@ func (ie *FreqBandNrItem) Decode(r *aper.AperReader) (err error) {
 		return
 	}
 	ie.FreqBandIndicatorNr = int64(tmp_FreqBandIndicatorNr.Value)
-	for i := range ie.SupportedSULBandList {
-		if err = ie.SupportedSULBandList[i].Decode(r); err != nil {
-			err = utils.WrapError("Read SupportedSULBandList", err)
-			return
-		}
+	tmp := Sequence[*SupportedSULFreqBandItem]{c: aper.Constraint{Lb: 0, Ub: maxnoofNrCellBands}, ext: false}
+	fn := func() *SupportedSULFreqBandItem { return new(SupportedSULFreqBandItem) }
+	if err = tmp.Decode(r, fn); err != nil {
+		err = utils.WrapError("Read SupportedSULBandList", err)
+		return
+	}
+	ie.SupportedSULBandList = []SupportedSULFreqBandItem{}
+	for _, v := range tmp.Value {
+		ie.SupportedSULBandList = append(ie.SupportedSULBandList, *v)
 	}
 	return
 }

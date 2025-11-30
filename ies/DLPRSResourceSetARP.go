@@ -26,11 +26,13 @@ func (ie *DLPRSResourceSetARP) Encode(w *aper.AperWriter) (err error) {
 		err = utils.WrapError("Encode DLPRSResourceSetARPLocation", err)
 		return
 	}
+	tmp := Sequence[*DLPRSResourceARP]{Value: []*DLPRSResourceARP{}, c: aper.Constraint{Lb: 1, Ub: maxnoofPRSResourcesPerSet}, ext: true}
 	for i := range ie.ListofDLPRSResourceARP {
-		if err = ie.ListofDLPRSResourceARP[i].Encode(w); err != nil {
-			err = utils.WrapError("Encode ListofDLPRSResourceARP", err)
-			return
-		}
+		tmp.Value = append(tmp.Value, &ie.ListofDLPRSResourceARP[i])
+	}
+	if err = tmp.Encode(w); err != nil {
+		err = utils.WrapError("Encode ListofDLPRSResourceARP", err)
+		return
 	}
 	return
 }
@@ -50,11 +52,15 @@ func (ie *DLPRSResourceSetARP) Decode(r *aper.AperReader) (err error) {
 		err = utils.WrapError("Read DLPRSResourceSetARPLocation", err)
 		return
 	}
-	for i := range ie.ListofDLPRSResourceARP {
-		if err = ie.ListofDLPRSResourceARP[i].Decode(r); err != nil {
-			err = utils.WrapError("Read ListofDLPRSResourceARP", err)
-			return
-		}
+	tmp := Sequence[*DLPRSResourceARP]{c: aper.Constraint{Lb: 1, Ub: maxnoofPRSResourcesPerSet}, ext: true}
+	fn := func() *DLPRSResourceARP { return new(DLPRSResourceARP) }
+	if err = tmp.Decode(r, fn); err != nil {
+		err = utils.WrapError("Read ListofDLPRSResourceARP", err)
+		return
+	}
+	ie.ListofDLPRSResourceARP = []DLPRSResourceARP{}
+	for _, v := range tmp.Value {
+		ie.ListofDLPRSResourceARP = append(ie.ListofDLPRSResourceARP, *v)
 	}
 	return
 }

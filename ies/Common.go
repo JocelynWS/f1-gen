@@ -35,7 +35,7 @@ func encodeMessage(w io.Writer, present uint8, procedureCode int64, criticality 
 
 	var buf bytes.Buffer
 	cW := aper.NewWriter(&buf)
-	//cW.WriteBool(aper.Zero)
+	cW.WriteBool(aper.Zero)
 	if err = aper.WriteSequenceOf[F1apMessageIE](ies, cW, &aper.Constraint{
 		Lb: 0,
 		Ub: int64(aper.POW_16 - 1),
