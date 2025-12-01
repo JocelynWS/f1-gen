@@ -1,0 +1,113 @@
+8:10AM INFO Selecting 192.168.1.15 for host 192.168.1.15 as AMF's IP address                    	mod=config
+8:10AM INFO Selecting 192.168.1.10 for host 192.168.1.10 as Default gNodeB's N3/Data IP address                    	mod=config
+8:10AM INFO Selecting 192.168.1.10 for host 192.168.1.10 as Default gNodeB's N2/Control IP address                    	mod=config
+8:10AM INFO MSsim version 1.0.1                                  	
+8:10AM INFO ---------------------------------------           	
+8:10AM INFO Starting 5G Network Simulation                    	
+8:10AM INFO Default Control interface IP/Port: 192.168.1.10/9488          	
+8:10AM INFO Default Data interface IP/Port: 192.168.1.10/2153             	
+8:10AM INFO AMF IP/Port: 192.168.1.15/38412                                	
+8:10AM INFO ---------------------------------------           	
+8:10AM INFO =========== not remote server ==========          	mod=oam
+8:10AM WARN Cannot use the --tunnel option in multi-ue/gnb scenarios !!!	
+8:10AM INFO SCTP/NGAP service is running                      	gnbid=000001 mod=gnb
+8:10AM INFO Initiating NG Setup Request                       	gnbid=000001 mod=gnb
+8:10AM INFO Sending NG Setup Request to AMF                 	gnbid=000001 mod=gnb
+8:10AM INFO Receive NG Setup Response                         	gnbid=000001 mod=gnb
+8:10AM INFO Receive NGSetupResponse                           	gnbid=000001 mod=gnb
+8:10AM INFO AMF Name: open5gs-amf0 - state: Active - capacity: 255       	gnbid=000001 mod=gnb
+8:10AM INFO 	PLMNs Identities Supported by AMF -- mcc:999 mnc:70	gnbid=000001 mod=gnb
+8:10AM INFO 	List of AMF slices Supported by AMF -- sst:01 sd:was not informed	gnbid=000001 mod=gnb
+8:10AM INFO SCTP/NGAP service is running                      	gnbid=000002 mod=gnb
+8:10AM INFO Initiating NG Setup Request                       	gnbid=000002 mod=gnb
+8:10AM INFO Sending NG Setup Request to AMF                 	gnbid=000002 mod=gnb
+8:10AM INFO Receive NG Setup Response                         	gnbid=000002 mod=gnb
+8:10AM INFO Receive NGSetupResponse                           	gnbid=000002 mod=gnb
+8:10AM INFO AMF Name: open5gs-amf0 - state: Active - capacity: 255       	gnbid=000002 mod=gnb
+8:10AM INFO 	PLMNs Identities Supported by AMF -- mcc:999 mnc:70	gnbid=000002 mod=gnb
+8:10AM INFO 	List of AMF slices Supported by AMF -- sst:01 sd:was not informed	gnbid=000002 mod=gnb
+8:10AM INFO Received incoming connection from new UE with PrUeId: 1	gnbid=000002 mod=gnb
+8:10AM INFO Send event RegisterInit Event to UE                               	
+8:10AM INFO [Setup Event] Send event [RegisterInit Event] to GroupUE-0       	
+8:10AM INFO Send event PduSessionInit Event to UE                               	
+8:10AM INFO [Setup Event] Send event [PduSessionInit Event] to GroupUE-0       	
+8:10AM INFO [Task MM]: event RegisterInit Event: started, target state Registered State     	mod=ue msin=0000000001
+8:10AM INFO Initiating Registration                           	mod=ue msin=0000000001
+
+8:10AM INFO On State 5GMM_RegisteredInitiated                 	mod=ue msin=0000000001
+8:10AM INFO Build InitialUeMessage                            	gnbid=000002 mod=gnb
+8:10AM INFO Sending Initial UE Message to AMF                 	gnb=000002 mod=gnbue msin=0000000001
+8:10AM INFO Receive Downlink NAS Transport                    	gnbid=000002 mod=gnb
+8:10AM INFO Receive Authentication Request                    	mod=ue msin=0000000001
+8:10AM INFO Authenticity of the authentication request message: OK	mod=ue msin=0000000001
+8:10AM INFO SQN of the authentication request message: VALID  	mod=ue msin=0000000001
+8:10AM INFO Send authentication response                      	mod=ue msin=0000000001
+
+8:10AM INFO Build UplinkNasTransport                          	gnbid=000002 mod=gnb
+8:10AM INFO Sending Uplink Nas Transport to AMF               	gnb=000002 mod=gnbue msin=0000000001
+8:10AM INFO Receive Downlink NAS Transport                    	gnbid=000002 mod=gnb
+8:10AM INFO Receive Security Mode Command                     	mod=ue msin=0000000001
+8:10AM INFO Type of ciphering algorithm is 5G-0               	mod=ue msin=0000000001
+8:10AM INFO Type of integrity algorithm is 128-5G-IA2         	mod=ue msin=0000000001
+8:10AM INFO Have Additional Secutity Information, retransmission = true	mod=ue msin=0000000001
+
+8:10AM INFO Build UplinkNasTransport                          	gnbid=000002 mod=gnb
+8:10AM INFO Sending Uplink Nas Transport to AMF               	gnb=000002 mod=gnbue msin=0000000001
+8:10AM INFO Receive Initial Context Setup Request             	gnbid=000002 mod=gnb
+8:10AM INFO Mobility Restriction is missing                   	gnbid=000002 mod=gnb
+8:10AM WARN PDUSessionResourceSetupListCxtReq is missing      	gnbid=000002 mod=gnb
+8:10AM INFO  Context was created with successful              	gnbid=000002 mod=gnb
+8:10AM INFO  RAN ID 1                                        	gnbid=000002 mod=gnb
+8:10AM INFO  AMF ID 1                                        	gnbid=000002 mod=gnb
+8:10AM INFO  Mobility Restrict --Plmn-- Mcc:not informed Mnc:not informed         	gnbid=000002 mod=gnb
+8:10AM INFO  Masked Imeisv: &{1110000000ffff00 40}                                	gnbid=000002 mod=gnb
+8:10AM INFO  lowed Nssai (Sst-Sd): [{01 not informed}]                         	gnbid=000002 mod=gnb
+8:10AM INFO Send Initial Context Setup Response.              	gnbid=000002 mod=gnb
+8:10AM INFO Initiating Initial Context Setup Response         	gnbid=000002 mod=gnb
+8:10AM INFO No PDU Session to set up in InitialContextSetupResponse.	gnbid=000002 mod=gnb
+8:10AM INFO Sending Initial Context Setup Response to AMF     	gnbid=000002 mod=gnb
+8:10AM INFO Receive Registration Accept                       	mod=ue msin=0000000001
+8:10AM INFO Handle Registration Accept                        	mod=ue msin=0000000001
+8:10AM INFO UE 5G GUTI: 99970020040c00006e3                                    	mod=ue msin=0000000001
+
+8:10AM INFO On State 5GMM_Registered: 1                      	mod=ue msin=0000000001
+On State 5GMM_Registered: 1
+8:10AM INFO Build UplinkNasTransport                          	gnbid=000002 mod=gnb
+8:10AM INFO Sending Uplink Nas Transport to AMF               	gnb=000002 mod=gnbue msin=0000000001
+8:10AM INFO [Task SM]: event PduSessionInit Event: started, target state PDUSessionActive State     	mod=ue msin=0000000001
+8:10AM INFO Initiating New PDU Session                        	mod=ue msin=0000000001
+8:10AM INFO PDU Session Initiating                            	mod=pdu session=1 ue=1
+8:10AM INFO send n1sm msg to amf                              	mod=ue msin=0000000001
+
+8:10AM INFO On State 5GSM_PDUSession_Active_Pending           	mod=pdu session=1 ue=1
+8:10AM INFO Build UplinkNasTransport                          	gnbid=000002 mod=gnb
+8:10AM INFO Sending Uplink Nas Transport to AMF               	gnb=000002 mod=gnbue msin=0000000001
+8:10AM INFO Receive Downlink NAS Transport                    	gnbid=000002 mod=gnb
+8:10AM INFO Receive Configuration Update Command              	mod=ue msin=0000000001
+8:10AM INFO Initiating Configuration Update Complete          	mod=ue msin=0000000001
+
+8:10AM INFO Build UplinkNasTransport                          	gnbid=000002 mod=gnb
+8:10AM INFO Sending Uplink Nas Transport to AMF               	gnb=000002 mod=gnbue msin=0000000001
+8:10AM INFO Receive PDU Session Resource Setup Request        	gnbid=000002 mod=gnb
+8:10AM INFO PDU Session was created with successful.          	gnbid=000002 mod=gnb
+8:10AM INFO PDU Session Id: 1                                	gnbid=000002 mod=gnb
+8:10AM INFO PDU Session Id: 1 - Type: ipv4                     	gnbid=000002 mod=gnb
+8:10AM INFO 	NSSAI Selected --- sst:01 sd:not informed                  	gnbid=000002 mod=gnb
+8:10AM INFO 	QoS Flow Identifier: 1                          	gnbid=000002 mod=gnb
+8:10AM INFO 	Uplink Teid: 51864                                  	gnbid=000002 mod=gnb
+8:10AM INFO 	Downlink Teid: 1                                	gnbid=000002 mod=gnb
+8:10AM INFO 	Non-Dynamic-5QI: 9                              	gnbid=000002 mod=gnb
+8:10AM INFO 	Priority Level ARP: 8                           	gnbid=000002 mod=gnb
+8:10AM INFO 	UPF Address: 192.168.1.15:2152                             	gnbid=000002 mod=gnb
+8:10AM INFO Initiating PDU Session Resource Setup Response    	gnbid=000002 mod=gnb
+8:10AM INFO Sending PDU Session Resource Setup Response to AMF	gnbid=000002 mod=gnb
+8:10AM INFO Receive DL NAS Transport                          	mod=ue msin=0000000001
+8:10AM INFO Receiving PDU Session Establishment Accept        	mod=ue msin=0000000001
+8:10AM INFO PDU address received: 10.45.0.2                          	mod=pdu session=1 ue=1
+8:10AM INFO PDU session QoS RULES: [1 0 6 49 49 1 1 255 1]                         	mod=pdu session=1 ue=1
+8:10AM INFO PDU session DNN: internet                               	mod=pdu session=1 ue=1
+8:10AM INFO PDU session NSSAI -- sst:1 sd:                 	mod=pdu session=1 ue=1
+8:10AM INFO PDU Session ready                                 	mod=pdu session=1 ue=1
+8:10AM INFO On State 5GSM_PDUSession_Active                   	mod=pdu session=1 ue=1
+^CTotal registered: 1
+exit status 1

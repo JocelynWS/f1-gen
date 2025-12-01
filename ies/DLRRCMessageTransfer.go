@@ -248,7 +248,6 @@ func (decoder *DLRRCMessageTransferDecoder) decodeIE(r *aper.AperReader) (msgIe 
 	msg := decoder.msg
 	switch msgIe.Id.Value {
 	case ProtocolIEID_GNBCUUEF1APID:
-		fmt.Println("=====================")
 		tmp := INTEGER{
 			c:   aper.Constraint{Lb: 0, Ub: 4294967295},
 			ext: false,
