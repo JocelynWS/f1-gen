@@ -14,7 +14,7 @@ type PWSCancelRequest struct {
 	NumberofBroadcastRequest          int64                              `lb:0,ub:65535,mandatory,reject`
 	BroadcastToBeCancelledList        []BroadcastToBeCancelledListItem   `lb:1,ub:maxCellingNBDU,optional,reject,valueExt`
 	CancelallWarningMessagesIndicator *CancelallWarningMessagesIndicator `optional,reject`
-	NotificationInformation           *NotificationInformation           `mandatory,reject`
+	NotificationInformation           *NotificationInformation           `optional,reject`
 }
 
 func (msg *PWSCancelRequest) Encode(w io.Writer) (err error) {
@@ -25,6 +25,7 @@ func (msg *PWSCancelRequest) Encode(w io.Writer) (err error) {
 	}
 	return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_PWSCancel, Criticality_PresentReject, ies)
 }
+
 func (msg *PWSCancelRequest) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}
 	ies = append(ies, F1apMessageIE{
@@ -64,13 +65,16 @@ func (msg *PWSCancelRequest) toIes() (ies []F1apMessageIE, err error) {
 			Value:       msg.CancelallWarningMessagesIndicator,
 		})
 	}
-	ies = append(ies, F1apMessageIE{
-		Id:          ProtocolIEID{Value: ProtocolIEID_NotificationInformation},
-		Criticality: Criticality{Value: Criticality_PresentReject},
-		Value:       msg.NotificationInformation,
-	})
+	if msg.NotificationInformation != nil {
+		ies = append(ies, F1apMessageIE{
+			Id:          ProtocolIEID{Value: ProtocolIEID_NotificationInformation},
+			Criticality: Criticality{Value: Criticality_PresentReject},
+			Value:       msg.NotificationInformation,
+		})
+	}
 	return
 }
+
 func (msg *PWSCancelRequest) Decode(wire []byte) (err error, diagList []CriticalityDiagnosticsIEItem) {
 	defer func() {
 		if err != nil {
@@ -86,6 +90,7 @@ func (msg *PWSCancelRequest) Decode(wire []byte) (err error, diagList []Critical
 	if _, err = aper.ReadSequenceOf[F1apMessageIE](decoder.decodeIE, r, &aper.Constraint{Lb: 0, Ub: int64(aper.POW_16 - 1)}, false); err != nil {
 		return
 	}
+	// Check only mandatory fields
 	if _, ok := decoder.list[ProtocolIEID_TransactionID]; !ok {
 		err = fmt.Errorf("Mandatory field TransactionID is missing")
 		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
@@ -104,15 +109,8 @@ func (msg *PWSCancelRequest) Decode(wire []byte) (err error, diagList []Critical
 		})
 		return
 	}
-	if _, ok := decoder.list[ProtocolIEID_NotificationInformation]; !ok {
-		err = fmt.Errorf("Mandatory field NotificationInformation is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentReject},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_NotificationInformation},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
+	// BroadcastToBeCancelledList, CancelallWarningMessagesIndicator, NotificationInformation are optional
+	diagList = decoder.diagList
 	return
 }
 
@@ -198,11 +196,11 @@ func (decoder *PWSCancelRequestDecoder) decodeIE(r *aper.AperReader) (msgIe *F1a
 	default:
 		switch msgIe.Criticality.Value {
 		case Criticality_PresentReject:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: reject)", msgIe.Id.Value)
+			err = fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: reject)", msgIe.Id.Value)
 		case Criticality_PresentIgnore:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: ignore)", msgIe.Id.Value)
+			// Just log, don't return error for ignore criticality
 		case Criticality_PresentNotify:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: notify)", msgIe.Id.Value)
+			err = fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: notify)", msgIe.Id.Value)
 		}
 		if msgIe.Criticality.Value != Criticality_PresentIgnore {
 			decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{

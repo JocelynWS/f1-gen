@@ -41,9 +41,9 @@ type UEContextSetupRequest struct {
 	LTEV2XServicesAuthorized                *LTEV2XServicesAuthorized                `optional,ignore`
 	NRUESidelinkAggregateMaximumBitrate     *NRUESidelinkAggregateMaximumBitrate     `optional,ignore`
 	LTEUESidelinkAggregateMaximumBitrate    *LTEUESidelinkAggregateMaximumBitrate    `optional,ignore`
-	PC5LinkAMBR                             int64                                    `lb:0,ub:4000000000000,mandatory,ignore,valueExt`
+	PC5LinkAMBR                             *int64                                   `lb:0,ub:4000000000000,optional,ignore,valueExt`
 	SLDRBsToBeSetupList                     []SLDRBsToBeSetupItem                    `lb:1,ub:maxnoofSLDRBs,optional,reject`
-	ConditionalInterDUMobilityInformation   *ConditionalInterDUMobilityInformation   `mandatory,reject`
+	ConditionalInterDUMobilityInformation   *ConditionalInterDUMobilityInformation   `optional,reject`
 	ManagementBasedMDTPLMNList              []PLMNIdentity                           `lb:1,ub:maxnoofMDTPLMNs,optional,ignore`
 	ServingNID                              *aper.BitString                          `lb:44,ub:44,optional,reject`
 }
@@ -56,6 +56,7 @@ func (msg *UEContextSetupRequest) Encode(w io.Writer) (err error) {
 	}
 	return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_UEContextSetup, Criticality_PresentReject, ies)
 }
+
 func (msg *UEContextSetupRequest) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}
 	ies = append(ies, F1apMessageIE{
@@ -344,14 +345,16 @@ func (msg *UEContextSetupRequest) toIes() (ies []F1apMessageIE, err error) {
 			Value:       msg.LTEUESidelinkAggregateMaximumBitrate,
 		})
 	}
-	ies = append(ies, F1apMessageIE{
-		Id:          ProtocolIEID{Value: ProtocolIEID_PC5LinkAMBR},
-		Criticality: Criticality{Value: Criticality_PresentIgnore},
-		Value: &INTEGER{
-			c:     aper.Constraint{Lb: 0, Ub: 4000000000000},
-			ext:   true,
-			Value: aper.Integer(msg.PC5LinkAMBR),
-		}})
+	if msg.PC5LinkAMBR != nil {
+		ies = append(ies, F1apMessageIE{
+			Id:          ProtocolIEID{Value: ProtocolIEID_PC5LinkAMBR},
+			Criticality: Criticality{Value: Criticality_PresentIgnore},
+			Value: &INTEGER{
+				c:     aper.Constraint{Lb: 0, Ub: 4000000000000},
+				ext:   true,
+				Value: aper.Integer(*msg.PC5LinkAMBR),
+			}})
+	}
 	if len(msg.SLDRBsToBeSetupList) > 0 {
 		tmp_SLDRBsToBeSetupList := Sequence[*SLDRBsToBeSetupItem]{
 			c:   aper.Constraint{Lb: 1, Ub: maxnoofSLDRBs},
@@ -366,11 +369,13 @@ func (msg *UEContextSetupRequest) toIes() (ies []F1apMessageIE, err error) {
 			Value:       &tmp_SLDRBsToBeSetupList,
 		})
 	}
-	ies = append(ies, F1apMessageIE{
-		Id:          ProtocolIEID{Value: ProtocolIEID_ConditionalInterDUMobilityInformation},
-		Criticality: Criticality{Value: Criticality_PresentReject},
-		Value:       msg.ConditionalInterDUMobilityInformation,
-	})
+	if msg.ConditionalInterDUMobilityInformation != nil {
+		ies = append(ies, F1apMessageIE{
+			Id:          ProtocolIEID{Value: ProtocolIEID_ConditionalInterDUMobilityInformation},
+			Criticality: Criticality{Value: Criticality_PresentReject},
+			Value:       msg.ConditionalInterDUMobilityInformation,
+		})
+	}
 	if len(msg.ManagementBasedMDTPLMNList) > 0 {
 		tmp_ManagementBasedMDTPLMNList := Sequence[*PLMNIdentity]{
 			c:   aper.Constraint{Lb: 1, Ub: maxnoofMDTPLMNs},
@@ -398,6 +403,7 @@ func (msg *UEContextSetupRequest) toIes() (ies []F1apMessageIE, err error) {
 	}
 	return
 }
+
 func (msg *UEContextSetupRequest) Decode(wire []byte) (err error, diagList []CriticalityDiagnosticsIEItem) {
 	defer func() {
 		if err != nil {
@@ -445,24 +451,6 @@ func (msg *UEContextSetupRequest) Decode(wire []byte) (err error, diagList []Cri
 		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
 			IECriticality: Criticality{Value: Criticality_PresentReject},
 			IEID:          ProtocolIEID{Value: ProtocolIEID_CUtoDURRCInformation},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
-	if _, ok := decoder.list[ProtocolIEID_PC5LinkAMBR]; !ok {
-		err = fmt.Errorf("Mandatory field PC5LinkAMBR is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentIgnore},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_PC5LinkAMBR},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
-	if _, ok := decoder.list[ProtocolIEID_ConditionalInterDUMobilityInformation]; !ok {
-		err = fmt.Errorf("Mandatory field ConditionalInterDUMobilityInformation is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentReject},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_ConditionalInterDUMobilityInformation},
 			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
 		})
 		return
@@ -801,7 +789,7 @@ func (decoder *UEContextSetupRequestDecoder) decodeIE(r *aper.AperReader) (msgIe
 			err = utils.WrapError("Read PC5LinkAMBR", err)
 			return
 		}
-		msg.PC5LinkAMBR = int64(tmp.Value)
+		msg.PC5LinkAMBR = (*int64)(&tmp.Value)
 	case ProtocolIEID_SLDRBsToBeSetupList:
 		tmp := Sequence[*SLDRBsToBeSetupItem]{
 			c:   aper.Constraint{Lb: 1, Ub: maxnoofSLDRBs},

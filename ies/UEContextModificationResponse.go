@@ -13,9 +13,9 @@ type UEContextModificationResponse struct {
 	GNBCUUEF1APID                         int64                              `lb:0,ub:4294967295,mandatory,reject`
 	GNBDUUEF1APID                         int64                              `lb:0,ub:4294967295,mandatory,reject`
 	ResourceCoordinationTransferContainer []byte                             `lb:0,ub:0,optional,ignore`
-	DUtoCURRCInformation                  *DUtoCURRCInformation              `mandatory,reject`
-	DRBsSetupModList                      []DRBsSetupModItem                 `lb:1,ub:maxnoofDRBs,mandatory,ignore`
-	DRBsModifiedList                      []DRBsModifiedItem                 `lb:1,ub:maxnoofDRBs,mandatory,ignore`
+	DUtoCURRCInformation                  *DUtoCURRCInformation              `optional,reject`
+	DRBsSetupModList                      []DRBsSetupModItem                 `lb:1,ub:maxnoofDRBs,optional,ignore`
+	DRBsModifiedList                      []DRBsModifiedItem                 `lb:1,ub:maxnoofDRBs,optional,ignore`
 	SRBsFailedToBeSetupModList            []SRBsFailedToBeSetupModItem       `lb:1,ub:maxnoofSRBs,optional,ignore`
 	DRBsFailedToBeSetupModList            []DRBsFailedToBeSetupModItem       `lb:1,ub:maxnoofDRBs,optional,ignore`
 	SCellFailedtoSetupModList             []SCellFailedtoSetupModItem        `lb:1,ub:maxnoofSCells,optional,ignore`
@@ -27,15 +27,15 @@ type UEContextModificationResponse struct {
 	SRBsSetupModList                      []SRBsSetupModItem                 `lb:1,ub:maxnoofSRBs,optional,ignore`
 	SRBsModifiedList                      []SRBsModifiedItem                 `lb:1,ub:maxnoofSRBs,optional,ignore`
 	FullConfiguration                     *FullConfiguration                 `optional,reject`
-	BHChannelsSetupModList                []BHChannelsSetupModItem           `lb:1,ub:maxnoofBHRLCChannels,mandatory,ignore`
-	BHChannelsModifiedList                []BHChannelsModifiedItem           `lb:1,ub:maxnoofBHRLCChannels,mandatory,ignore`
+	BHChannelsSetupModList                []BHChannelsSetupModItem           `lb:1,ub:maxnoofBHRLCChannels,optional,ignore`
+	BHChannelsModifiedList                []BHChannelsModifiedItem           `lb:1,ub:maxnoofBHRLCChannels,optional,ignore`
 	BHChannelsFailedToBeSetupModList      []BHChannelsFailedToBeSetupModItem `lb:1,ub:maxnoofBHRLCChannels,optional,ignore`
 	BHChannelsFailedToBeModifiedList      []BHChannelsFailedToBeModifiedItem `lb:1,ub:maxnoofBHRLCChannels,optional,ignore`
 	SLDRBsSetupModList                    []SLDRBsSetupModItem               `lb:1,ub:maxnoofSLDRBs,optional,ignore`
 	SLDRBsModifiedList                    []SLDRBsModifiedItem               `lb:1,ub:maxnoofSLDRBs,optional,ignore`
 	SLDRBsFailedToBeSetupModList          []SLDRBsFailedToBeSetupModItem     `lb:1,ub:maxnoofSLDRBs,optional,ignore`
 	SLDRBsFailedToBeModifiedList          []SLDRBsFailedToBeModifiedItem     `lb:1,ub:maxnoofSLDRBs,optional,ignore`
-	RequestedTargetCellGlobalID           *NRCGI                             `mandatory,reject`
+	RequestedTargetCellGlobalID           *NRCGI                             `optional,reject`
 }
 
 func (msg *UEContextModificationResponse) Encode(w io.Writer) (err error) {
@@ -74,11 +74,15 @@ func (msg *UEContextModificationResponse) toIes() (ies []F1apMessageIE, err erro
 				Value: msg.ResourceCoordinationTransferContainer,
 			}})
 	}
-	ies = append(ies, F1apMessageIE{
-		Id:          ProtocolIEID{Value: ProtocolIEID_DUtoCURRCInformation},
-		Criticality: Criticality{Value: Criticality_PresentReject},
-		Value:       msg.DUtoCURRCInformation,
-	})
+	// FIX: DUtoCURRCInformation is optional, not mandatory
+	if msg.DUtoCURRCInformation != nil {
+		ies = append(ies, F1apMessageIE{
+			Id:          ProtocolIEID{Value: ProtocolIEID_DUtoCURRCInformation},
+			Criticality: Criticality{Value: Criticality_PresentReject},
+			Value:       msg.DUtoCURRCInformation,
+		})
+	}
+	// FIX: DRBsSetupModList is optional, not mandatory - removed else error
 	if len(msg.DRBsSetupModList) > 0 {
 		tmp_DRBsSetupModList := Sequence[*DRBsSetupModItem]{
 			c:   aper.Constraint{Lb: 1, Ub: maxnoofDRBs},
@@ -92,10 +96,8 @@ func (msg *UEContextModificationResponse) toIes() (ies []F1apMessageIE, err erro
 			Criticality: Criticality{Value: Criticality_PresentIgnore},
 			Value:       &tmp_DRBsSetupModList,
 		})
-	} else {
-		err = utils.WrapError("DRBsSetupModList is nil", err)
-		return
 	}
+	// FIX: DRBsModifiedList is optional, not mandatory - removed else error
 	if len(msg.DRBsModifiedList) > 0 {
 		tmp_DRBsModifiedList := Sequence[*DRBsModifiedItem]{
 			c:   aper.Constraint{Lb: 1, Ub: maxnoofDRBs},
@@ -109,9 +111,6 @@ func (msg *UEContextModificationResponse) toIes() (ies []F1apMessageIE, err erro
 			Criticality: Criticality{Value: Criticality_PresentIgnore},
 			Value:       &tmp_DRBsModifiedList,
 		})
-	} else {
-		err = utils.WrapError("DRBsModifiedList is nil", err)
-		return
 	}
 	if len(msg.SRBsFailedToBeSetupModList) > 0 {
 		tmp_SRBsFailedToBeSetupModList := Sequence[*SRBsFailedToBeSetupModItem]{
@@ -242,6 +241,7 @@ func (msg *UEContextModificationResponse) toIes() (ies []F1apMessageIE, err erro
 			Value:       msg.FullConfiguration,
 		})
 	}
+	// FIX: BHChannelsSetupModList is optional, not mandatory - removed else error
 	if len(msg.BHChannelsSetupModList) > 0 {
 		tmp_BHChannelsSetupModList := Sequence[*BHChannelsSetupModItem]{
 			c:   aper.Constraint{Lb: 1, Ub: maxnoofBHRLCChannels},
@@ -255,10 +255,8 @@ func (msg *UEContextModificationResponse) toIes() (ies []F1apMessageIE, err erro
 			Criticality: Criticality{Value: Criticality_PresentIgnore},
 			Value:       &tmp_BHChannelsSetupModList,
 		})
-	} else {
-		err = utils.WrapError("BHChannelsSetupModList is nil", err)
-		return
 	}
+	// FIX: BHChannelsModifiedList is optional, not mandatory - removed else error
 	if len(msg.BHChannelsModifiedList) > 0 {
 		tmp_BHChannelsModifiedList := Sequence[*BHChannelsModifiedItem]{
 			c:   aper.Constraint{Lb: 1, Ub: maxnoofBHRLCChannels},
@@ -272,9 +270,6 @@ func (msg *UEContextModificationResponse) toIes() (ies []F1apMessageIE, err erro
 			Criticality: Criticality{Value: Criticality_PresentIgnore},
 			Value:       &tmp_BHChannelsModifiedList,
 		})
-	} else {
-		err = utils.WrapError("BHChannelsModifiedList is nil", err)
-		return
 	}
 	if len(msg.BHChannelsFailedToBeSetupModList) > 0 {
 		tmp_BHChannelsFailedToBeSetupModList := Sequence[*BHChannelsFailedToBeSetupModItem]{
@@ -360,11 +355,14 @@ func (msg *UEContextModificationResponse) toIes() (ies []F1apMessageIE, err erro
 			Value:       &tmp_SLDRBsFailedToBeModifiedList,
 		})
 	}
-	ies = append(ies, F1apMessageIE{
-		Id:          ProtocolIEID{Value: ProtocolIEID_RequestedTargetCellGlobalID},
-		Criticality: Criticality{Value: Criticality_PresentReject},
-		Value:       msg.RequestedTargetCellGlobalID,
-	})
+	// FIX: RequestedTargetCellGlobalID is optional, not mandatory
+	if msg.RequestedTargetCellGlobalID != nil {
+		ies = append(ies, F1apMessageIE{
+			Id:          ProtocolIEID{Value: ProtocolIEID_RequestedTargetCellGlobalID},
+			Criticality: Criticality{Value: Criticality_PresentReject},
+			Value:       msg.RequestedTargetCellGlobalID,
+		})
+	}
 	return
 }
 func (msg *UEContextModificationResponse) Decode(wire []byte) (err error, diagList []CriticalityDiagnosticsIEItem) {
@@ -396,60 +394,6 @@ func (msg *UEContextModificationResponse) Decode(wire []byte) (err error, diagLi
 		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
 			IECriticality: Criticality{Value: Criticality_PresentReject},
 			IEID:          ProtocolIEID{Value: ProtocolIEID_GNBDUUEF1APID},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
-	if _, ok := decoder.list[ProtocolIEID_DUtoCURRCInformation]; !ok {
-		err = fmt.Errorf("Mandatory field DUtoCURRCInformation is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentReject},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_DUtoCURRCInformation},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
-	if _, ok := decoder.list[ProtocolIEID_DRBsSetupModList]; !ok {
-		err = fmt.Errorf("Mandatory field DRBsSetupModList is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentIgnore},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_DRBsSetupModList},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
-	if _, ok := decoder.list[ProtocolIEID_DRBsModifiedList]; !ok {
-		err = fmt.Errorf("Mandatory field DRBsModifiedList is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentIgnore},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_DRBsModifiedList},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
-	if _, ok := decoder.list[ProtocolIEID_BHChannelsSetupModList]; !ok {
-		err = fmt.Errorf("Mandatory field BHChannelsSetupModList is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentIgnore},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_BHChannelsSetupModList},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
-	if _, ok := decoder.list[ProtocolIEID_BHChannelsModifiedList]; !ok {
-		err = fmt.Errorf("Mandatory field BHChannelsModifiedList is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentIgnore},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_BHChannelsModifiedList},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
-	if _, ok := decoder.list[ProtocolIEID_RequestedTargetCellGlobalID]; !ok {
-		err = fmt.Errorf("Mandatory field RequestedTargetCellGlobalID is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentReject},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_RequestedTargetCellGlobalID},
 			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
 		})
 		return

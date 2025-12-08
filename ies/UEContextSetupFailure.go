@@ -15,7 +15,7 @@ type UEContextSetupFailure struct {
 	Cause                       Cause                   `mandatory,ignore`
 	CriticalityDiagnostics      *CriticalityDiagnostics `optional,ignore`
 	PotentialSpCellList         []PotentialSpCellItem   `lb:0,ub:maxnoofPotentialSpCells,optional,ignore`
-	RequestedTargetCellGlobalID *NRCGI                  `mandatory,reject`
+	RequestedTargetCellGlobalID *NRCGI                  `optional,reject`
 }
 
 func (msg *UEContextSetupFailure) Encode(w io.Writer) (err error) {
@@ -72,11 +72,13 @@ func (msg *UEContextSetupFailure) toIes() (ies []F1apMessageIE, err error) {
 			Value:       &tmp_PotentialSpCellList,
 		})
 	}
-	ies = append(ies, F1apMessageIE{
-		Id:          ProtocolIEID{Value: ProtocolIEID_RequestedTargetCellGlobalID},
-		Criticality: Criticality{Value: Criticality_PresentReject},
-		Value:       msg.RequestedTargetCellGlobalID,
-	})
+	if msg.RequestedTargetCellGlobalID != nil {
+		ies = append(ies, F1apMessageIE{
+			Id:          ProtocolIEID{Value: ProtocolIEID_RequestedTargetCellGlobalID},
+			Criticality: Criticality{Value: Criticality_PresentReject},
+			Value:       msg.RequestedTargetCellGlobalID,
+		})
+	}
 	return
 }
 func (msg *UEContextSetupFailure) Decode(wire []byte) (err error, diagList []CriticalityDiagnosticsIEItem) {
@@ -108,15 +110,6 @@ func (msg *UEContextSetupFailure) Decode(wire []byte) (err error, diagList []Cri
 		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
 			IECriticality: Criticality{Value: Criticality_PresentIgnore},
 			IEID:          ProtocolIEID{Value: ProtocolIEID_Cause},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
-	if _, ok := decoder.list[ProtocolIEID_RequestedTargetCellGlobalID]; !ok {
-		err = fmt.Errorf("Mandatory field RequestedTargetCellGlobalID is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentReject},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_RequestedTargetCellGlobalID},
 			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
 		})
 		return

@@ -10,9 +10,10 @@ import (
 )
 
 type GNBDUResourceCoordinationRequest struct {
-	TransactionID                       int64                                `lb:0,ub:255,mandatory,reject`
-	RequestType                         RequestType                          `mandatory,reject`
-	IgnoreResourceCoordinationContainer *IgnoreResourceCoordinationContainer `optional,reject`
+	TransactionID                               int64                                `lb:0,ub:255,mandatory,reject`
+	RequestType                                 RequestType                          `mandatory,reject`
+	EUTRANRCellResourceCoordinationReqContainer []byte                               `lb:0,ub:0,mandatory,reject`
+	IgnoreResourceCoordinationContainer         *IgnoreResourceCoordinationContainer `optional,reject`
 }
 
 func (msg *GNBDUResourceCoordinationRequest) Encode(w io.Writer) (err error) {
@@ -23,6 +24,7 @@ func (msg *GNBDUResourceCoordinationRequest) Encode(w io.Writer) (err error) {
 	}
 	return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_GNBDUResourceCoordination, Criticality_PresentReject, ies)
 }
+
 func (msg *GNBDUResourceCoordinationRequest) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}
 	ies = append(ies, F1apMessageIE{
@@ -38,6 +40,14 @@ func (msg *GNBDUResourceCoordinationRequest) toIes() (ies []F1apMessageIE, err e
 		Criticality: Criticality{Value: Criticality_PresentReject},
 		Value:       &msg.RequestType,
 	})
+	ies = append(ies, F1apMessageIE{
+		Id:          ProtocolIEID{Value: ProtocolIEID_EUTRANRCellResourceCoordinationReqContainer},
+		Criticality: Criticality{Value: Criticality_PresentReject},
+		Value: &OCTETSTRING{
+			c:     aper.Constraint{Lb: 0, Ub: 0},
+			ext:   false,
+			Value: msg.EUTRANRCellResourceCoordinationReqContainer,
+		}})
 	if msg.IgnoreResourceCoordinationContainer != nil {
 		ies = append(ies, F1apMessageIE{
 			Id:          ProtocolIEID{Value: ProtocolIEID_IgnoreResourceCoordinationContainer},
@@ -47,6 +57,7 @@ func (msg *GNBDUResourceCoordinationRequest) toIes() (ies []F1apMessageIE, err e
 	}
 	return
 }
+
 func (msg *GNBDUResourceCoordinationRequest) Decode(wire []byte) (err error, diagList []CriticalityDiagnosticsIEItem) {
 	defer func() {
 		if err != nil {
@@ -80,6 +91,16 @@ func (msg *GNBDUResourceCoordinationRequest) Decode(wire []byte) (err error, dia
 		})
 		return
 	}
+	if _, ok := decoder.list[ProtocolIEID_EUTRANRCellResourceCoordinationReqContainer]; !ok {
+		err = fmt.Errorf("Mandatory field EUTRANRCellResourceCoordinationReqContainer is missing")
+		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
+			IECriticality: Criticality{Value: Criticality_PresentReject},
+			IEID:          ProtocolIEID{Value: ProtocolIEID_EUTRANRCellResourceCoordinationReqContainer},
+			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
+		})
+		return
+	}
+	diagList = decoder.diagList
 	return
 }
 
@@ -131,6 +152,16 @@ func (decoder *GNBDUResourceCoordinationRequestDecoder) decodeIE(r *aper.AperRea
 			return
 		}
 		msg.RequestType = tmp
+	case ProtocolIEID_EUTRANRCellResourceCoordinationReqContainer:
+		tmp := OCTETSTRING{
+			c:   aper.Constraint{Lb: 0, Ub: 0},
+			ext: false,
+		}
+		if err = tmp.Decode(ieR); err != nil {
+			err = utils.WrapError("Read EUTRANRCellResourceCoordinationReqContainer", err)
+			return
+		}
+		msg.EUTRANRCellResourceCoordinationReqContainer = tmp.Value
 	case ProtocolIEID_IgnoreResourceCoordinationContainer:
 		var tmp IgnoreResourceCoordinationContainer
 		if err = tmp.Decode(ieR); err != nil {
@@ -141,11 +172,11 @@ func (decoder *GNBDUResourceCoordinationRequestDecoder) decodeIE(r *aper.AperRea
 	default:
 		switch msgIe.Criticality.Value {
 		case Criticality_PresentReject:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: reject)", msgIe.Id.Value)
+			err = fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: reject)", msgIe.Id.Value)
 		case Criticality_PresentIgnore:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: ignore)", msgIe.Id.Value)
+			err = fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: ignore)", msgIe.Id.Value)
 		case Criticality_PresentNotify:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: notify)", msgIe.Id.Value)
+			err = fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: notify)", msgIe.Id.Value)
 		}
 		if msgIe.Criticality.Value != Criticality_PresentIgnore {
 			decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{

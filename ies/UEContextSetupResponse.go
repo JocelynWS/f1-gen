@@ -27,7 +27,7 @@ type UEContextSetupResponse struct {
 	BHChannelsFailedToBeSetupList         []BHChannelsFailedToBeSetupItem `lb:1,ub:maxnoofBHRLCChannels,optional,ignore`
 	SLDRBsSetupList                       []SLDRBsSetupItem               `lb:1,ub:maxnoofSLDRBs,optional,ignore`
 	SLDRBsFailedToBeSetupList             []SLDRBsFailedToBeSetupItem     `lb:1,ub:maxnoofSLDRBs,optional,ignore`
-	RequestedTargetCellGlobalID           *NRCGI                          `mandatory,reject`
+	RequestedTargetCellGlobalID           *NRCGI                          `optional,reject`
 }
 
 func (msg *UEContextSetupResponse) Encode(w io.Writer) (err error) {
@@ -228,11 +228,14 @@ func (msg *UEContextSetupResponse) toIes() (ies []F1apMessageIE, err error) {
 			Value:       &tmp_SLDRBsFailedToBeSetupList,
 		})
 	}
-	ies = append(ies, F1apMessageIE{
-		Id:          ProtocolIEID{Value: ProtocolIEID_RequestedTargetCellGlobalID},
-		Criticality: Criticality{Value: Criticality_PresentReject},
-		Value:       msg.RequestedTargetCellGlobalID,
-	})
+	// FIX: RequestedTargetCellGlobalID is optional, not mandatory
+	if msg.RequestedTargetCellGlobalID != nil {
+		ies = append(ies, F1apMessageIE{
+			Id:          ProtocolIEID{Value: ProtocolIEID_RequestedTargetCellGlobalID},
+			Criticality: Criticality{Value: Criticality_PresentReject},
+			Value:       msg.RequestedTargetCellGlobalID,
+		})
+	}
 	return
 }
 func (msg *UEContextSetupResponse) Decode(wire []byte) (err error, diagList []CriticalityDiagnosticsIEItem) {
@@ -277,15 +280,7 @@ func (msg *UEContextSetupResponse) Decode(wire []byte) (err error, diagList []Cr
 		})
 		return
 	}
-	if _, ok := decoder.list[ProtocolIEID_RequestedTargetCellGlobalID]; !ok {
-		err = fmt.Errorf("Mandatory field RequestedTargetCellGlobalID is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentReject},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_RequestedTargetCellGlobalID},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
+	// FIX: RequestedTargetCellGlobalID is optional, removed mandatory check
 	return
 }
 

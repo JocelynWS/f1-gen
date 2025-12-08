@@ -10,12 +10,12 @@ import (
 )
 
 type ECIDMeasurementReport struct {
-	GNBCUUEF1APID         int64                 `lb:0,ub:4294967295,mandatory,reject`
-	GNBDUUEF1APID         int64                 `lb:0,ub:4294967295,mandatory,reject`
+	GNBCUUEF1APID         int64                 `lb:0,ub:4294967295,mandatory,ignore`
+	GNBDUUEF1APID         int64                 `lb:0,ub:4294967295,mandatory,ignore`
 	LMFUEMeasurementID    int64                 `lb:1,ub:256,mandatory,reject,valueExt`
 	RANUEMeasurementID    int64                 `lb:1,ub:256,mandatory,reject,valueExt`
 	ECIDMeasurementResult ECIDMeasurementResult `mandatory,ignore`
-	CellPortionID         int64                 `lb:0,ub:4095,mandatory,ignore,valueExt`
+	CellPortionID         *int64                `lb:0,ub:4095,optional,ignore,valueExt`
 }
 
 func (msg *ECIDMeasurementReport) Encode(w io.Writer) (err error) {
@@ -26,11 +26,12 @@ func (msg *ECIDMeasurementReport) Encode(w io.Writer) (err error) {
 	}
 	return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_ECIDMeasurementReport, Criticality_PresentIgnore, ies)
 }
+
 func (msg *ECIDMeasurementReport) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}
 	ies = append(ies, F1apMessageIE{
 		Id:          ProtocolIEID{Value: ProtocolIEID_GNBCUUEF1APID},
-		Criticality: Criticality{Value: Criticality_PresentReject},
+		Criticality: Criticality{Value: Criticality_PresentIgnore},
 		Value: &INTEGER{
 			c:     aper.Constraint{Lb: 0, Ub: 4294967295},
 			ext:   false,
@@ -38,7 +39,7 @@ func (msg *ECIDMeasurementReport) toIes() (ies []F1apMessageIE, err error) {
 		}})
 	ies = append(ies, F1apMessageIE{
 		Id:          ProtocolIEID{Value: ProtocolIEID_GNBDUUEF1APID},
-		Criticality: Criticality{Value: Criticality_PresentReject},
+		Criticality: Criticality{Value: Criticality_PresentIgnore},
 		Value: &INTEGER{
 			c:     aper.Constraint{Lb: 0, Ub: 4294967295},
 			ext:   false,
@@ -65,16 +66,19 @@ func (msg *ECIDMeasurementReport) toIes() (ies []F1apMessageIE, err error) {
 		Criticality: Criticality{Value: Criticality_PresentIgnore},
 		Value:       &msg.ECIDMeasurementResult,
 	})
-	ies = append(ies, F1apMessageIE{
-		Id:          ProtocolIEID{Value: ProtocolIEID_CellPortionID},
-		Criticality: Criticality{Value: Criticality_PresentIgnore},
-		Value: &INTEGER{
-			c:     aper.Constraint{Lb: 0, Ub: 4095},
-			ext:   true,
-			Value: aper.Integer(msg.CellPortionID),
-		}})
+	if msg.CellPortionID != nil {
+		ies = append(ies, F1apMessageIE{
+			Id:          ProtocolIEID{Value: ProtocolIEID_CellPortionID},
+			Criticality: Criticality{Value: Criticality_PresentIgnore},
+			Value: &INTEGER{
+				c:     aper.Constraint{Lb: 0, Ub: 4095},
+				ext:   true,
+				Value: aper.Integer(*msg.CellPortionID),
+			}})
+	}
 	return
 }
+
 func (msg *ECIDMeasurementReport) Decode(wire []byte) (err error, diagList []CriticalityDiagnosticsIEItem) {
 	defer func() {
 		if err != nil {
@@ -93,7 +97,7 @@ func (msg *ECIDMeasurementReport) Decode(wire []byte) (err error, diagList []Cri
 	if _, ok := decoder.list[ProtocolIEID_GNBCUUEF1APID]; !ok {
 		err = fmt.Errorf("Mandatory field GNBCUUEF1APID is missing")
 		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentReject},
+			IECriticality: Criticality{Value: Criticality_PresentIgnore},
 			IEID:          ProtocolIEID{Value: ProtocolIEID_GNBCUUEF1APID},
 			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
 		})
@@ -102,7 +106,7 @@ func (msg *ECIDMeasurementReport) Decode(wire []byte) (err error, diagList []Cri
 	if _, ok := decoder.list[ProtocolIEID_GNBDUUEF1APID]; !ok {
 		err = fmt.Errorf("Mandatory field GNBDUUEF1APID is missing")
 		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentReject},
+			IECriticality: Criticality{Value: Criticality_PresentIgnore},
 			IEID:          ProtocolIEID{Value: ProtocolIEID_GNBDUUEF1APID},
 			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
 		})
@@ -135,15 +139,7 @@ func (msg *ECIDMeasurementReport) Decode(wire []byte) (err error, diagList []Cri
 		})
 		return
 	}
-	if _, ok := decoder.list[ProtocolIEID_CellPortionID]; !ok {
-		err = fmt.Errorf("Mandatory field CellPortionID is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentIgnore},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_CellPortionID},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
+	diagList = decoder.diagList
 	return
 }
 
@@ -234,15 +230,15 @@ func (decoder *ECIDMeasurementReportDecoder) decodeIE(r *aper.AperReader) (msgIe
 			err = utils.WrapError("Read CellPortionID", err)
 			return
 		}
-		msg.CellPortionID = int64(tmp.Value)
+		msg.CellPortionID = (*int64)(&tmp.Value)
 	default:
 		switch msgIe.Criticality.Value {
 		case Criticality_PresentReject:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: reject)", msgIe.Id.Value)
+			err = fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: reject)", msgIe.Id.Value)
 		case Criticality_PresentIgnore:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: ignore)", msgIe.Id.Value)
+			err = fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: ignore)", msgIe.Id.Value)
 		case Criticality_PresentNotify:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: notify)", msgIe.Id.Value)
+			err = fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: notify)", msgIe.Id.Value)
 		}
 		if msgIe.Criticality.Value != Criticality_PresentIgnore {
 			decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{

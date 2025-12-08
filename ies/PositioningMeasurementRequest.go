@@ -18,10 +18,10 @@ type PositioningMeasurementRequest struct {
 	PosMeasurementPeriodicity  *PosMeasurementPeriodicity     `conditional,reject`
 	PosMeasurementQuantities   []PosMeasurementQuantitiesItem `lb:1,ub:maxnoofPosMeas,mandatory,reject,valueExt`
 	SFNInitialisationTime      *aper.BitString                `lb:64,ub:64,optional,ignore`
-	SRSConfiguration           *SRSConfiguration              `mandatory,ignore`
+	SRSConfiguration           *SRSConfiguration              `optional,ignore`
 	MeasurementBeamInfoRequest *MeasurementBeamInfoRequest    `optional,ignore`
-	SystemFrameNumber          int64                          `lb:0,ub:1023,mandatory,ignore`
-	SlotNumber                 int64                          `lb:0,ub:79,mandatory,ignore`
+	SystemFrameNumber          *int64                         `lb:0,ub:1023,optional,ignore`
+	SlotNumber                 *int64                         `lb:0,ub:79,optional,ignore`
 }
 
 func (msg *PositioningMeasurementRequest) Encode(w io.Writer) (err error) {
@@ -32,6 +32,7 @@ func (msg *PositioningMeasurementRequest) Encode(w io.Writer) (err error) {
 	}
 	return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_PositioningMeasurementExchange, Criticality_PresentReject, ies)
 }
+
 func (msg *PositioningMeasurementRequest) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}
 	ies = append(ies, F1apMessageIE{
@@ -104,6 +105,7 @@ func (msg *PositioningMeasurementRequest) toIes() (ies []F1apMessageIE, err erro
 		err = utils.WrapError("PosMeasurementQuantities is nil", err)
 		return
 	}
+	// Optional fields - only encode if present
 	if msg.SFNInitialisationTime != nil {
 		ies = append(ies, F1apMessageIE{
 			Id:          ProtocolIEID{Value: ProtocolIEID_SFNInitialisationTime},
@@ -115,11 +117,13 @@ func (msg *PositioningMeasurementRequest) toIes() (ies []F1apMessageIE, err erro
 					Bytes: msg.SFNInitialisationTime.Bytes, NumBits: msg.SFNInitialisationTime.NumBits},
 			}})
 	}
-	ies = append(ies, F1apMessageIE{
-		Id:          ProtocolIEID{Value: ProtocolIEID_SRSConfiguration},
-		Criticality: Criticality{Value: Criticality_PresentIgnore},
-		Value:       msg.SRSConfiguration,
-	})
+	if msg.SRSConfiguration != nil {
+		ies = append(ies, F1apMessageIE{
+			Id:          ProtocolIEID{Value: ProtocolIEID_SRSConfiguration},
+			Criticality: Criticality{Value: Criticality_PresentIgnore},
+			Value:       msg.SRSConfiguration,
+		})
+	}
 	if msg.MeasurementBeamInfoRequest != nil {
 		ies = append(ies, F1apMessageIE{
 			Id:          ProtocolIEID{Value: ProtocolIEID_MeasurementBeamInfoRequest},
@@ -127,24 +131,29 @@ func (msg *PositioningMeasurementRequest) toIes() (ies []F1apMessageIE, err erro
 			Value:       msg.MeasurementBeamInfoRequest,
 		})
 	}
-	ies = append(ies, F1apMessageIE{
-		Id:          ProtocolIEID{Value: ProtocolIEID_SystemFrameNumber},
-		Criticality: Criticality{Value: Criticality_PresentIgnore},
-		Value: &INTEGER{
-			c:     aper.Constraint{Lb: 0, Ub: 1023},
-			ext:   false,
-			Value: aper.Integer(msg.SystemFrameNumber),
-		}})
-	ies = append(ies, F1apMessageIE{
-		Id:          ProtocolIEID{Value: ProtocolIEID_SlotNumber},
-		Criticality: Criticality{Value: Criticality_PresentIgnore},
-		Value: &INTEGER{
-			c:     aper.Constraint{Lb: 0, Ub: 79},
-			ext:   false,
-			Value: aper.Integer(msg.SlotNumber),
-		}})
+	if msg.SystemFrameNumber != nil {
+		ies = append(ies, F1apMessageIE{
+			Id:          ProtocolIEID{Value: ProtocolIEID_SystemFrameNumber},
+			Criticality: Criticality{Value: Criticality_PresentIgnore},
+			Value: &INTEGER{
+				c:     aper.Constraint{Lb: 0, Ub: 1023},
+				ext:   false,
+				Value: aper.Integer(*msg.SystemFrameNumber),
+			}})
+	}
+	if msg.SlotNumber != nil {
+		ies = append(ies, F1apMessageIE{
+			Id:          ProtocolIEID{Value: ProtocolIEID_SlotNumber},
+			Criticality: Criticality{Value: Criticality_PresentIgnore},
+			Value: &INTEGER{
+				c:     aper.Constraint{Lb: 0, Ub: 79},
+				ext:   false,
+				Value: aper.Integer(*msg.SlotNumber),
+			}})
+	}
 	return
 }
+
 func (msg *PositioningMeasurementRequest) Decode(wire []byte) (err error, diagList []CriticalityDiagnosticsIEItem) {
 	defer func() {
 		if err != nil {
@@ -160,6 +169,7 @@ func (msg *PositioningMeasurementRequest) Decode(wire []byte) (err error, diagLi
 	if _, err = aper.ReadSequenceOf[F1apMessageIE](decoder.decodeIE, r, &aper.Constraint{Lb: 0, Ub: int64(aper.POW_16 - 1)}, false); err != nil {
 		return
 	}
+	// Check only mandatory fields
 	if _, ok := decoder.list[ProtocolIEID_TransactionID]; !ok {
 		err = fmt.Errorf("Mandatory field TransactionID is missing")
 		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
@@ -214,33 +224,10 @@ func (msg *PositioningMeasurementRequest) Decode(wire []byte) (err error, diagLi
 		})
 		return
 	}
-	if _, ok := decoder.list[ProtocolIEID_SRSConfiguration]; !ok {
-		err = fmt.Errorf("Mandatory field SRSConfiguration is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentIgnore},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_SRSConfiguration},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
-	if _, ok := decoder.list[ProtocolIEID_SystemFrameNumber]; !ok {
-		err = fmt.Errorf("Mandatory field SystemFrameNumber is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentIgnore},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_SystemFrameNumber},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
-	if _, ok := decoder.list[ProtocolIEID_SlotNumber]; !ok {
-		err = fmt.Errorf("Mandatory field SlotNumber is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentIgnore},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_SlotNumber},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
+	// SFNInitialisationTime, SRSConfiguration, MeasurementBeamInfoRequest,
+	// SystemFrameNumber, SlotNumber are optional - no check needed
+	// PosMeasurementPeriodicity is conditional - no check here
+	diagList = decoder.diagList
 	return
 }
 
@@ -380,7 +367,8 @@ func (decoder *PositioningMeasurementRequestDecoder) decodeIE(r *aper.AperReader
 			err = utils.WrapError("Read SystemFrameNumber", err)
 			return
 		}
-		msg.SystemFrameNumber = int64(tmp.Value)
+		val := int64(tmp.Value)
+		msg.SystemFrameNumber = &val
 	case ProtocolIEID_SlotNumber:
 		tmp := INTEGER{
 			c:   aper.Constraint{Lb: 0, Ub: 79},
@@ -390,15 +378,16 @@ func (decoder *PositioningMeasurementRequestDecoder) decodeIE(r *aper.AperReader
 			err = utils.WrapError("Read SlotNumber", err)
 			return
 		}
-		msg.SlotNumber = int64(tmp.Value)
+		val := int64(tmp.Value)
+		msg.SlotNumber = &val
 	default:
 		switch msgIe.Criticality.Value {
 		case Criticality_PresentReject:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: reject)", msgIe.Id.Value)
+			err = fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: reject)", msgIe.Id.Value)
 		case Criticality_PresentIgnore:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: ignore)", msgIe.Id.Value)
+			// Just log, don't return error for ignore criticality
 		case Criticality_PresentNotify:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: notify)", msgIe.Id.Value)
+			err = fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: notify)", msgIe.Id.Value)
 		}
 		if msgIe.Criticality.Value != Criticality_PresentIgnore {
 			decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{

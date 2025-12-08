@@ -11,10 +11,10 @@ import (
 
 type PositioningAssistanceInformationControl struct {
 	TransactionID             int64         `lb:0,ub:255,mandatory,reject`
-	PosAssistanceInformation  []byte        `lb:0,ub:0,mandatory,reject`
-	PosBroadcast              *PosBroadcast `mandatory,reject`
-	PositioningBroadcastCells []NRCGI       `lb:1,ub:maxCellingNBDU,mandatory,reject,valueExt`
-	RoutingID                 []byte        `lb:0,ub:0,mandatory,reject`
+	PosAssistanceInformation  []byte        `lb:0,ub:0,optional,reject`
+	PosBroadcast              *PosBroadcast `optional,reject`
+	PositioningBroadcastCells []NRCGI       `lb:1,ub:maxCellingNBDU,optional,reject,valExt`
+	RoutingID                 []byte        `lb:0,ub:0,optional,reject`
 }
 
 func (msg *PositioningAssistanceInformationControl) Encode(w io.Writer) (err error) {
@@ -25,6 +25,7 @@ func (msg *PositioningAssistanceInformationControl) Encode(w io.Writer) (err err
 	}
 	return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_PositioningAssistanceInformationControl, Criticality_PresentIgnore, ies)
 }
+
 func (msg *PositioningAssistanceInformationControl) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}
 	ies = append(ies, F1apMessageIE{
@@ -35,19 +36,23 @@ func (msg *PositioningAssistanceInformationControl) toIes() (ies []F1apMessageIE
 			ext:   false,
 			Value: aper.Integer(msg.TransactionID),
 		}})
-	ies = append(ies, F1apMessageIE{
-		Id:          ProtocolIEID{Value: ProtocolIEID_PosAssistanceInformation},
-		Criticality: Criticality{Value: Criticality_PresentReject},
-		Value: &OCTETSTRING{
-			c:     aper.Constraint{Lb: 0, Ub: 0},
-			ext:   false,
-			Value: msg.PosAssistanceInformation,
-		}})
-	ies = append(ies, F1apMessageIE{
-		Id:          ProtocolIEID{Value: ProtocolIEID_PosBroadcast},
-		Criticality: Criticality{Value: Criticality_PresentReject},
-		Value:       msg.PosBroadcast,
-	})
+	if len(msg.PosAssistanceInformation) > 0 {
+		ies = append(ies, F1apMessageIE{
+			Id:          ProtocolIEID{Value: ProtocolIEID_PosAssistanceInformation},
+			Criticality: Criticality{Value: Criticality_PresentReject},
+			Value: &OCTETSTRING{
+				c:     aper.Constraint{Lb: 0, Ub: 0},
+				ext:   false,
+				Value: msg.PosAssistanceInformation,
+			}})
+	}
+	if msg.PosBroadcast != nil {
+		ies = append(ies, F1apMessageIE{
+			Id:          ProtocolIEID{Value: ProtocolIEID_PosBroadcast},
+			Criticality: Criticality{Value: Criticality_PresentReject},
+			Value:       msg.PosBroadcast,
+		})
+	}
 	if len(msg.PositioningBroadcastCells) > 0 {
 		tmp_PositioningBroadcastCells := Sequence[*NRCGI]{
 			c:   aper.Constraint{Lb: 1, Ub: maxCellingNBDU},
@@ -61,20 +66,20 @@ func (msg *PositioningAssistanceInformationControl) toIes() (ies []F1apMessageIE
 			Criticality: Criticality{Value: Criticality_PresentReject},
 			Value:       &tmp_PositioningBroadcastCells,
 		})
-	} else {
-		err = utils.WrapError("PositioningBroadcastCells is nil", err)
-		return
 	}
-	ies = append(ies, F1apMessageIE{
-		Id:          ProtocolIEID{Value: ProtocolIEID_RoutingID},
-		Criticality: Criticality{Value: Criticality_PresentReject},
-		Value: &OCTETSTRING{
-			c:     aper.Constraint{Lb: 0, Ub: 0},
-			ext:   false,
-			Value: msg.RoutingID,
-		}})
+	if len(msg.RoutingID) > 0 {
+		ies = append(ies, F1apMessageIE{
+			Id:          ProtocolIEID{Value: ProtocolIEID_RoutingID},
+			Criticality: Criticality{Value: Criticality_PresentReject},
+			Value: &OCTETSTRING{
+				c:     aper.Constraint{Lb: 0, Ub: 0},
+				ext:   false,
+				Value: msg.RoutingID,
+			}})
+	}
 	return
 }
+
 func (msg *PositioningAssistanceInformationControl) Decode(wire []byte) (err error, diagList []CriticalityDiagnosticsIEItem) {
 	defer func() {
 		if err != nil {
@@ -99,42 +104,7 @@ func (msg *PositioningAssistanceInformationControl) Decode(wire []byte) (err err
 		})
 		return
 	}
-	if _, ok := decoder.list[ProtocolIEID_PosAssistanceInformation]; !ok {
-		err = fmt.Errorf("Mandatory field PosAssistanceInformation is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentReject},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_PosAssistanceInformation},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
-	if _, ok := decoder.list[ProtocolIEID_PosBroadcast]; !ok {
-		err = fmt.Errorf("Mandatory field PosBroadcast is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentReject},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_PosBroadcast},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
-	if _, ok := decoder.list[ProtocolIEID_PositioningBroadcastCells]; !ok {
-		err = fmt.Errorf("Mandatory field PositioningBroadcastCells is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentReject},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_PositioningBroadcastCells},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
-	if _, ok := decoder.list[ProtocolIEID_RoutingID]; !ok {
-		err = fmt.Errorf("Mandatory field RoutingID is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentReject},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_RoutingID},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
+	diagList = decoder.diagList
 	return
 }
 
@@ -223,11 +193,11 @@ func (decoder *PositioningAssistanceInformationControlDecoder) decodeIE(r *aper.
 	default:
 		switch msgIe.Criticality.Value {
 		case Criticality_PresentReject:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: reject)", msgIe.Id.Value)
+			err = fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: reject)", msgIe.Id.Value)
 		case Criticality_PresentIgnore:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: ignore)", msgIe.Id.Value)
+			err = fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: ignore)", msgIe.Id.Value)
 		case Criticality_PresentNotify:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: notify)", msgIe.Id.Value)
+			err = fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: notify)", msgIe.Id.Value)
 		}
 		if msgIe.Criticality.Value != Criticality_PresentIgnore {
 			decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{

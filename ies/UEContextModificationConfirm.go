@@ -13,12 +13,12 @@ type UEContextModificationConfirm struct {
 	GNBCUUEF1APID                           int64                                    `lb:0,ub:4294967295,mandatory,reject`
 	GNBDUUEF1APID                           int64                                    `lb:0,ub:4294967295,mandatory,reject`
 	ResourceCoordinationTransferContainer   []byte                                   `lb:0,ub:0,optional,ignore`
-	DRBsModifiedConfList                    []DRBsModifiedConfItem                   `lb:1,ub:maxnoofDRBs,mandatory,ignore`
+	DRBsModifiedConfList                    []DRBsModifiedConfItem                   `lb:1,ub:maxnoofDRBs,optional,ignore`
 	RRCContainer                            []byte                                   `lb:0,ub:0,optional,ignore`
 	CriticalityDiagnostics                  *CriticalityDiagnostics                  `optional,ignore`
-	ExecuteDuplication                      *ExecuteDuplication                      `mandatory,ignore`
+	ExecuteDuplication                      *ExecuteDuplication                      `optional,ignore`
 	ResourceCoordinationTransferInformation *ResourceCoordinationTransferInformation `optional,ignore`
-	SLDRBsModifiedConfList                  []SLDRBsModifiedConfItem                 `lb:1,ub:maxnoofSLDRBs,mandatory,ignore`
+	SLDRBsModifiedConfList                  []SLDRBsModifiedConfItem                 `lb:1,ub:maxnoofSLDRBs,optional,ignore`
 }
 
 func (msg *UEContextModificationConfirm) Encode(w io.Writer) (err error) {
@@ -29,6 +29,7 @@ func (msg *UEContextModificationConfirm) Encode(w io.Writer) (err error) {
 	}
 	return encodeMessage(w, F1apPduSuccessfulOutcome, ProcedureCode_UEContextModification, Criticality_PresentReject, ies)
 }
+
 func (msg *UEContextModificationConfirm) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}
 	ies = append(ies, F1apMessageIE{
@@ -70,9 +71,6 @@ func (msg *UEContextModificationConfirm) toIes() (ies []F1apMessageIE, err error
 			Criticality: Criticality{Value: Criticality_PresentIgnore},
 			Value:       &tmp_DRBsModifiedConfList,
 		})
-	} else {
-		err = utils.WrapError("DRBsModifiedConfList is nil", err)
-		return
 	}
 	if msg.RRCContainer != nil {
 		ies = append(ies, F1apMessageIE{
@@ -91,11 +89,13 @@ func (msg *UEContextModificationConfirm) toIes() (ies []F1apMessageIE, err error
 			Value:       msg.CriticalityDiagnostics,
 		})
 	}
-	ies = append(ies, F1apMessageIE{
-		Id:          ProtocolIEID{Value: ProtocolIEID_ExecuteDuplication},
-		Criticality: Criticality{Value: Criticality_PresentIgnore},
-		Value:       msg.ExecuteDuplication,
-	})
+	if msg.ExecuteDuplication != nil {
+		ies = append(ies, F1apMessageIE{
+			Id:          ProtocolIEID{Value: ProtocolIEID_ExecuteDuplication},
+			Criticality: Criticality{Value: Criticality_PresentIgnore},
+			Value:       msg.ExecuteDuplication,
+		})
+	}
 	if msg.ResourceCoordinationTransferInformation != nil {
 		ies = append(ies, F1apMessageIE{
 			Id:          ProtocolIEID{Value: ProtocolIEID_ResourceCoordinationTransferInformation},
@@ -116,12 +116,10 @@ func (msg *UEContextModificationConfirm) toIes() (ies []F1apMessageIE, err error
 			Criticality: Criticality{Value: Criticality_PresentIgnore},
 			Value:       &tmp_SLDRBsModifiedConfList,
 		})
-	} else {
-		err = utils.WrapError("SLDRBsModifiedConfList is nil", err)
-		return
 	}
 	return
 }
+
 func (msg *UEContextModificationConfirm) Decode(wire []byte) (err error, diagList []CriticalityDiagnosticsIEItem) {
 	defer func() {
 		if err != nil {
@@ -137,6 +135,7 @@ func (msg *UEContextModificationConfirm) Decode(wire []byte) (err error, diagLis
 	if _, err = aper.ReadSequenceOf[F1apMessageIE](decoder.decodeIE, r, &aper.Constraint{Lb: 0, Ub: int64(aper.POW_16 - 1)}, false); err != nil {
 		return
 	}
+	// Check only mandatory fields
 	if _, ok := decoder.list[ProtocolIEID_GNBCUUEF1APID]; !ok {
 		err = fmt.Errorf("Mandatory field GNBCUUEF1APID is missing")
 		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
@@ -155,33 +154,8 @@ func (msg *UEContextModificationConfirm) Decode(wire []byte) (err error, diagLis
 		})
 		return
 	}
-	if _, ok := decoder.list[ProtocolIEID_DRBsModifiedConfList]; !ok {
-		err = fmt.Errorf("Mandatory field DRBsModifiedConfList is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentIgnore},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_DRBsModifiedConfList},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
-	if _, ok := decoder.list[ProtocolIEID_ExecuteDuplication]; !ok {
-		err = fmt.Errorf("Mandatory field ExecuteDuplication is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentIgnore},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_ExecuteDuplication},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
-	if _, ok := decoder.list[ProtocolIEID_SLDRBsModifiedConfList]; !ok {
-		err = fmt.Errorf("Mandatory field SLDRBsModifiedConfList is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentIgnore},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_SLDRBsModifiedConfList},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
+	// All other fields are optional
+	diagList = decoder.diagList
 	return
 }
 
@@ -308,11 +282,11 @@ func (decoder *UEContextModificationConfirmDecoder) decodeIE(r *aper.AperReader)
 	default:
 		switch msgIe.Criticality.Value {
 		case Criticality_PresentReject:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: reject)", msgIe.Id.Value)
+			err = fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: reject)", msgIe.Id.Value)
 		case Criticality_PresentIgnore:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: ignore)", msgIe.Id.Value)
+			// Just log, don't return error for ignore criticality
 		case Criticality_PresentNotify:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: notify)", msgIe.Id.Value)
+			err = fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: notify)", msgIe.Id.Value)
 		}
 		if msgIe.Criticality.Value != Criticality_PresentIgnore {
 			decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{

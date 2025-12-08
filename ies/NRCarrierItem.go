@@ -8,7 +8,7 @@ import (
 type NRCarrierItem struct {
 	CarrierSCS       NRSCS `mandatory`
 	OffsetToCarrier  int64 `lb:0,ub:2199,mandatory,valExt`
-	CarrierBandwidth int64 `lb:0,ub:0,mandatory`
+	CarrierBandwidth int64 `lb:0,ub:maxnoofPhysicalResourceBlocks,mandatory,valExt`
 	// IEExtension * `optional`
 }
 
@@ -27,13 +27,14 @@ func (ie *NRCarrierItem) Encode(w *aper.AperWriter) (err error) {
 		err = utils.WrapError("Encode OffsetToCarrier", err)
 		return
 	}
-	tmp_CarrierBandwidth := NewINTEGER(ie.CarrierBandwidth, aper.Constraint{Lb: 0, Ub: 0}, false)
+	tmp_CarrierBandwidth := NewINTEGER(ie.CarrierBandwidth, aper.Constraint{Lb: 0, Ub: maxnoofPhysicalResourceBlocks}, true)
 	if err = tmp_CarrierBandwidth.Encode(w); err != nil {
 		err = utils.WrapError("Encode CarrierBandwidth", err)
 		return
 	}
 	return
 }
+
 func (ie *NRCarrierItem) Decode(r *aper.AperReader) (err error) {
 	if _, err = r.ReadBool(); err != nil {
 		return
@@ -55,8 +56,8 @@ func (ie *NRCarrierItem) Decode(r *aper.AperReader) (err error) {
 	}
 	ie.OffsetToCarrier = int64(tmp_OffsetToCarrier.Value)
 	tmp_CarrierBandwidth := INTEGER{
-		c:   aper.Constraint{Lb: 0, Ub: 0},
-		ext: false,
+		c:   aper.Constraint{Lb: 0, Ub: maxnoofPhysicalResourceBlocks},
+		ext: true,
 	}
 	if err = tmp_CarrierBandwidth.Decode(r); err != nil {
 		err = utils.WrapError("Read CarrierBandwidth", err)

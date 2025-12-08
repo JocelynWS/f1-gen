@@ -13,15 +13,15 @@ type UEContextModificationRequired struct {
 	GNBCUUEF1APID                         int64                                `lb:0,ub:4294967295,mandatory,reject`
 	GNBDUUEF1APID                         int64                                `lb:0,ub:4294967295,mandatory,reject`
 	ResourceCoordinationTransferContainer []byte                               `lb:0,ub:0,optional,ignore`
-	DUtoCURRCInformation                  *DUtoCURRCInformation                `mandatory,reject`
-	DRBsRequiredToBeModifiedList          []DRBsRequiredToBeModifiedItem       `lb:1,ub:maxnoofDRBs,mandatory,reject`
-	SRBsRequiredToBeReleasedList          []SRBsRequiredToBeReleasedItem       `lb:1,ub:maxnoofSRBs,mandatory,reject`
-	DRBsRequiredToBeReleasedList          []DRBsRequiredToBeReleasedItem       `lb:1,ub:maxnoofDRBs,mandatory,reject`
+	DUtoCURRCInformation                  *DUtoCURRCInformation                `optional,reject`
+	DRBsRequiredToBeModifiedList          []DRBsRequiredToBeModifiedItem       `lb:1,ub:maxnoofDRBs,optional,reject`
+	SRBsRequiredToBeReleasedList          []SRBsRequiredToBeReleasedItem       `lb:1,ub:maxnoofSRBs,optional,reject`
+	DRBsRequiredToBeReleasedList          []DRBsRequiredToBeReleasedItem       `lb:1,ub:maxnoofDRBs,optional,reject`
 	Cause                                 Cause                                `mandatory,ignore`
-	BHChannelsRequiredToBeReleasedList    []BHChannelsRequiredToBeReleasedItem `lb:1,ub:maxnoofBHRLCChannels,mandatory,reject`
-	SLDRBsRequiredToBeModifiedList        []SLDRBsRequiredToBeModifiedItem     `lb:1,ub:maxnoofSLDRBs,mandatory,reject`
-	SLDRBsRequiredToBeReleasedList        []SLDRBsRequiredToBeReleasedItem     `lb:1,ub:maxnoofSLDRBs,mandatory,reject`
-	TargetCellsToCancel                   []TargetCellListItem                 `lb:1,ub:maxnoofCHOcells,mandatory,reject`
+	BHChannelsRequiredToBeReleasedList    []BHChannelsRequiredToBeReleasedItem `lb:1,ub:maxnoofBHRLCChannels,optional,reject`
+	SLDRBsRequiredToBeModifiedList        []SLDRBsRequiredToBeModifiedItem     `lb:1,ub:maxnoofSLDRBs,optional,reject`
+	SLDRBsRequiredToBeReleasedList        []SLDRBsRequiredToBeReleasedItem     `lb:1,ub:maxnoofSLDRBs,optional,reject`
+	TargetCellsToCancel                   []TargetCellListItem                 `lb:1,ub:maxnoofCHOcells,optional,reject`
 }
 
 func (msg *UEContextModificationRequired) Encode(w io.Writer) (err error) {
@@ -32,6 +32,7 @@ func (msg *UEContextModificationRequired) Encode(w io.Writer) (err error) {
 	}
 	return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_UEContextModificationRequired, Criticality_PresentReject, ies)
 }
+
 func (msg *UEContextModificationRequired) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}
 	ies = append(ies, F1apMessageIE{
@@ -60,11 +61,13 @@ func (msg *UEContextModificationRequired) toIes() (ies []F1apMessageIE, err erro
 				Value: msg.ResourceCoordinationTransferContainer,
 			}})
 	}
-	ies = append(ies, F1apMessageIE{
-		Id:          ProtocolIEID{Value: ProtocolIEID_DUtoCURRCInformation},
-		Criticality: Criticality{Value: Criticality_PresentReject},
-		Value:       msg.DUtoCURRCInformation,
-	})
+	if msg.DUtoCURRCInformation != nil {
+		ies = append(ies, F1apMessageIE{
+			Id:          ProtocolIEID{Value: ProtocolIEID_DUtoCURRCInformation},
+			Criticality: Criticality{Value: Criticality_PresentReject},
+			Value:       msg.DUtoCURRCInformation,
+		})
+	}
 	if len(msg.DRBsRequiredToBeModifiedList) > 0 {
 		tmp_DRBsRequiredToBeModifiedList := Sequence[*DRBsRequiredToBeModifiedItem]{
 			c:   aper.Constraint{Lb: 1, Ub: maxnoofDRBs},
@@ -78,9 +81,6 @@ func (msg *UEContextModificationRequired) toIes() (ies []F1apMessageIE, err erro
 			Criticality: Criticality{Value: Criticality_PresentReject},
 			Value:       &tmp_DRBsRequiredToBeModifiedList,
 		})
-	} else {
-		err = utils.WrapError("DRBsRequiredToBeModifiedList is nil", err)
-		return
 	}
 	if len(msg.SRBsRequiredToBeReleasedList) > 0 {
 		tmp_SRBsRequiredToBeReleasedList := Sequence[*SRBsRequiredToBeReleasedItem]{
@@ -95,9 +95,6 @@ func (msg *UEContextModificationRequired) toIes() (ies []F1apMessageIE, err erro
 			Criticality: Criticality{Value: Criticality_PresentReject},
 			Value:       &tmp_SRBsRequiredToBeReleasedList,
 		})
-	} else {
-		err = utils.WrapError("SRBsRequiredToBeReleasedList is nil", err)
-		return
 	}
 	if len(msg.DRBsRequiredToBeReleasedList) > 0 {
 		tmp_DRBsRequiredToBeReleasedList := Sequence[*DRBsRequiredToBeReleasedItem]{
@@ -112,9 +109,6 @@ func (msg *UEContextModificationRequired) toIes() (ies []F1apMessageIE, err erro
 			Criticality: Criticality{Value: Criticality_PresentReject},
 			Value:       &tmp_DRBsRequiredToBeReleasedList,
 		})
-	} else {
-		err = utils.WrapError("DRBsRequiredToBeReleasedList is nil", err)
-		return
 	}
 	ies = append(ies, F1apMessageIE{
 		Id:          ProtocolIEID{Value: ProtocolIEID_Cause},
@@ -134,9 +128,6 @@ func (msg *UEContextModificationRequired) toIes() (ies []F1apMessageIE, err erro
 			Criticality: Criticality{Value: Criticality_PresentReject},
 			Value:       &tmp_BHChannelsRequiredToBeReleasedList,
 		})
-	} else {
-		err = utils.WrapError("BHChannelsRequiredToBeReleasedList is nil", err)
-		return
 	}
 	if len(msg.SLDRBsRequiredToBeModifiedList) > 0 {
 		tmp_SLDRBsRequiredToBeModifiedList := Sequence[*SLDRBsRequiredToBeModifiedItem]{
@@ -151,9 +142,6 @@ func (msg *UEContextModificationRequired) toIes() (ies []F1apMessageIE, err erro
 			Criticality: Criticality{Value: Criticality_PresentReject},
 			Value:       &tmp_SLDRBsRequiredToBeModifiedList,
 		})
-	} else {
-		err = utils.WrapError("SLDRBsRequiredToBeModifiedList is nil", err)
-		return
 	}
 	if len(msg.SLDRBsRequiredToBeReleasedList) > 0 {
 		tmp_SLDRBsRequiredToBeReleasedList := Sequence[*SLDRBsRequiredToBeReleasedItem]{
@@ -168,9 +156,6 @@ func (msg *UEContextModificationRequired) toIes() (ies []F1apMessageIE, err erro
 			Criticality: Criticality{Value: Criticality_PresentReject},
 			Value:       &tmp_SLDRBsRequiredToBeReleasedList,
 		})
-	} else {
-		err = utils.WrapError("SLDRBsRequiredToBeReleasedList is nil", err)
-		return
 	}
 	if len(msg.TargetCellsToCancel) > 0 {
 		tmp_TargetCellsToCancel := Sequence[*TargetCellListItem]{
@@ -185,12 +170,10 @@ func (msg *UEContextModificationRequired) toIes() (ies []F1apMessageIE, err erro
 			Criticality: Criticality{Value: Criticality_PresentReject},
 			Value:       &tmp_TargetCellsToCancel,
 		})
-	} else {
-		err = utils.WrapError("TargetCellsToCancel is nil", err)
-		return
 	}
 	return
 }
+
 func (msg *UEContextModificationRequired) Decode(wire []byte) (err error, diagList []CriticalityDiagnosticsIEItem) {
 	defer func() {
 		if err != nil {
@@ -206,6 +189,7 @@ func (msg *UEContextModificationRequired) Decode(wire []byte) (err error, diagLi
 	if _, err = aper.ReadSequenceOf[F1apMessageIE](decoder.decodeIE, r, &aper.Constraint{Lb: 0, Ub: int64(aper.POW_16 - 1)}, false); err != nil {
 		return
 	}
+	// Check only mandatory fields
 	if _, ok := decoder.list[ProtocolIEID_GNBCUUEF1APID]; !ok {
 		err = fmt.Errorf("Mandatory field GNBCUUEF1APID is missing")
 		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
@@ -224,42 +208,6 @@ func (msg *UEContextModificationRequired) Decode(wire []byte) (err error, diagLi
 		})
 		return
 	}
-	if _, ok := decoder.list[ProtocolIEID_DUtoCURRCInformation]; !ok {
-		err = fmt.Errorf("Mandatory field DUtoCURRCInformation is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentReject},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_DUtoCURRCInformation},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
-	if _, ok := decoder.list[ProtocolIEID_DRBsRequiredToBeModifiedList]; !ok {
-		err = fmt.Errorf("Mandatory field DRBsRequiredToBeModifiedList is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentReject},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_DRBsRequiredToBeModifiedList},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
-	if _, ok := decoder.list[ProtocolIEID_SRBsRequiredToBeReleasedList]; !ok {
-		err = fmt.Errorf("Mandatory field SRBsRequiredToBeReleasedList is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentReject},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_SRBsRequiredToBeReleasedList},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
-	if _, ok := decoder.list[ProtocolIEID_DRBsRequiredToBeReleasedList]; !ok {
-		err = fmt.Errorf("Mandatory field DRBsRequiredToBeReleasedList is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentReject},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_DRBsRequiredToBeReleasedList},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
 	if _, ok := decoder.list[ProtocolIEID_Cause]; !ok {
 		err = fmt.Errorf("Mandatory field Cause is missing")
 		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
@@ -269,42 +217,8 @@ func (msg *UEContextModificationRequired) Decode(wire []byte) (err error, diagLi
 		})
 		return
 	}
-	if _, ok := decoder.list[ProtocolIEID_BHChannelsRequiredToBeReleasedList]; !ok {
-		err = fmt.Errorf("Mandatory field BHChannelsRequiredToBeReleasedList is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentReject},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_BHChannelsRequiredToBeReleasedList},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
-	if _, ok := decoder.list[ProtocolIEID_SLDRBsRequiredToBeModifiedList]; !ok {
-		err = fmt.Errorf("Mandatory field SLDRBsRequiredToBeModifiedList is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentReject},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_SLDRBsRequiredToBeModifiedList},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
-	if _, ok := decoder.list[ProtocolIEID_SLDRBsRequiredToBeReleasedList]; !ok {
-		err = fmt.Errorf("Mandatory field SLDRBsRequiredToBeReleasedList is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentReject},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_SLDRBsRequiredToBeReleasedList},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
-	if _, ok := decoder.list[ProtocolIEID_TargetCellsToCancel]; !ok {
-		err = fmt.Errorf("Mandatory field TargetCellsToCancel is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentReject},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_TargetCellsToCancel},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
+	// All other fields are optional
+	diagList = decoder.diagList
 	return
 }
 
@@ -484,11 +398,11 @@ func (decoder *UEContextModificationRequiredDecoder) decodeIE(r *aper.AperReader
 	default:
 		switch msgIe.Criticality.Value {
 		case Criticality_PresentReject:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: reject)", msgIe.Id.Value)
+			err = fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: reject)", msgIe.Id.Value)
 		case Criticality_PresentIgnore:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: ignore)", msgIe.Id.Value)
+			// Just log, don't return error for ignore criticality
 		case Criticality_PresentNotify:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: notify)", msgIe.Id.Value)
+			err = fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: notify)", msgIe.Id.Value)
 		}
 		if msgIe.Criticality.Value != Criticality_PresentIgnore {
 			decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{

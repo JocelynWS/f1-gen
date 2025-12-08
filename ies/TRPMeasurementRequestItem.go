@@ -6,7 +6,7 @@ import (
 )
 
 type TRPMeasurementRequestItem struct {
-	TRPID                   int64                    `lb:0,ub:4095,mandatory,valExt`
+	TRPID                   int64                    `lb:0,ub:maxnoofTRPs,mandatory,valExt`
 	SearchWindowInformation *SearchWindowInformation `optional`
 	//IEExtensions            *ProtocolExtensionContainer `optional`
 }
@@ -21,7 +21,7 @@ func (ie *TRPMeasurementRequestItem) Encode(w *aper.AperWriter) (err error) {
 	}
 	w.WriteBits(optionals, 1)
 
-	tmp_TRPID := NewINTEGER(ie.TRPID, aper.Constraint{Lb: 0, Ub: 4095}, true)
+	tmp_TRPID := NewINTEGER(ie.TRPID, aper.Constraint{Lb: 0, Ub: maxnoofTRPs}, true)
 	if err = tmp_TRPID.Encode(w); err != nil {
 		err = utils.WrapError("Encode TRPID", err)
 		return
@@ -47,7 +47,7 @@ func (ie *TRPMeasurementRequestItem) Decode(r *aper.AperReader) (err error) {
 	}
 
 	tmp_TRPID := INTEGER{
-		c:   aper.Constraint{Lb: 0, Ub: 4095},
+		c:   aper.Constraint{Lb: 0, Ub: maxnoofTRPs},
 		ext: true,
 	}
 	if err = tmp_TRPID.Decode(r); err != nil {

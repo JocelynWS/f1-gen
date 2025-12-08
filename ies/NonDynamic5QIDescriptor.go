@@ -9,7 +9,7 @@ type NonDynamic5QIDescriptor struct {
 	FiveQI             int64  `lb:0,ub:255,mandatory,valExt`
 	QoSPriorityLevel   *int64 `lb:1,ub:127,optional`
 	AveragingWindow    *int64 `lb:0,ub:4095,optional`
-	MaxDataBurstVolume *int64 `lb:0,ub:4095,optional`
+	MaxDataBurstVolume *int64 `lb:0,ub:4095,optional,valExt`
 	// IEExtensions * `optional`
 }
 
@@ -48,7 +48,7 @@ func (ie *NonDynamic5QIDescriptor) Encode(w *aper.AperWriter) (err error) {
 		}
 	}
 	if ie.MaxDataBurstVolume != nil {
-		tmp_MaxDataBurstVolume := NewINTEGER(*ie.MaxDataBurstVolume, aper.Constraint{Lb: 0, Ub: 4095}, false)
+		tmp_MaxDataBurstVolume := NewINTEGER(*ie.MaxDataBurstVolume, aper.Constraint{Lb: 0, Ub: 4095}, true)
 		if err = tmp_MaxDataBurstVolume.Encode(w); err != nil {
 			err = utils.WrapError("Encode MaxDataBurstVolume", err)
 			return
@@ -56,6 +56,7 @@ func (ie *NonDynamic5QIDescriptor) Encode(w *aper.AperWriter) (err error) {
 	}
 	return
 }
+
 func (ie *NonDynamic5QIDescriptor) Decode(r *aper.AperReader) (err error) {
 	if _, err = r.ReadBool(); err != nil {
 		return
@@ -98,7 +99,7 @@ func (ie *NonDynamic5QIDescriptor) Decode(r *aper.AperReader) (err error) {
 	if aper.IsBitSet(optionals, 3) {
 		tmp_MaxDataBurstVolume := INTEGER{
 			c:   aper.Constraint{Lb: 0, Ub: 4095},
-			ext: false,
+			ext: true,
 		}
 		if err = tmp_MaxDataBurstVolume.Decode(r); err != nil {
 			err = utils.WrapError("Read MaxDataBurstVolume", err)

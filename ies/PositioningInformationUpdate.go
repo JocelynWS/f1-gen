@@ -10,10 +10,10 @@ import (
 )
 
 type PositioningInformationUpdate struct {
-	GNBCUUEF1APID         int64             `lb:0,ub:4294967295,mandatory,reject`
-	GNBDUUEF1APID         int64             `lb:0,ub:4294967295,mandatory,reject`
-	SRSConfiguration      *SRSConfiguration `mandatory,ignore`
-	SFNInitialisationTime aper.BitString    `lb:64,ub:64,mandatory,ignore`
+	GNBCUUEF1APID         int64              `lb:0,ub:4294967295,mandatory,reject`
+	GNBDUUEF1APID         int64              `lb:0,ub:4294967295,mandatory,reject`
+	SRSConfiguration      *SRSConfiguration  `optional,ignore`
+	SFNInitialisationTime *aper.BitString    `lb:64,ub:64,optional,ignore`
 }
 
 func (msg *PositioningInformationUpdate) Encode(w io.Writer) (err error) {
@@ -24,6 +24,7 @@ func (msg *PositioningInformationUpdate) Encode(w io.Writer) (err error) {
 	}
 	return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_PositioningInformationUpdate, Criticality_PresentIgnore, ies)
 }
+
 func (msg *PositioningInformationUpdate) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}
 	ies = append(ies, F1apMessageIE{
@@ -42,22 +43,28 @@ func (msg *PositioningInformationUpdate) toIes() (ies []F1apMessageIE, err error
 			ext:   false,
 			Value: aper.Integer(msg.GNBDUUEF1APID),
 		}})
-	ies = append(ies, F1apMessageIE{
-		Id:          ProtocolIEID{Value: ProtocolIEID_SRSConfiguration},
-		Criticality: Criticality{Value: Criticality_PresentIgnore},
-		Value:       msg.SRSConfiguration,
-	})
-	ies = append(ies, F1apMessageIE{
-		Id:          ProtocolIEID{Value: ProtocolIEID_SFNInitialisationTime},
-		Criticality: Criticality{Value: Criticality_PresentIgnore},
-		Value: &BITSTRING{
-			c:   aper.Constraint{Lb: 64, Ub: 64},
-			ext: false,
-			Value: aper.BitString{
-				Bytes: msg.SFNInitialisationTime.Bytes, NumBits: msg.SFNInitialisationTime.NumBits},
-		}})
+	// Optional fields - only encode if present
+	if msg.SRSConfiguration != nil {
+		ies = append(ies, F1apMessageIE{
+			Id:          ProtocolIEID{Value: ProtocolIEID_SRSConfiguration},
+			Criticality: Criticality{Value: Criticality_PresentIgnore},
+			Value:       msg.SRSConfiguration,
+		})
+	}
+	if msg.SFNInitialisationTime != nil {
+		ies = append(ies, F1apMessageIE{
+			Id:          ProtocolIEID{Value: ProtocolIEID_SFNInitialisationTime},
+			Criticality: Criticality{Value: Criticality_PresentIgnore},
+			Value: &BITSTRING{
+				c:   aper.Constraint{Lb: 64, Ub: 64},
+				ext: false,
+				Value: aper.BitString{
+					Bytes: msg.SFNInitialisationTime.Bytes, NumBits: msg.SFNInitialisationTime.NumBits},
+			}})
+	}
 	return
 }
+
 func (msg *PositioningInformationUpdate) Decode(wire []byte) (err error, diagList []CriticalityDiagnosticsIEItem) {
 	defer func() {
 		if err != nil {
@@ -73,6 +80,7 @@ func (msg *PositioningInformationUpdate) Decode(wire []byte) (err error, diagLis
 	if _, err = aper.ReadSequenceOf[F1apMessageIE](decoder.decodeIE, r, &aper.Constraint{Lb: 0, Ub: int64(aper.POW_16 - 1)}, false); err != nil {
 		return
 	}
+	// Check only mandatory fields
 	if _, ok := decoder.list[ProtocolIEID_GNBCUUEF1APID]; !ok {
 		err = fmt.Errorf("Mandatory field GNBCUUEF1APID is missing")
 		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
@@ -91,24 +99,8 @@ func (msg *PositioningInformationUpdate) Decode(wire []byte) (err error, diagLis
 		})
 		return
 	}
-	if _, ok := decoder.list[ProtocolIEID_SRSConfiguration]; !ok {
-		err = fmt.Errorf("Mandatory field SRSConfiguration is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentIgnore},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_SRSConfiguration},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
-	if _, ok := decoder.list[ProtocolIEID_SFNInitialisationTime]; !ok {
-		err = fmt.Errorf("Mandatory field SFNInitialisationTime is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentIgnore},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_SFNInitialisationTime},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
+	// SRSConfiguration and SFNInitialisationTime are optional - no check needed
+	diagList = decoder.diagList
 	return
 }
 
@@ -179,15 +171,15 @@ func (decoder *PositioningInformationUpdateDecoder) decodeIE(r *aper.AperReader)
 			err = utils.WrapError("Read SFNInitialisationTime", err)
 			return
 		}
-		msg.SFNInitialisationTime = aper.BitString{Bytes: tmp.Value.Bytes, NumBits: tmp.Value.NumBits}
+		msg.SFNInitialisationTime = &aper.BitString{Bytes: tmp.Value.Bytes, NumBits: tmp.Value.NumBits}
 	default:
 		switch msgIe.Criticality.Value {
 		case Criticality_PresentReject:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: reject)", msgIe.Id.Value)
+			err = fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: reject)", msgIe.Id.Value)
 		case Criticality_PresentIgnore:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: ignore)", msgIe.Id.Value)
+			// Just log, don't return error for ignore criticality
 		case Criticality_PresentNotify:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: notify)", msgIe.Id.Value)
+			err = fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: notify)", msgIe.Id.Value)
 		}
 		if msgIe.Criticality.Value != Criticality_PresentIgnore {
 			decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{

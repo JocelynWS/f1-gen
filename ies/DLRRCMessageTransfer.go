@@ -14,12 +14,12 @@ type DLRRCMessageTransfer struct {
 	GNBDUUEF1APID                   int64                            `lb:0,ub:4294967295,mandatory,reject`
 	OldgNBDUUEF1APID                *int64                           `lb:0,ub:4294967295,optional,reject`
 	SRBID                           int64                            `lb:0,ub:3,mandatory,reject`
-	ExecuteDuplication              *ExecuteDuplication              `mandatory,ignore`
+	ExecuteDuplication              *ExecuteDuplication              `optional,ignore`
 	RRCContainer                    []byte                           `lb:0,ub:0,mandatory,reject`
 	RATFrequencyPriorityInformation *RATFrequencyPriorityInformation `optional,reject`
 	RRCDeliveryStatusRequest        *RRCDeliveryStatusRequest        `optional,ignore`
 	UEContextNotRetrievable         *UEContextNotRetrievable         `optional,reject`
-	RedirectedRRCmessage            []byte                           `lb:0,ub:0,mandatory,reject`
+	RedirectedRRCmessage            []byte                           `lb:0,ub:0,optional,reject`
 	PLMNAssistanceInfoForNetShar    []byte                           `lb:3,ub:3,optional,ignore`
 	NewgNBCUUEF1APID                *int64                           `lb:0,ub:4294967295,optional,reject`
 	AdditionalRRMPriorityIndex      *aper.BitString                  `lb:32,ub:32,optional,ignore`
@@ -33,6 +33,7 @@ func (msg *DLRRCMessageTransfer) Encode(w io.Writer) (err error) {
 	}
 	return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_DLRRCMessageTransfer, Criticality_PresentIgnore, ies)
 }
+
 func (msg *DLRRCMessageTransfer) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}
 	ies = append(ies, F1apMessageIE{
@@ -69,11 +70,13 @@ func (msg *DLRRCMessageTransfer) toIes() (ies []F1apMessageIE, err error) {
 			ext:   false,
 			Value: aper.Integer(msg.SRBID),
 		}})
-	ies = append(ies, F1apMessageIE{
-		Id:          ProtocolIEID{Value: ProtocolIEID_ExecuteDuplication},
-		Criticality: Criticality{Value: Criticality_PresentIgnore},
-		Value:       msg.ExecuteDuplication,
-	})
+	if msg.ExecuteDuplication != nil {
+		ies = append(ies, F1apMessageIE{
+			Id:          ProtocolIEID{Value: ProtocolIEID_ExecuteDuplication},
+			Criticality: Criticality{Value: Criticality_PresentIgnore},
+			Value:       msg.ExecuteDuplication,
+		})
+	}
 	ies = append(ies, F1apMessageIE{
 		Id:          ProtocolIEID{Value: ProtocolIEID_RRCContainer},
 		Criticality: Criticality{Value: Criticality_PresentReject},
@@ -103,14 +106,16 @@ func (msg *DLRRCMessageTransfer) toIes() (ies []F1apMessageIE, err error) {
 			Value:       msg.UEContextNotRetrievable,
 		})
 	}
-	ies = append(ies, F1apMessageIE{
-		Id:          ProtocolIEID{Value: ProtocolIEID_RedirectedRRCmessage},
-		Criticality: Criticality{Value: Criticality_PresentReject},
-		Value: &OCTETSTRING{
-			c:     aper.Constraint{Lb: 0, Ub: 0},
-			ext:   false,
-			Value: msg.RedirectedRRCmessage,
-		}})
+	if len(msg.RedirectedRRCmessage) > 0 {
+		ies = append(ies, F1apMessageIE{
+			Id:          ProtocolIEID{Value: ProtocolIEID_RedirectedRRCmessage},
+			Criticality: Criticality{Value: Criticality_PresentReject},
+			Value: &OCTETSTRING{
+				c:     aper.Constraint{Lb: 0, Ub: 0},
+				ext:   false,
+				Value: msg.RedirectedRRCmessage,
+			}})
+	}
 	if msg.PLMNAssistanceInfoForNetShar != nil {
 		ies = append(ies, F1apMessageIE{
 			Id:          ProtocolIEID{Value: ProtocolIEID_PLMNAssistanceInfoForNetShar},
@@ -144,6 +149,7 @@ func (msg *DLRRCMessageTransfer) toIes() (ies []F1apMessageIE, err error) {
 	}
 	return
 }
+
 func (msg *DLRRCMessageTransfer) Decode(wire []byte) (err error, diagList []CriticalityDiagnosticsIEItem) {
 	defer func() {
 		if err != nil {
@@ -186,15 +192,6 @@ func (msg *DLRRCMessageTransfer) Decode(wire []byte) (err error, diagList []Crit
 		})
 		return
 	}
-	if _, ok := decoder.list[ProtocolIEID_ExecuteDuplication]; !ok {
-		err = fmt.Errorf("Mandatory field ExecuteDuplication is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentIgnore},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_ExecuteDuplication},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
 	if _, ok := decoder.list[ProtocolIEID_RRCContainer]; !ok {
 		err = fmt.Errorf("Mandatory field RRCContainer is missing")
 		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
@@ -204,15 +201,7 @@ func (msg *DLRRCMessageTransfer) Decode(wire []byte) (err error, diagList []Crit
 		})
 		return
 	}
-	if _, ok := decoder.list[ProtocolIEID_RedirectedRRCmessage]; !ok {
-		err = fmt.Errorf("Mandatory field RedirectedRRCmessage is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentReject},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_RedirectedRRCmessage},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
+	diagList = decoder.diagList
 	return
 }
 
@@ -368,11 +357,11 @@ func (decoder *DLRRCMessageTransferDecoder) decodeIE(r *aper.AperReader) (msgIe 
 	default:
 		switch msgIe.Criticality.Value {
 		case Criticality_PresentReject:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: reject)", msgIe.Id.Value)
+			err = fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: reject)", msgIe.Id.Value)
 		case Criticality_PresentIgnore:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: ignore)", msgIe.Id.Value)
+			err = fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: ignore)", msgIe.Id.Value)
 		case Criticality_PresentNotify:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: notify)", msgIe.Id.Value)
+			err = fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: notify)", msgIe.Id.Value)
 		}
 		if msgIe.Criticality.Value != Criticality_PresentIgnore {
 			decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{

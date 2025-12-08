@@ -11,9 +11,9 @@ import (
 
 type BAPMappingConfiguration struct {
 	TransactionID                   int64                                 `lb:0,ub:255,mandatory,reject`
-	BHRoutingInformationAddedList   []BHRoutingInformationAddedListItem   `lb:1,ub:maxnoofRoutingEntries,mandatory,ignore,valueExt`
-	BHRoutingInformationRemovedList []BHRoutingInformationRemovedListItem `lb:1,ub:maxnoofRoutingEntries,mandatory,ignore,valueExt`
-	TrafficMappingInformation       *TrafficMappingInfo                   `mandatory,ignore`
+	BHRoutingInformationAddedList   []BHRoutingInformationAddedListItem   `lb:1,ub:maxnoofRoutingEntries,optional,ignore,valueExt`
+	BHRoutingInformationRemovedList []BHRoutingInformationRemovedListItem `lb:1,ub:maxnoofRoutingEntries,optional,ignore,valueExt`
+	TrafficMappingInformation       *TrafficMappingInfo                   `optional,ignore`
 }
 
 func (msg *BAPMappingConfiguration) Encode(w io.Writer) (err error) {
@@ -24,6 +24,7 @@ func (msg *BAPMappingConfiguration) Encode(w io.Writer) (err error) {
 	}
 	return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_BAPMappingConfiguration, Criticality_PresentReject, ies)
 }
+
 func (msg *BAPMappingConfiguration) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}
 	ies = append(ies, F1apMessageIE{
@@ -34,6 +35,7 @@ func (msg *BAPMappingConfiguration) toIes() (ies []F1apMessageIE, err error) {
 			ext:   false,
 			Value: aper.Integer(msg.TransactionID),
 		}})
+	
 	if len(msg.BHRoutingInformationAddedList) > 0 {
 		tmp_BHRoutingInformationAddedList := Sequence[*BHRoutingInformationAddedListItem]{
 			c:   aper.Constraint{Lb: 1, Ub: maxnoofRoutingEntries},
@@ -47,10 +49,8 @@ func (msg *BAPMappingConfiguration) toIes() (ies []F1apMessageIE, err error) {
 			Criticality: Criticality{Value: Criticality_PresentIgnore},
 			Value:       &tmp_BHRoutingInformationAddedList,
 		})
-	} else {
-		err = utils.WrapError("BHRoutingInformationAddedList is nil", err)
-		return
 	}
+
 	if len(msg.BHRoutingInformationRemovedList) > 0 {
 		tmp_BHRoutingInformationRemovedList := Sequence[*BHRoutingInformationRemovedListItem]{
 			c:   aper.Constraint{Lb: 1, Ub: maxnoofRoutingEntries},
@@ -64,18 +64,18 @@ func (msg *BAPMappingConfiguration) toIes() (ies []F1apMessageIE, err error) {
 			Criticality: Criticality{Value: Criticality_PresentIgnore},
 			Value:       &tmp_BHRoutingInformationRemovedList,
 		})
-	} else {
-		err = utils.WrapError("BHRoutingInformationRemovedList is nil", err)
-		return
 	}
-	ies = append(ies, F1apMessageIE{
-		Id:          ProtocolIEID{Value: ProtocolIEID_TrafficMappingInformation},
-		Criticality: Criticality{Value: Criticality_PresentIgnore},
-		// SỬA LỖI 1 (Dòng 74): Bỏ & vì TrafficMappingInformation đã là *TrafficMappingInfo
-		Value: msg.TrafficMappingInformation,
-	})
+
+	if msg.TrafficMappingInformation != nil {
+		ies = append(ies, F1apMessageIE{
+			Id:          ProtocolIEID{Value: ProtocolIEID_TrafficMappingInformation},
+			Criticality: Criticality{Value: Criticality_PresentIgnore},
+			Value:       msg.TrafficMappingInformation,
+		})
+	}
 	return
 }
+
 func (msg *BAPMappingConfiguration) Decode(wire []byte) (err error, diagList []CriticalityDiagnosticsIEItem) {
 	defer func() {
 		if err != nil {
@@ -91,6 +91,8 @@ func (msg *BAPMappingConfiguration) Decode(wire []byte) (err error, diagList []C
 	if _, err = aper.ReadSequenceOf[F1apMessageIE](decoder.decodeIE, r, &aper.Constraint{Lb: 0, Ub: int64(aper.POW_16 - 1)}, false); err != nil {
 		return
 	}
+	
+	// Chỉ check mandatory field
 	if _, ok := decoder.list[ProtocolIEID_TransactionID]; !ok {
 		err = fmt.Errorf("Mandatory field TransactionID is missing")
 		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
@@ -100,33 +102,8 @@ func (msg *BAPMappingConfiguration) Decode(wire []byte) (err error, diagList []C
 		})
 		return
 	}
-	if _, ok := decoder.list[ProtocolIEID_BHRoutingInformationAddedList]; !ok {
-		err = fmt.Errorf("Mandatory field BHRoutingInformationAddedList is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentIgnore},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_BHRoutingInformationAddedList},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
-	if _, ok := decoder.list[ProtocolIEID_BHRoutingInformationRemovedList]; !ok {
-		err = fmt.Errorf("Mandatory field BHRoutingInformationRemovedList is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentIgnore},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_BHRoutingInformationRemovedList},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
-	if _, ok := decoder.list[ProtocolIEID_TrafficMappingInformation]; !ok {
-		err = fmt.Errorf("Mandatory field TrafficMappingInformation is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentIgnore},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_TrafficMappingInformation},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
+	
+	diagList = decoder.diagList
 	return
 }
 
@@ -209,11 +186,11 @@ func (decoder *BAPMappingConfigurationDecoder) decodeIE(r *aper.AperReader) (msg
 	default:
 		switch msgIe.Criticality.Value {
 		case Criticality_PresentReject:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: reject)", msgIe.Id.Value)
+			err = fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: reject)", msgIe.Id.Value)
 		case Criticality_PresentIgnore:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: ignore)", msgIe.Id.Value)
+			err = fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: ignore)", msgIe.Id.Value)
 		case Criticality_PresentNotify:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: notify)", msgIe.Id.Value)
+			err = fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: notify)", msgIe.Id.Value)
 		}
 		if msgIe.Criticality.Value != Criticality_PresentIgnore {
 			decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{

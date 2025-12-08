@@ -35,7 +35,7 @@ type UEContextModificationRequest struct {
 	UplinkTxDirectCurrentListInformation    []byte                                   `lb:0,ub:0,optional,ignore`
 	GNBDUConfigurationQuery                 *GNBDUConfigurationQuery                 `optional,reject`
 	GNBDUUEAMBRUL                           *int64                                   `lb:0,ub:4000000000000,optional,ignore,valueExt`
-	ExecuteDuplication                      *ExecuteDuplication                      `mandatory,ignore`
+	ExecuteDuplication                      *ExecuteDuplication                      `optional,ignore`
 	RRCDeliveryStatusRequest                *RRCDeliveryStatusRequest                `optional,ignore`
 	ResourceCoordinationTransferInformation *ResourceCoordinationTransferInformation `optional,ignore`
 	ServingCellMO                           *int64                                   `lb:1,ub:64,optional,ignore`
@@ -50,11 +50,11 @@ type UEContextModificationRequest struct {
 	LTEV2XServicesAuthorized                *LTEV2XServicesAuthorized                `optional,ignore`
 	NRUESidelinkAggregateMaximumBitrate     *NRUESidelinkAggregateMaximumBitrate     `optional,ignore`
 	LTEUESidelinkAggregateMaximumBitrate    *LTEUESidelinkAggregateMaximumBitrate    `optional,ignore`
-	PC5LinkAMBR                             int64                                    `lb:0,ub:4000000000000,mandatory,ignore,valueExt`
+	PC5LinkAMBR                             *int64                                   `lb:0,ub:4000000000000,optional,ignore,valueExt`
 	SLDRBsToBeSetupModList                  []SLDRBsToBeSetupModItem                 `lb:1,ub:maxnoofSLDRBs,optional,reject`
 	SLDRBsToBeModifiedList                  []SLDRBsToBeModifiedItem                 `lb:1,ub:maxnoofSLDRBs,optional,reject`
 	SLDRBsToBeReleasedList                  []SLDRBsToBeReleasedItem                 `lb:1,ub:maxnoofSLDRBs,optional,reject`
-	ConditionalIntraDUMobilityInformation   *ConditionalIntraDUMobilityInformation   `mandatory,reject`
+	ConditionalIntraDUMobilityInformation   *ConditionalIntraDUMobilityInformation   `optional,reject`
 }
 
 func (msg *UEContextModificationRequest) Encode(w io.Writer) (err error) {
@@ -441,14 +441,14 @@ func (msg *UEContextModificationRequest) toIes() (ies []F1apMessageIE, err error
 			Value:       msg.LTEUESidelinkAggregateMaximumBitrate,
 		})
 	}
-	if msg.PC5LinkAMBR != 0 {
+	if msg.PC5LinkAMBR != nil {
 		ies = append(ies, F1apMessageIE{
 			Id:          ProtocolIEID{Value: ProtocolIEID_PC5LinkAMBR},
 			Criticality: Criticality{Value: Criticality_PresentIgnore},
 			Value: &INTEGER{
 				c:     aper.Constraint{Lb: 0, Ub: 4000000000000},
 				ext:   true,
-				Value: aper.Integer(msg.PC5LinkAMBR),
+				Value: aper.Integer(*msg.PC5LinkAMBR),
 			},
 		})
 	}
@@ -533,33 +533,6 @@ func (msg *UEContextModificationRequest) Decode(wire []byte) (err error, diagLis
 		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
 			IECriticality: Criticality{Value: Criticality_PresentReject},
 			IEID:          ProtocolIEID{Value: ProtocolIEID_GNBDUUEF1APID},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
-	if _, ok := decoder.list[ProtocolIEID_ExecuteDuplication]; !ok {
-		err = fmt.Errorf("Mandatory field ExecuteDuplication is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentIgnore},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_ExecuteDuplication},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
-	if _, ok := decoder.list[ProtocolIEID_PC5LinkAMBR]; !ok {
-		err = fmt.Errorf("Mandatory field PC5LinkAMBR is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentIgnore},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_PC5LinkAMBR},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
-	if _, ok := decoder.list[ProtocolIEID_ConditionalIntraDUMobilityInformation]; !ok {
-		err = fmt.Errorf("Mandatory field ConditionalIntraDUMobilityInformation is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentReject},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_ConditionalIntraDUMobilityInformation},
 			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
 		})
 		return

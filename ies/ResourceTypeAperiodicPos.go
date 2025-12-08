@@ -6,7 +6,7 @@ import (
 )
 
 type ResourceTypeAperiodicPos struct {
-	SlotOffset int64 `lb:0,ub:32,mandatory`
+	SlotOffset int64 `lb:1,ub:32,mandatory`
 	// IEExtensions * `optional`
 }
 
@@ -16,7 +16,7 @@ func (ie *ResourceTypeAperiodicPos) Encode(w *aper.AperWriter) (err error) {
 	}
 	optionals := []byte{0x0}
 	w.WriteBits(optionals, 1)
-	tmp_SlotOffset := NewINTEGER(ie.SlotOffset, aper.Constraint{Lb: 0, Ub: 32}, false)
+	tmp_SlotOffset := NewINTEGER(ie.SlotOffset, aper.Constraint{Lb: 1, Ub: 32}, false)
 	if err = tmp_SlotOffset.Encode(w); err != nil {
 		err = utils.WrapError("Encode SlotOffset", err)
 		return
@@ -31,7 +31,7 @@ func (ie *ResourceTypeAperiodicPos) Decode(r *aper.AperReader) (err error) {
 		return
 	}
 	tmp_SlotOffset := INTEGER{
-		c:   aper.Constraint{Lb: 0, Ub: 32},
+		c:   aper.Constraint{Lb: 1, Ub: 32},
 		ext: false,
 	}
 	if err = tmp_SlotOffset.Decode(r); err != nil {

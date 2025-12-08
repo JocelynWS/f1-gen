@@ -14,7 +14,7 @@ type UEContextModificationFailure struct {
 	GNBDUUEF1APID               int64                   `lb:0,ub:4294967295,mandatory,reject`
 	Cause                       Cause                   `mandatory,ignore`
 	CriticalityDiagnostics      *CriticalityDiagnostics `optional,ignore`
-	RequestedTargetCellGlobalID *NRCGI                  `mandatory,reject`
+	RequestedTargetCellGlobalID *NRCGI                  `optional,reject`
 }
 
 func (msg *UEContextModificationFailure) Encode(w io.Writer) (err error) {
@@ -25,6 +25,7 @@ func (msg *UEContextModificationFailure) Encode(w io.Writer) (err error) {
 	}
 	return encodeMessage(w, F1apPduUnsuccessfulOutcome, ProcedureCode_UEContextModification, Criticality_PresentReject, ies)
 }
+
 func (msg *UEContextModificationFailure) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}
 	ies = append(ies, F1apMessageIE{
@@ -55,13 +56,16 @@ func (msg *UEContextModificationFailure) toIes() (ies []F1apMessageIE, err error
 			Value:       msg.CriticalityDiagnostics,
 		})
 	}
-	ies = append(ies, F1apMessageIE{
-		Id:          ProtocolIEID{Value: ProtocolIEID_RequestedTargetCellGlobalID},
-		Criticality: Criticality{Value: Criticality_PresentReject},
-		Value:       msg.RequestedTargetCellGlobalID,
-	})
+	if msg.RequestedTargetCellGlobalID != nil {
+		ies = append(ies, F1apMessageIE{
+			Id:          ProtocolIEID{Value: ProtocolIEID_RequestedTargetCellGlobalID},
+			Criticality: Criticality{Value: Criticality_PresentReject},
+			Value:       msg.RequestedTargetCellGlobalID,
+		})
+	}
 	return
 }
+
 func (msg *UEContextModificationFailure) Decode(wire []byte) (err error, diagList []CriticalityDiagnosticsIEItem) {
 	defer func() {
 		if err != nil {
@@ -77,6 +81,7 @@ func (msg *UEContextModificationFailure) Decode(wire []byte) (err error, diagLis
 	if _, err = aper.ReadSequenceOf[F1apMessageIE](decoder.decodeIE, r, &aper.Constraint{Lb: 0, Ub: int64(aper.POW_16 - 1)}, false); err != nil {
 		return
 	}
+	// Check only mandatory fields
 	if _, ok := decoder.list[ProtocolIEID_GNBCUUEF1APID]; !ok {
 		err = fmt.Errorf("Mandatory field GNBCUUEF1APID is missing")
 		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
@@ -104,15 +109,8 @@ func (msg *UEContextModificationFailure) Decode(wire []byte) (err error, diagLis
 		})
 		return
 	}
-	if _, ok := decoder.list[ProtocolIEID_RequestedTargetCellGlobalID]; !ok {
-		err = fmt.Errorf("Mandatory field RequestedTargetCellGlobalID is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentReject},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_RequestedTargetCellGlobalID},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
+	// CriticalityDiagnostics and RequestedTargetCellGlobalID are optional
+	diagList = decoder.diagList
 	return
 }
 
@@ -191,11 +189,11 @@ func (decoder *UEContextModificationFailureDecoder) decodeIE(r *aper.AperReader)
 	default:
 		switch msgIe.Criticality.Value {
 		case Criticality_PresentReject:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: reject)", msgIe.Id.Value)
+			err = fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: reject)", msgIe.Id.Value)
 		case Criticality_PresentIgnore:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: ignore)", msgIe.Id.Value)
+			// Just log, don't return error for ignore criticality
 		case Criticality_PresentNotify:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: notify)", msgIe.Id.Value)
+			err = fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: notify)", msgIe.Id.Value)
 		}
 		if msgIe.Criticality.Value != Criticality_PresentIgnore {
 			decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{

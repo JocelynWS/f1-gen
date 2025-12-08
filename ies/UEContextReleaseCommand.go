@@ -16,9 +16,9 @@ type UEContextReleaseCommand struct {
 	RRCContainer             []byte                    `lb:0,ub:0,optional,ignore`
 	SRBID                    *int64                    `lb:0,ub:3,conditional,ignore`
 	OldgNBDUUEF1APID         *int64                    `lb:0,ub:4294967295,optional,ignore`
-	ExecuteDuplication       *ExecuteDuplication       `mandatory,ignore`
+	ExecuteDuplication       *ExecuteDuplication       `optional,ignore`
 	RRCDeliveryStatusRequest *RRCDeliveryStatusRequest `optional,ignore`
-	TargetCellsToCancel      []TargetCellListItem      `lb:1,ub:maxnoofCHOcells,mandatory,reject`
+	TargetCellsToCancel      []TargetCellListItem      `lb:1,ub:maxnoofCHOcells,optional,reject`
 }
 
 func (msg *UEContextReleaseCommand) Encode(w io.Writer) (err error) {
@@ -67,7 +67,7 @@ func (msg *UEContextReleaseCommand) toIes() (ies []F1apMessageIE, err error) {
 			}})
 	}
 
-	if msg.SRBID != nil { // ✅ vẫn giữ nguyên điều kiện nil
+	if msg.SRBID != nil {
 		ies = append(ies, F1apMessageIE{
 			Id:          ProtocolIEID{Value: ProtocolIEID_SRBID},
 			Criticality: Criticality{Value: Criticality_PresentIgnore},
@@ -89,11 +89,13 @@ func (msg *UEContextReleaseCommand) toIes() (ies []F1apMessageIE, err error) {
 			}})
 	}
 
-	ies = append(ies, F1apMessageIE{
-		Id:          ProtocolIEID{Value: ProtocolIEID_ExecuteDuplication},
-		Criticality: Criticality{Value: Criticality_PresentIgnore},
-		Value:       msg.ExecuteDuplication,
-	})
+	if msg.ExecuteDuplication != nil {
+		ies = append(ies, F1apMessageIE{
+			Id:          ProtocolIEID{Value: ProtocolIEID_ExecuteDuplication},
+			Criticality: Criticality{Value: Criticality_PresentIgnore},
+			Value:       msg.ExecuteDuplication,
+		})
+	}
 
 	if msg.RRCDeliveryStatusRequest != nil {
 		ies = append(ies, F1apMessageIE{
@@ -116,9 +118,6 @@ func (msg *UEContextReleaseCommand) toIes() (ies []F1apMessageIE, err error) {
 			Criticality: Criticality{Value: Criticality_PresentReject},
 			Value:       &tmp_TargetCellsToCancel,
 		})
-	} else {
-		err = utils.WrapError("TargetCellsToCancel is nil", err)
-		return
 	}
 	return
 }
@@ -138,6 +137,7 @@ func (msg *UEContextReleaseCommand) Decode(wire []byte) (err error, diagList []C
 	if _, err = aper.ReadSequenceOf[F1apMessageIE](decoder.decodeIE, r, &aper.Constraint{Lb: 0, Ub: int64(aper.POW_16 - 1)}, false); err != nil {
 		return
 	}
+	// Check only mandatory fields
 	if _, ok := decoder.list[ProtocolIEID_GNBCUUEF1APID]; !ok {
 		err = fmt.Errorf("Mandatory field GNBCUUEF1APID is missing")
 		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
@@ -165,24 +165,8 @@ func (msg *UEContextReleaseCommand) Decode(wire []byte) (err error, diagList []C
 		})
 		return
 	}
-	if _, ok := decoder.list[ProtocolIEID_ExecuteDuplication]; !ok {
-		err = fmt.Errorf("Mandatory field ExecuteDuplication is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentIgnore},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_ExecuteDuplication},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
-	if _, ok := decoder.list[ProtocolIEID_TargetCellsToCancel]; !ok {
-		err = fmt.Errorf("Mandatory field TargetCellsToCancel is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentReject},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_TargetCellsToCancel},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
+	// All other fields are optional or conditional
+	diagList = decoder.diagList
 	return
 }
 
@@ -263,8 +247,8 @@ func (decoder *UEContextReleaseCommandDecoder) decodeIE(r *aper.AperReader) (msg
 			err = utils.WrapError("Read SRBID", err)
 			return
 		}
-		msg.SRBID = new(int64)
-		*msg.SRBID = int64(tmp.Value)
+		val := int64(tmp.Value)
+		msg.SRBID = &val
 	case ProtocolIEID_OldgNBDUUEF1APID:
 		tmp := INTEGER{
 			c:   aper.Constraint{Lb: 0, Ub: 4294967295},
@@ -274,8 +258,8 @@ func (decoder *UEContextReleaseCommandDecoder) decodeIE(r *aper.AperReader) (msg
 			err = utils.WrapError("Read OldgNBDUUEF1APID", err)
 			return
 		}
-		msg.OldgNBDUUEF1APID = new(int64)
-		*msg.OldgNBDUUEF1APID = int64(tmp.Value)
+		val := int64(tmp.Value)
+		msg.OldgNBDUUEF1APID = &val
 	case ProtocolIEID_ExecuteDuplication:
 		var tmp ExecuteDuplication
 		if err = tmp.Decode(ieR); err != nil {
@@ -307,11 +291,11 @@ func (decoder *UEContextReleaseCommandDecoder) decodeIE(r *aper.AperReader) (msg
 	default:
 		switch msgIe.Criticality.Value {
 		case Criticality_PresentReject:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: reject)", msgIe.Id.Value)
+			err = fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: reject)", msgIe.Id.Value)
 		case Criticality_PresentIgnore:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: ignore)", msgIe.Id.Value)
+			// Just log, don't return error for ignore criticality
 		case Criticality_PresentNotify:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: notify)", msgIe.Id.Value)
+			err = fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: notify)", msgIe.Id.Value)
 		}
 		if msgIe.Criticality.Value != Criticality_PresentIgnore {
 			decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{

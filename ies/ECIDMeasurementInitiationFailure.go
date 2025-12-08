@@ -10,12 +10,12 @@ import (
 )
 
 type ECIDMeasurementInitiationFailure struct {
-	GNBCUUEF1APID          int64                   `lb:0,ub:4294967295,mandatory,reject`
-	GNBDUUEF1APID          int64                   `lb:0,ub:4294967295,mandatory,reject`
+	GNBCUUEF1APID          int64                   `lb:0,ub:4294967295,mandatory,ignore`
+	GNBDUUEF1APID          int64                   `lb:0,ub:4294967295,mandatory,ignore`
 	LMFUEMeasurementID     int64                   `lb:1,ub:256,mandatory,reject,valueExt`
 	RANUEMeasurementID     int64                   `lb:1,ub:256,mandatory,reject,valueExt`
 	Cause                  Cause                   `mandatory,ignore`
-	CriticalityDiagnostics *CriticalityDiagnostics `mandatory,ignore`
+	CriticalityDiagnostics *CriticalityDiagnostics `optional,ignore`
 }
 
 func (msg *ECIDMeasurementInitiationFailure) Encode(w io.Writer) (err error) {
@@ -26,11 +26,12 @@ func (msg *ECIDMeasurementInitiationFailure) Encode(w io.Writer) (err error) {
 	}
 	return encodeMessage(w, F1apPduUnsuccessfulOutcome, ProcedureCode_ECIDMeasurementInitiation, Criticality_PresentReject, ies)
 }
+
 func (msg *ECIDMeasurementInitiationFailure) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}
 	ies = append(ies, F1apMessageIE{
 		Id:          ProtocolIEID{Value: ProtocolIEID_GNBCUUEF1APID},
-		Criticality: Criticality{Value: Criticality_PresentReject},
+		Criticality: Criticality{Value: Criticality_PresentIgnore},
 		Value: &INTEGER{
 			c:     aper.Constraint{Lb: 0, Ub: 4294967295},
 			ext:   false,
@@ -38,7 +39,7 @@ func (msg *ECIDMeasurementInitiationFailure) toIes() (ies []F1apMessageIE, err e
 		}})
 	ies = append(ies, F1apMessageIE{
 		Id:          ProtocolIEID{Value: ProtocolIEID_GNBDUUEF1APID},
-		Criticality: Criticality{Value: Criticality_PresentReject},
+		Criticality: Criticality{Value: Criticality_PresentIgnore},
 		Value: &INTEGER{
 			c:     aper.Constraint{Lb: 0, Ub: 4294967295},
 			ext:   false,
@@ -65,13 +66,18 @@ func (msg *ECIDMeasurementInitiationFailure) toIes() (ies []F1apMessageIE, err e
 		Criticality: Criticality{Value: Criticality_PresentIgnore},
 		Value:       &msg.Cause,
 	})
-	ies = append(ies, F1apMessageIE{
-		Id:          ProtocolIEID{Value: ProtocolIEID_CriticalityDiagnostics},
-		Criticality: Criticality{Value: Criticality_PresentIgnore},
-		Value:       msg.CriticalityDiagnostics,
-	})
+	
+	// Optional field - chỉ encode nếu không nil
+	if msg.CriticalityDiagnostics != nil {
+		ies = append(ies, F1apMessageIE{
+			Id:          ProtocolIEID{Value: ProtocolIEID_CriticalityDiagnostics},
+			Criticality: Criticality{Value: Criticality_PresentIgnore},
+			Value:       msg.CriticalityDiagnostics,
+		})
+	}
 	return
 }
+
 func (msg *ECIDMeasurementInitiationFailure) Decode(wire []byte) (err error, diagList []CriticalityDiagnosticsIEItem) {
 	defer func() {
 		if err != nil {
@@ -87,10 +93,12 @@ func (msg *ECIDMeasurementInitiationFailure) Decode(wire []byte) (err error, dia
 	if _, err = aper.ReadSequenceOf[F1apMessageIE](decoder.decodeIE, r, &aper.Constraint{Lb: 0, Ub: int64(aper.POW_16 - 1)}, false); err != nil {
 		return
 	}
+	
+	// Check mandatory fields
 	if _, ok := decoder.list[ProtocolIEID_GNBCUUEF1APID]; !ok {
 		err = fmt.Errorf("Mandatory field GNBCUUEF1APID is missing")
 		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentReject},
+			IECriticality: Criticality{Value: Criticality_PresentIgnore},
 			IEID:          ProtocolIEID{Value: ProtocolIEID_GNBCUUEF1APID},
 			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
 		})
@@ -99,7 +107,7 @@ func (msg *ECIDMeasurementInitiationFailure) Decode(wire []byte) (err error, dia
 	if _, ok := decoder.list[ProtocolIEID_GNBDUUEF1APID]; !ok {
 		err = fmt.Errorf("Mandatory field GNBDUUEF1APID is missing")
 		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentReject},
+			IECriticality: Criticality{Value: Criticality_PresentIgnore},
 			IEID:          ProtocolIEID{Value: ProtocolIEID_GNBDUUEF1APID},
 			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
 		})
@@ -132,15 +140,10 @@ func (msg *ECIDMeasurementInitiationFailure) Decode(wire []byte) (err error, dia
 		})
 		return
 	}
-	if _, ok := decoder.list[ProtocolIEID_CriticalityDiagnostics]; !ok {
-		err = fmt.Errorf("Mandatory field CriticalityDiagnostics is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentIgnore},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_CriticalityDiagnostics},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
+	
+	// CriticalityDiagnostics là optional - không cần check missing
+	
+	diagList = decoder.diagList
 	return
 }
 
@@ -223,21 +226,20 @@ func (decoder *ECIDMeasurementInitiationFailureDecoder) decodeIE(r *aper.AperRea
 		}
 		msg.Cause = tmp
 	case ProtocolIEID_CriticalityDiagnostics:
-		tmp := new(CriticalityDiagnostics)
+		var tmp CriticalityDiagnostics
 		if err = tmp.Decode(ieR); err != nil {
 			err = utils.WrapError("Read CriticalityDiagnostics", err)
 			return
 		}
-		msg.CriticalityDiagnostics = tmp
-
+		msg.CriticalityDiagnostics = &tmp
 	default:
 		switch msgIe.Criticality.Value {
 		case Criticality_PresentReject:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: reject)", msgIe.Id.Value)
+			err = fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: reject)", msgIe.Id.Value)
 		case Criticality_PresentIgnore:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: ignore)", msgIe.Id.Value)
+			err = fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: ignore)", msgIe.Id.Value)
 		case Criticality_PresentNotify:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: notify)", msgIe.Id.Value)
+			err = fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: notify)", msgIe.Id.Value)
 		}
 		if msgIe.Criticality.Value != Criticality_PresentIgnore {
 			decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{

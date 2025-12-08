@@ -6,7 +6,7 @@ import (
 )
 
 type TRPListItem struct {
-	TRPID int64 `lb:0,ub:4095,mandatory,valExt`
+	TRPID int64 `lb:0,ub:maxnoofTRPs,mandatory,valExt`
 	// IEExtensions * `optional`
 }
 
@@ -16,7 +16,7 @@ func (ie *TRPListItem) Encode(w *aper.AperWriter) (err error) {
 	}
 	optionals := []byte{0x0}
 	w.WriteBits(optionals, 1)
-	tmp_TRPID := NewINTEGER(ie.TRPID, aper.Constraint{Lb: 0, Ub: 4095}, true)
+	tmp_TRPID := NewINTEGER(ie.TRPID, aper.Constraint{Lb: 0, Ub: maxnoofTRPs}, true)
 	if err = tmp_TRPID.Encode(w); err != nil {
 		err = utils.WrapError("Encode TRPID", err)
 		return
@@ -31,7 +31,7 @@ func (ie *TRPListItem) Decode(r *aper.AperReader) (err error) {
 		return
 	}
 	tmp_TRPID := INTEGER{
-		c:   aper.Constraint{Lb: 0, Ub: 4095},
+		c:   aper.Constraint{Lb: 0, Ub: maxnoofTRPs},
 		ext: true,
 	}
 	if err = tmp_TRPID.Decode(r); err != nil {

@@ -7,7 +7,7 @@ import (
 
 type PosMeasurementResultListItem struct {
 	PosMeasurementResult []PosMeasurementResultItem `lb:1,ub:maxnoofPosMeas,mandatory,valExt`
-	TRPID                int64                      `lb:0,ub:4095,mandatory,valExt`
+	TRPID                int64                      `lb:0,ub:maxnoofTRPs,mandatory,valExt`
 	// IEExtensions * `optional`
 }
 
@@ -34,13 +34,14 @@ func (ie *PosMeasurementResultListItem) Encode(w *aper.AperWriter) (err error) {
 		err = utils.WrapError("PosMeasurementResult is nil", err)
 		return
 	}
-	tmp_TRPID := NewINTEGER(ie.TRPID, aper.Constraint{Lb: 0, Ub: 4095}, true)
+	tmp_TRPID := NewINTEGER(ie.TRPID, aper.Constraint{Lb: 0, Ub: maxnoofTRPs}, true)
 	if err = tmp_TRPID.Encode(w); err != nil {
 		err = utils.WrapError("Encode TRPID", err)
 		return
 	}
 	return
 }
+
 func (ie *PosMeasurementResultListItem) Decode(r *aper.AperReader) (err error) {
 	if _, err = r.ReadBool(); err != nil {
 		return
@@ -62,7 +63,7 @@ func (ie *PosMeasurementResultListItem) Decode(r *aper.AperReader) (err error) {
 		ie.PosMeasurementResult = append(ie.PosMeasurementResult, *i)
 	}
 	tmp_TRPID := INTEGER{
-		c:   aper.Constraint{Lb: 0, Ub: 4095},
+		c:   aper.Constraint{Lb: 0, Ub: maxnoofTRPs},
 		ext: true,
 	}
 	if err = tmp_TRPID.Decode(r); err != nil {

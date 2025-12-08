@@ -6,8 +6,8 @@ import (
 )
 
 type SNSSAI struct {
-	SST []byte `lb:0,ub:0,mandatory`
-	SD  []byte `lb:0,ub:0,optional`
+	SST []byte `lb:1,ub:1,mandatory`
+	SD  []byte `lb:3,ub:3,optional`
 	// IEExtensions * `optional`
 }
 
@@ -20,13 +20,13 @@ func (ie *SNSSAI) Encode(w *aper.AperWriter) (err error) {
 		aper.SetBit(optionals, 1)
 	}
 	w.WriteBits(optionals, 2)
-	tmp_SST := NewOCTETSTRING(ie.SST, aper.Constraint{Lb: 0, Ub: 0}, false)
+	tmp_SST := NewOCTETSTRING(ie.SST, aper.Constraint{Lb: 1, Ub: 1}, false)
 	if err = tmp_SST.Encode(w); err != nil {
 		err = utils.WrapError("Encode SST", err)
 		return
 	}
 	if ie.SD != nil {
-		tmp_SD := NewOCTETSTRING(ie.SD, aper.Constraint{Lb: 0, Ub: 0}, false)
+		tmp_SD := NewOCTETSTRING(ie.SD, aper.Constraint{Lb: 3, Ub: 3}, false)
 		if err = tmp_SD.Encode(w); err != nil {
 			err = utils.WrapError("Encode SD", err)
 			return
@@ -43,7 +43,7 @@ func (ie *SNSSAI) Decode(r *aper.AperReader) (err error) {
 		return
 	}
 	tmp_SST := OCTETSTRING{
-		c:   aper.Constraint{Lb: 0, Ub: 0},
+		c:   aper.Constraint{Lb: 1, Ub: 1},
 		ext: false,
 	}
 	if err = tmp_SST.Decode(r); err != nil {
@@ -53,7 +53,7 @@ func (ie *SNSSAI) Decode(r *aper.AperReader) (err error) {
 	ie.SST = tmp_SST.Value
 	if aper.IsBitSet(optionals, 1) {
 		tmp_SD := OCTETSTRING{
-			c:   aper.Constraint{Lb: 0, Ub: 0},
+			c:   aper.Constraint{Lb: 3, Ub: 3},
 			ext: false,
 		}
 		if err = tmp_SD.Decode(r); err != nil {

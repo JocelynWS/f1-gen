@@ -6,9 +6,9 @@ import (
 )
 
 type NGRANHighAccuracyAccessPointPosition struct {
-	Latitude               int64 `lb:2147483648,ub:2147483647,mandatory`
-	Longitude              int64 `lb:2147483648,ub:2147483647,mandatory`
-	Altitude               int64 `lb:64000,ub:1280000,mandatory`
+	Latitude               int64 `lb:-2147483648,ub:2147483647,mandatory`
+	Longitude              int64 `lb:-2147483648,ub:2147483647,mandatory`
+	Altitude               int64 `lb:-64000,ub:1280000,mandatory`
 	UncertaintySemiMajor   int64 `lb:0,ub:255,mandatory`
 	UncertaintySemiMinor   int64 `lb:0,ub:255,mandatory`
 	OrientationOfMajorAxis int64 `lb:0,ub:179,mandatory`
@@ -24,17 +24,17 @@ func (ie *NGRANHighAccuracyAccessPointPosition) Encode(w *aper.AperWriter) (err 
 	}
 	optionals := []byte{0x0}
 	w.WriteBits(optionals, 1)
-	tmp_Latitude := NewINTEGER(ie.Latitude, aper.Constraint{Lb: 2147483648, Ub: 2147483647}, false)
+	tmp_Latitude := NewINTEGER(ie.Latitude, aper.Constraint{Lb: -2147483648, Ub: 2147483647}, false)
 	if err = tmp_Latitude.Encode(w); err != nil {
 		err = utils.WrapError("Encode Latitude", err)
 		return
 	}
-	tmp_Longitude := NewINTEGER(ie.Longitude, aper.Constraint{Lb: 2147483648, Ub: 2147483647}, false)
+	tmp_Longitude := NewINTEGER(ie.Longitude, aper.Constraint{Lb: -2147483648, Ub: 2147483647}, false)
 	if err = tmp_Longitude.Encode(w); err != nil {
 		err = utils.WrapError("Encode Longitude", err)
 		return
 	}
-	tmp_Altitude := NewINTEGER(ie.Altitude, aper.Constraint{Lb: 64000, Ub: 1280000}, false)
+	tmp_Altitude := NewINTEGER(ie.Altitude, aper.Constraint{Lb: -64000, Ub: 1280000}, false)
 	if err = tmp_Altitude.Encode(w); err != nil {
 		err = utils.WrapError("Encode Altitude", err)
 		return
@@ -71,6 +71,7 @@ func (ie *NGRANHighAccuracyAccessPointPosition) Encode(w *aper.AperWriter) (err 
 	}
 	return
 }
+
 func (ie *NGRANHighAccuracyAccessPointPosition) Decode(r *aper.AperReader) (err error) {
 	if _, err = r.ReadBool(); err != nil {
 		return
@@ -79,7 +80,7 @@ func (ie *NGRANHighAccuracyAccessPointPosition) Decode(r *aper.AperReader) (err 
 		return
 	}
 	tmp_Latitude := INTEGER{
-		c:   aper.Constraint{Lb: 2147483648, Ub: 2147483647},
+		c:   aper.Constraint{Lb: -2147483648, Ub: 2147483647},
 		ext: false,
 	}
 	if err = tmp_Latitude.Decode(r); err != nil {
@@ -88,7 +89,7 @@ func (ie *NGRANHighAccuracyAccessPointPosition) Decode(r *aper.AperReader) (err 
 	}
 	ie.Latitude = int64(tmp_Latitude.Value)
 	tmp_Longitude := INTEGER{
-		c:   aper.Constraint{Lb: 2147483648, Ub: 2147483647},
+		c:   aper.Constraint{Lb: -2147483648, Ub: 2147483647},
 		ext: false,
 	}
 	if err = tmp_Longitude.Decode(r); err != nil {
@@ -97,7 +98,7 @@ func (ie *NGRANHighAccuracyAccessPointPosition) Decode(r *aper.AperReader) (err 
 	}
 	ie.Longitude = int64(tmp_Longitude.Value)
 	tmp_Altitude := INTEGER{
-		c:   aper.Constraint{Lb: 64000, Ub: 1280000},
+		c:   aper.Constraint{Lb: -64000, Ub: 1280000},
 		ext: false,
 	}
 	if err = tmp_Altitude.Decode(r); err != nil {

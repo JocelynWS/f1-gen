@@ -7,7 +7,7 @@ import (
 
 type ResourceSetTypeAperiodic struct {
 	SRSResourceTriggerList int64 `lb:1,ub:3,mandatory`
-	SlotOffset             int64 `lb:0,ub:32,mandatory`
+	SlotOffset             int64 `lb:1,ub:32,mandatory`
 	// IEExtensions *ProtocolExtensionContainer `optional`
 }
 
@@ -24,7 +24,7 @@ func (ie *ResourceSetTypeAperiodic) Encode(w *aper.AperWriter) (err error) {
 		return
 	}
 
-	tmp_SlotOffset := NewINTEGER(ie.SlotOffset, aper.Constraint{Lb: 0, Ub: 32}, false)
+	tmp_SlotOffset := NewINTEGER(ie.SlotOffset, aper.Constraint{Lb: 1, Ub: 32}, false)
 	if err = tmp_SlotOffset.Encode(w); err != nil {
 		err = utils.WrapError("Encode SlotOffset", err)
 		return
@@ -50,7 +50,7 @@ func (ie *ResourceSetTypeAperiodic) Decode(r *aper.AperReader) (err error) {
 	}
 	ie.SRSResourceTriggerList = int64(tmp_SRSResourceTriggerList.Value)
 	tmp_SlotOffset := INTEGER{
-		c:   aper.Constraint{Lb: 0, Ub: 32},
+		c:   aper.Constraint{Lb: 1, Ub: 32},
 		ext: false,
 	}
 	if err = tmp_SlotOffset.Decode(r); err != nil {

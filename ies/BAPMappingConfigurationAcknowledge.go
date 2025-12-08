@@ -11,7 +11,7 @@ import (
 
 type BAPMappingConfigurationAcknowledge struct {
 	TransactionID          int64                   `lb:0,ub:255,mandatory,reject`
-	CriticalityDiagnostics *CriticalityDiagnostics `mandatory,ignore`
+	CriticalityDiagnostics *CriticalityDiagnostics `optional,ignore`
 }
 
 func (msg *BAPMappingConfigurationAcknowledge) Encode(w io.Writer) (err error) {
@@ -22,6 +22,7 @@ func (msg *BAPMappingConfigurationAcknowledge) Encode(w io.Writer) (err error) {
 	}
 	return encodeMessage(w, F1apPduSuccessfulOutcome, ProcedureCode_BAPMappingConfiguration, Criticality_PresentReject, ies)
 }
+
 func (msg *BAPMappingConfigurationAcknowledge) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}
 	ies = append(ies, F1apMessageIE{
@@ -32,14 +33,18 @@ func (msg *BAPMappingConfigurationAcknowledge) toIes() (ies []F1apMessageIE, err
 			ext:   false,
 			Value: aper.Integer(msg.TransactionID),
 		}})
-	ies = append(ies, F1apMessageIE{
-		Id:          ProtocolIEID{Value: ProtocolIEID_CriticalityDiagnostics},
-		Criticality: Criticality{Value: Criticality_PresentIgnore},
-		// Sửa lỗi 1: Bỏ & vì msg.CriticalityDiagnostics đã là con trỏ (*CriticalityDiagnostics)
-		Value: msg.CriticalityDiagnostics,
-	})
+	
+	// Optional field - chỉ encode nếu không nil
+	if msg.CriticalityDiagnostics != nil {
+		ies = append(ies, F1apMessageIE{
+			Id:          ProtocolIEID{Value: ProtocolIEID_CriticalityDiagnostics},
+			Criticality: Criticality{Value: Criticality_PresentIgnore},
+			Value:       msg.CriticalityDiagnostics,
+		})
+	}
 	return
 }
+
 func (msg *BAPMappingConfigurationAcknowledge) Decode(wire []byte) (err error, diagList []CriticalityDiagnosticsIEItem) {
 	defer func() {
 		if err != nil {
@@ -55,6 +60,8 @@ func (msg *BAPMappingConfigurationAcknowledge) Decode(wire []byte) (err error, d
 	if _, err = aper.ReadSequenceOf[F1apMessageIE](decoder.decodeIE, r, &aper.Constraint{Lb: 0, Ub: int64(aper.POW_16 - 1)}, false); err != nil {
 		return
 	}
+	
+	// Chỉ check mandatory field
 	if _, ok := decoder.list[ProtocolIEID_TransactionID]; !ok {
 		err = fmt.Errorf("Mandatory field TransactionID is missing")
 		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
@@ -64,15 +71,10 @@ func (msg *BAPMappingConfigurationAcknowledge) Decode(wire []byte) (err error, d
 		})
 		return
 	}
-	if _, ok := decoder.list[ProtocolIEID_CriticalityDiagnostics]; !ok {
-		err = fmt.Errorf("Mandatory field CriticalityDiagnostics is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentIgnore},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_CriticalityDiagnostics},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
+	
+	// CriticalityDiagnostics là optional - không cần check missing
+	
+	diagList = decoder.diagList
 	return
 }
 
@@ -123,16 +125,15 @@ func (decoder *BAPMappingConfigurationAcknowledgeDecoder) decodeIE(r *aper.AperR
 			err = utils.WrapError("Read CriticalityDiagnostics", err)
 			return
 		}
-		// Sửa lỗi 2: Lấy địa chỉ (&tmp) để gán cho trường con trỏ (*CriticalityDiagnostics)
 		msg.CriticalityDiagnostics = &tmp
 	default:
 		switch msgIe.Criticality.Value {
 		case Criticality_PresentReject:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: reject)", msgIe.Id.Value)
+			err = fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: reject)", msgIe.Id.Value)
 		case Criticality_PresentIgnore:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: ignore)", msgIe.Id.Value)
+			err = fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: ignore)", msgIe.Id.Value)
 		case Criticality_PresentNotify:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: notify)", msgIe.Id.Value)
+			err = fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: notify)", msgIe.Id.Value)
 		}
 		if msgIe.Criticality.Value != Criticality_PresentIgnore {
 			decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{

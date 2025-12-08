@@ -6,7 +6,7 @@ import (
 )
 
 type ProtectedEUTRAResourcesItem struct {
-	SpectrumSharingGroupID int64                `lb:0,ub:maxCellineNB,mandatory`
+	SpectrumSharingGroupID int64                `lb:1,ub:maxCellineNB,mandatory`
 	EUTRACellsList         []EUTRACellsListItem `lb:1,ub:maxCellineNB,mandatory,valExt`
 	// IEExtensions * `optional`
 }
@@ -17,7 +17,7 @@ func (ie *ProtectedEUTRAResourcesItem) Encode(w *aper.AperWriter) (err error) {
 	}
 	optionals := []byte{0x0}
 	w.WriteBits(optionals, 1)
-	tmp_SpectrumSharingGroupID := NewINTEGER(ie.SpectrumSharingGroupID, aper.Constraint{Lb: 0, Ub: maxCellineNB}, false)
+	tmp_SpectrumSharingGroupID := NewINTEGER(ie.SpectrumSharingGroupID, aper.Constraint{Lb: 1, Ub: maxCellineNB}, false)
 	if err = tmp_SpectrumSharingGroupID.Encode(w); err != nil {
 		err = utils.WrapError("Encode SpectrumSharingGroupID", err)
 		return
@@ -49,7 +49,7 @@ func (ie *ProtectedEUTRAResourcesItem) Decode(r *aper.AperReader) (err error) {
 		return
 	}
 	tmp_SpectrumSharingGroupID := INTEGER{
-		c:   aper.Constraint{Lb: 0, Ub: maxCellineNB},
+		c:   aper.Constraint{Lb: 1, Ub: maxCellineNB},
 		ext: false,
 	}
 	if err = tmp_SpectrumSharingGroupID.Decode(r); err != nil {

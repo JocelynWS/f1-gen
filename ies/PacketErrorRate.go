@@ -6,8 +6,8 @@ import (
 )
 
 type PacketErrorRate struct {
-	PERScalar   int64 `lb:0,ub:9,mandatory`
-	PERExponent int64 `lb:0,ub:9,mandatory`
+	PERScalar   int64 `lb:0,ub:9,mandatory,valExt`
+	PERExponent int64 `lb:0,ub:9,mandatory,valExt`
 	// IEExtensions * `optional`
 }
 
@@ -17,18 +17,19 @@ func (ie *PacketErrorRate) Encode(w *aper.AperWriter) (err error) {
 	}
 	optionals := []byte{0x0}
 	w.WriteBits(optionals, 1)
-	tmp_PERScalar := NewINTEGER(ie.PERScalar, aper.Constraint{Lb: 0, Ub: 9}, false)
+	tmp_PERScalar := NewINTEGER(ie.PERScalar, aper.Constraint{Lb: 0, Ub: 9}, true)
 	if err = tmp_PERScalar.Encode(w); err != nil {
 		err = utils.WrapError("Encode PERScalar", err)
 		return
 	}
-	tmp_PERExponent := NewINTEGER(ie.PERExponent, aper.Constraint{Lb: 0, Ub: 9}, false)
+	tmp_PERExponent := NewINTEGER(ie.PERExponent, aper.Constraint{Lb: 0, Ub: 9}, true)
 	if err = tmp_PERExponent.Encode(w); err != nil {
 		err = utils.WrapError("Encode PERExponent", err)
 		return
 	}
 	return
 }
+
 func (ie *PacketErrorRate) Decode(r *aper.AperReader) (err error) {
 	if _, err = r.ReadBool(); err != nil {
 		return
@@ -38,7 +39,7 @@ func (ie *PacketErrorRate) Decode(r *aper.AperReader) (err error) {
 	}
 	tmp_PERScalar := INTEGER{
 		c:   aper.Constraint{Lb: 0, Ub: 9},
-		ext: false,
+		ext: true,
 	}
 	if err = tmp_PERScalar.Decode(r); err != nil {
 		err = utils.WrapError("Read PERScalar", err)
@@ -47,7 +48,7 @@ func (ie *PacketErrorRate) Decode(r *aper.AperReader) (err error) {
 	ie.PERScalar = int64(tmp_PERScalar.Value)
 	tmp_PERExponent := INTEGER{
 		c:   aper.Constraint{Lb: 0, Ub: 9},
-		ext: false,
+		ext: true,
 	}
 	if err = tmp_PERExponent.Decode(r); err != nil {
 		err = utils.WrapError("Read PERExponent", err)

@@ -11,8 +11,8 @@ import (
 
 type GNBDUResourceConfiguration struct {
 	TransactionID                 int64                               `lb:0,ub:255,mandatory,reject`
-	ActivatedCellstobeUpdatedList []ActivatedCellsToBeUpdatedListItem `lb:1,ub:maxnoofServedCellsIAB,mandatory,reject`
-	ChildNodesList                []ChildNodesListItem                `lb:1,ub:maxnoofChildIABNodes,mandatory,reject`
+	ActivatedCellstobeUpdatedList []ActivatedCellsToBeUpdatedListItem `lb:1,ub:maxnoofServedCellsIAB,optional,reject`
+	ChildNodesList                []ChildNodesListItem                `lb:1,ub:maxnoofChildIABNodes,optional,reject`
 }
 
 func (msg *GNBDUResourceConfiguration) Encode(w io.Writer) (err error) {
@@ -23,6 +23,7 @@ func (msg *GNBDUResourceConfiguration) Encode(w io.Writer) (err error) {
 	}
 	return encodeMessage(w, F1apPduInitiatingMessage, ProcedureCode_GNBDUResourceConfiguration, Criticality_PresentReject, ies)
 }
+
 func (msg *GNBDUResourceConfiguration) toIes() (ies []F1apMessageIE, err error) {
 	ies = []F1apMessageIE{}
 	ies = append(ies, F1apMessageIE{
@@ -46,9 +47,6 @@ func (msg *GNBDUResourceConfiguration) toIes() (ies []F1apMessageIE, err error) 
 			Criticality: Criticality{Value: Criticality_PresentReject},
 			Value:       &tmp_ActivatedCellstobeUpdatedList,
 		})
-	} else {
-		err = utils.WrapError("ActivatedCellstobeUpdatedList is nil", err)
-		return
 	}
 	if len(msg.ChildNodesList) > 0 {
 		tmp_ChildNodesList := Sequence[*ChildNodesListItem]{
@@ -63,12 +61,10 @@ func (msg *GNBDUResourceConfiguration) toIes() (ies []F1apMessageIE, err error) 
 			Criticality: Criticality{Value: Criticality_PresentReject},
 			Value:       &tmp_ChildNodesList,
 		})
-	} else {
-		err = utils.WrapError("ChildNodesList is nil", err)
-		return
 	}
 	return
 }
+
 func (msg *GNBDUResourceConfiguration) Decode(wire []byte) (err error, diagList []CriticalityDiagnosticsIEItem) {
 	defer func() {
 		if err != nil {
@@ -93,24 +89,7 @@ func (msg *GNBDUResourceConfiguration) Decode(wire []byte) (err error, diagList 
 		})
 		return
 	}
-	if _, ok := decoder.list[ProtocolIEID_ActivatedCellsToBeUpdatedList]; !ok {
-		err = fmt.Errorf("Mandatory field ActivatedCellstobeUpdatedList is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentReject},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_ActivatedCellsToBeUpdatedList},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
-	if _, ok := decoder.list[ProtocolIEID_ChildNodesList]; !ok {
-		err = fmt.Errorf("Mandatory field ChildNodesList is missing")
-		decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{
-			IECriticality: Criticality{Value: Criticality_PresentReject},
-			IEID:          ProtocolIEID{Value: ProtocolIEID_ChildNodesList},
-			TypeOfError:   TypeOfError{Value: TypeOfErrorMissing},
-		})
-		return
-	}
+	diagList = decoder.diagList
 	return
 }
 
@@ -186,11 +165,11 @@ func (decoder *GNBDUResourceConfigurationDecoder) decodeIE(r *aper.AperReader) (
 	default:
 		switch msgIe.Criticality.Value {
 		case Criticality_PresentReject:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: reject)", msgIe.Id.Value)
+			err = fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: reject)", msgIe.Id.Value)
 		case Criticality_PresentIgnore:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: ignore)", msgIe.Id.Value)
+			err = fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: ignore)", msgIe.Id.Value)
 		case Criticality_PresentNotify:
-			fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: notify)", msgIe.Id.Value)
+			err = fmt.Errorf("Not comprehended IE ID 0x%04x (criticality: notify)", msgIe.Id.Value)
 		}
 		if msgIe.Criticality.Value != Criticality_PresentIgnore {
 			decoder.diagList = append(decoder.diagList, CriticalityDiagnosticsIEItem{

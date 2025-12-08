@@ -8,9 +8,9 @@ import (
 type NRPRACHConfigItem struct {
 	NRSCS                     NRSCS              `mandatory`
 	PrachFreqStartfromCarrier int64              `lb:0,ub:maxnoofPhysicalResourceBlocks-1,mandatory,valExt`
-	Msg1FDM                   Msg1FDM            `mandatory,valExt` // Sửa: madatory -> mandatory
+	Msg1FDM                   Msg1FDM            `mandatory,valExt` 
 	ParchConfigIndex          int64              `lb:0,ub:255,mandatory,valExt`
-	SsbPerRACHOccasion        SSBPerRACHOccasion `mandatory,valExt` // Sửa: madatory -> mandatory
+	SsbPerRACHOccasion        SSBPerRACHOccasion `mandatory,valExt` 
 	FreqDomainLength          FreqDomainLength   `mandatory`
 	ZeroCorrelZoneConfig      int64              `lb:0,ub:15,mandatory`
 	// IEExtension *NRPRACHConfigItemExtIEs `optional`
