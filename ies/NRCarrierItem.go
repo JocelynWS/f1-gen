@@ -7,8 +7,8 @@ import (
 
 type NRCarrierItem struct {
 	CarrierSCS       NRSCS `mandatory`
-	OffsetToCarrier  int64 `lb:0,ub:2199,mandatory,valExt`
-	CarrierBandwidth int64 `lb:0,ub:maxnoofPhysicalResourceBlocks,mandatory,valExt`
+	OffsetToCarrier  int64 `lb:0,ub:2199,mandatory,valueExt`
+	CarrierBandwidth int64 `lb:0,ub:maxnoofPhysicalResourceBlocks,mandatory,valueExt`
 	// IEExtension * `optional`
 }
 

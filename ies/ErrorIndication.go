@@ -10,7 +10,7 @@ import (
 )
 
 type ErrorIndication struct {
-	TransactionID          int64                   `lb:0,ub:255,mandatory,reject`
+	TransactionID          int64                   `lb:0,ub:255,mandatory,reject,valueExt`
 	GNBCUUEF1APID          *int64                  `lb:0,ub:4294967295,optional,ignore`
 	GNBDUUEF1APID          *int64                  `lb:0,ub:4294967295,optional,ignore`
 	Cause                  *Cause                  `optional,ignore`
@@ -32,7 +32,7 @@ func (msg *ErrorIndication) toIes() (ies []F1apMessageIE, err error) {
 		Criticality: Criticality{Value: Criticality_PresentReject},
 		Value: &INTEGER{
 			c:     aper.Constraint{Lb: 0, Ub: 255},
-			ext:   false,
+			ext:   true,
 			Value: aper.Integer(msg.TransactionID),
 		}})
 	if msg.GNBCUUEF1APID != nil {
@@ -132,7 +132,7 @@ func (decoder *ErrorIndicationDecoder) decodeIE(r *aper.AperReader) (msgIe *F1ap
 	case ProtocolIEID_TransactionID:
 		tmp := INTEGER{
 			c:   aper.Constraint{Lb: 0, Ub: 255},
-			ext: false,
+			ext: true,
 		}
 		if err = tmp.Decode(ieR); err != nil {
 			err = utils.WrapError("Read TransactionID", err)

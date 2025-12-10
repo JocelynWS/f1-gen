@@ -6,7 +6,7 @@ import (
 )
 
 type SemipersistentSRS struct {
-	SRSResourceSetID   int64                `lb:0,ub:15,mandatory`
+	SRSResourceSetID   int64                `lb:0,ub:15,mandatory,valueExt`
 	SRSSpatialRelation *SpatialRelationInfo `optional`
 	// IEExtensions * `optional`
 }
@@ -20,7 +20,7 @@ func (ie *SemipersistentSRS) Encode(w *aper.AperWriter) (err error) {
 		aper.SetBit(optionals, 1)
 	}
 	w.WriteBits(optionals, 2)
-	tmp_SRSResourceSetID := NewINTEGER(ie.SRSResourceSetID, aper.Constraint{Lb: 0, Ub: 15}, false)
+	tmp_SRSResourceSetID := NewINTEGER(ie.SRSResourceSetID, aper.Constraint{Lb: 0, Ub: 15}, true)
 	if err = tmp_SRSResourceSetID.Encode(w); err != nil {
 		err = utils.WrapError("Encode SRSResourceSetID", err)
 		return
@@ -43,7 +43,7 @@ func (ie *SemipersistentSRS) Decode(r *aper.AperReader) (err error) {
 	}
 	tmp_SRSResourceSetID := INTEGER{
 		c:   aper.Constraint{Lb: 0, Ub: 15},
-		ext: false,
+		ext: true,
 	}
 	if err = tmp_SRSResourceSetID.Decode(r); err != nil {
 		err = utils.WrapError("Read SRSResourceSetID", err)

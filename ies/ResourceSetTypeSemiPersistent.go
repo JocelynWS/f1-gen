@@ -6,7 +6,7 @@ import (
 )
 
 type ResourceSetTypeSemiPersistent struct {
-	SemiPersistentSet SemiPersistentSet `madatory,valExt`
+	SemiPersistentSet SemiPersistentSet `madatory,valueExt`
 	// IEExtensions *ResourceSetTypeSemiPersistentExtIEs `optional`
 }
 

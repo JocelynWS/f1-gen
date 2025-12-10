@@ -9,7 +9,7 @@ type QoSFlowLevelQoSParameters struct {
 	QoSCharacteristics               QoSCharacteristics                  `madatory`
 	NGRANAllocationRetentionPriority NGRANAllocationAndRetentionPriority `madatory`
 	GBRQoSFlowInformation            *GBRQoSFlowInformation              `optional`
-	ReflectiveQoSAttribute           *ReflectiveQoSAttribute             `optional,valExt`
+	ReflectiveQoSAttribute           *ReflectiveQoSAttribute             `optional,valueExt`
 	// IEExtensions *QoSFlowLevelQoSParametersExtIEs `optional`
 }
 

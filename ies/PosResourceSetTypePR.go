@@ -6,7 +6,7 @@ import (
 )
 
 type PosResourceSetTypePR struct {
-	PosPeriodicSet PosPeriodicSet `madatory,valExt`
+	PosPeriodicSet PosPeriodicSet `madatory,valueExt`
 	// IEExtensions *PosResourceSetTypePRExtIEs `optional`
 }
 

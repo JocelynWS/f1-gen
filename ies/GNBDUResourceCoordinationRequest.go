@@ -10,7 +10,7 @@ import (
 )
 
 type GNBDUResourceCoordinationRequest struct {
-	TransactionID                               int64                                `lb:0,ub:255,mandatory,reject`
+	TransactionID                               int64                                `lb:0,ub:255,mandatory,reject,valueExt`
 	RequestType                                 RequestType                          `mandatory,reject`
 	EUTRANRCellResourceCoordinationReqContainer []byte                               `lb:0,ub:0,mandatory,reject`
 	IgnoreResourceCoordinationContainer         *IgnoreResourceCoordinationContainer `optional,reject`
@@ -32,7 +32,7 @@ func (msg *GNBDUResourceCoordinationRequest) toIes() (ies []F1apMessageIE, err e
 		Criticality: Criticality{Value: Criticality_PresentReject},
 		Value: &INTEGER{
 			c:     aper.Constraint{Lb: 0, Ub: 255},
-			ext:   false,
+			ext:   true,
 			Value: aper.Integer(msg.TransactionID),
 		}})
 	ies = append(ies, F1apMessageIE{
@@ -138,7 +138,7 @@ func (decoder *GNBDUResourceCoordinationRequestDecoder) decodeIE(r *aper.AperRea
 	case ProtocolIEID_TransactionID:
 		tmp := INTEGER{
 			c:   aper.Constraint{Lb: 0, Ub: 255},
-			ext: false,
+			ext: true,
 		}
 		if err = tmp.Decode(ieR); err != nil {
 			err = utils.WrapError("Read TransactionID", err)

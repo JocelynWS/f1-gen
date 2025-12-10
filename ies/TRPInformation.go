@@ -6,8 +6,8 @@ import (
 )
 
 type TRPInformation struct {
-	TRPID                          int64                            `lb:0,ub:maxnoofTRPs,mandatory,valExt`
-	TRPInformationTypeResponseList []TRPInformationTypeResponseItem `lb:1,ub:maxnoofTRPInfoTypes,mandatory,valExt`
+	TRPID                          int64                            `lb:0,ub:maxnoofTRPs,mandatory,valueExt`
+	TRPInformationTypeResponseList []TRPInformationTypeResponseItem `lb:1,ub:maxnoofTRPInfoTypes,mandatory,valueExt`
 	// IEExtensions * `optional`
 }
 

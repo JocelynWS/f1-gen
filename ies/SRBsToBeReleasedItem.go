@@ -6,7 +6,7 @@ import (
 )
 
 type SRBsToBeReleasedItem struct {
-	SRBID int64 `lb:0,ub:3,mandatory`
+	SRBID int64 `lb:0,ub:3,mandatory,valueExt`
 	// IEExtensions * `optional`
 }
 
@@ -16,7 +16,7 @@ func (ie *SRBsToBeReleasedItem) Encode(w *aper.AperWriter) (err error) {
 	}
 	optionals := []byte{0x0}
 	w.WriteBits(optionals, 1)
-	tmp_SRBID := NewINTEGER(ie.SRBID, aper.Constraint{Lb: 0, Ub: 3}, false)
+	tmp_SRBID := NewINTEGER(ie.SRBID, aper.Constraint{Lb: 0, Ub: 3}, true)
 	if err = tmp_SRBID.Encode(w); err != nil {
 		err = utils.WrapError("Encode SRBID", err)
 		return
@@ -32,7 +32,7 @@ func (ie *SRBsToBeReleasedItem) Decode(r *aper.AperReader) (err error) {
 	}
 	tmp_SRBID := INTEGER{
 		c:   aper.Constraint{Lb: 0, Ub: 3},
-		ext: false,
+		ext: true,
 	}
 	if err = tmp_SRBID.Decode(r); err != nil {
 		err = utils.WrapError("Read SRBID", err)

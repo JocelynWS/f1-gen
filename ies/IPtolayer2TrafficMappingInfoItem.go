@@ -6,7 +6,7 @@ import (
 )
 
 type IPtolayer2TrafficMappingInfoItem struct {
-	MappingInformationIndex aper.BitString      `lb:1,ub:65536,mandatory,valExt`
+	MappingInformationIndex aper.BitString      `lb:1,ub:65536,mandatory,valueExt`
 	IPHeaderInformation     IPHeaderInformation `mandatory`
 	BHInfo                  BHInfo              `mandatory`
 	// IEExtensions *ProtocolExtensionContainerIPtolayer2TrafficMappingInfoItemExtIEs `optional`

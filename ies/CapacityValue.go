@@ -7,7 +7,7 @@ import (
 
 type CapacityValue struct {
 	CapacityValue            int64                      `lb:0,ub:100,mandatory`
-	SSBAreaCapacityValueList []SSBAreaCapacityValueItem `lb:1,ub:maxnoofSSBAreas,optional,valExt`
+	SSBAreaCapacityValueList []SSBAreaCapacityValueItem `lb:1,ub:maxnoofSSBAreas,optional,valueExt`
 	// IEExtensions * `optional`
 }
 

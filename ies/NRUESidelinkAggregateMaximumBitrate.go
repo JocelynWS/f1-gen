@@ -6,7 +6,7 @@ import (
 )
 
 type NRUESidelinkAggregateMaximumBitrate struct {
-	UENRSidelinkAggregateMaximumBitrate int64 `lb:0,ub:4000000000000,mandatory,valExt`
+	UENRSidelinkAggregateMaximumBitrate int64 `lb:0,ub:4000000000000,mandatory,valueExt`
 	// IEExtensions * `optional`
 }
 

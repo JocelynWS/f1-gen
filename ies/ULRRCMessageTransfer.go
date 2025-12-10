@@ -12,7 +12,7 @@ import (
 type ULRRCMessageTransfer struct {
 	GNBCUUEF1APID    int64  `lb:0,ub:4294967295,mandatory,reject`
 	GNBDUUEF1APID    int64  `lb:0,ub:4294967295,mandatory,reject`
-	SRBID            int64  `lb:0,ub:3,mandatory,reject`
+	SRBID            int64  `lb:0,ub:3,mandatory,reject,valueExt`
 	RRCContainer     []byte `lb:0,ub:0,mandatory,reject`
 	SelectedPLMNID   []byte `lb:3,ub:3,optional,reject`
 	NewgNBDUUEF1APID *int64 `lb:0,ub:4294967295,optional,reject`
@@ -49,7 +49,7 @@ func (msg *ULRRCMessageTransfer) toIes() (ies []F1apMessageIE, err error) {
 		Criticality: Criticality{Value: Criticality_PresentReject},
 		Value: &INTEGER{
 			c:     aper.Constraint{Lb: 0, Ub: 3},
-			ext:   false,
+			ext:   true,
 			Value: aper.Integer(msg.SRBID),
 		}})
 	ies = append(ies, F1apMessageIE{
@@ -190,7 +190,7 @@ func (decoder *ULRRCMessageTransferDecoder) decodeIE(r *aper.AperReader) (msgIe 
 	case ProtocolIEID_SRBID:
 		tmp := INTEGER{
 			c:   aper.Constraint{Lb: 0, Ub: 3},
-			ext: false,
+			ext: true,
 		}
 		if err = tmp.Decode(ieR); err != nil {
 			err = utils.WrapError("Read SRBID", err)

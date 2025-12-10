@@ -7,7 +7,7 @@ import (
 
 type ReportingRequestType struct {
 	EventType                 EventType `mandatory`
-	ReportingPeriodicityValue *int64    `lb:0,ub:512,optional`
+	ReportingPeriodicityValue *int64    `lb:0,ub:512,optional,valueExt`
 	// IEExtensions *ProtocolExtensionContainer `optional`
 }
 
@@ -28,7 +28,7 @@ func (ie *ReportingRequestType) Encode(w *aper.AperWriter) (err error) {
 	}
 
 	if ie.ReportingPeriodicityValue != nil {
-		tmp := NewINTEGER(*ie.ReportingPeriodicityValue, aper.Constraint{Lb: 0, Ub: 512}, false)
+		tmp := NewINTEGER(*ie.ReportingPeriodicityValue, aper.Constraint{Lb: 0, Ub: 512}, true)
 		if err = tmp.Encode(w); err != nil {
 			err = utils.WrapError("Encode ReportingPeriodicityValue", err)
 			return
@@ -54,7 +54,7 @@ func (ie *ReportingRequestType) Decode(r *aper.AperReader) (err error) {
 	}
 
 	if aper.IsBitSet(optionals, 1) {
-		tmp := INTEGER{c: aper.Constraint{Lb: 0, Ub: 512}, ext: false}
+		tmp := INTEGER{c: aper.Constraint{Lb: 0, Ub: 512}, ext: true}
 		if err = tmp.Decode(r); err != nil {
 			err = utils.WrapError("Read ReportingPeriodicityValue", err)
 			return

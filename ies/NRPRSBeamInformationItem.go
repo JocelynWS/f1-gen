@@ -7,7 +7,7 @@ import (
 
 type NRPRSBeamInformationItem struct {
 	PRSResourceSetID PRSResourceSetID `mandatory`
-	PRSAngleList     []PRSAngleItem   `lb:1,ub:maxnoofPRSResourcesPerSet,mandatory,valExt`
+	PRSAngleList     []PRSAngleItem   `lb:1,ub:maxnoofPRSResourcesPerSet,mandatory,valueExt`
 	// IEExtensions * `optional`
 }
 

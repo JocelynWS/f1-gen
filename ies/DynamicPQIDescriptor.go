@@ -10,7 +10,7 @@ type DynamicPQIDescriptor struct {
 	QoSPriorityLevel   int64             `lb:1,ub:8,mandatory`
 	PacketDelayBudget  PacketDelayBudget `mandatory`
 	PacketErrorRate    PacketErrorRate   `mandatory`
-	AveragingWindow    *int64            `lb:0,ub:4095,optional`
+	AveragingWindow    *int64            `lb:0,ub:4095,optional,valueExt`
 	MaxDataBurstVolume *int64            `lb:0,ub:4095,optional`
 	// IEExtensions *DynamicPQIDescriptorExtIEs `optional`
 }
@@ -56,7 +56,7 @@ func (ie *DynamicPQIDescriptor) Encode(w *aper.AperWriter) (err error) {
 
 	// Encode optional fields
 	if ie.AveragingWindow != nil {
-		tmp := NewINTEGER(*ie.AveragingWindow, aper.Constraint{Lb: 0, Ub: 4095}, false)
+		tmp := NewINTEGER(*ie.AveragingWindow, aper.Constraint{Lb: 0, Ub: 4095}, true)
 		if err = tmp.Encode(w); err != nil {
 			return utils.WrapError("Encode AveragingWindow", err)
 		}
@@ -108,7 +108,7 @@ func (ie *DynamicPQIDescriptor) Decode(r *aper.AperReader) (err error) {
 
 	// Decode optional fields
 	if aper.IsBitSet(optionals, 2) {
-		tmp := INTEGER{c: aper.Constraint{Lb: 0, Ub: 4095}, ext: false}
+		tmp := INTEGER{c: aper.Constraint{Lb: 0, Ub: 4095}, ext: true}
 		if err = tmp.Decode(r); err != nil {
 			return utils.WrapError("Read AveragingWindow", err)
 		}

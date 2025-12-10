@@ -6,8 +6,8 @@ import (
 )
 
 type SRSResourceSetItem struct {
-	NumSRSresourcesperset *int64                 `lb:1,ub:16,optional,valExt`
-	PeriodicityList       []PeriodicityListItem  `lb:1,ub:maxnoSRSResourcePerSet,optional,valExt`
+	NumSRSresourcesperset *int64                 `lb:1,ub:16,optional,valueExt`
+	PeriodicityList       []PeriodicityListItem  `lb:1,ub:maxnoSRSResourcePerSet,optional,valueExt`
 	SpatialRelationInfo   *SpatialRelationInfo   `optional`
 	PathlossReferenceInfo *PathlossReferenceInfo `optional`
 	// IEExtensions * `optional`

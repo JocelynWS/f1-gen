@@ -6,10 +6,10 @@ import (
 )
 
 type GBRQosInformation struct {
-	ERABMaximumBitrateDL    int64 `lb:0,ub:4000000000000,mandatory,valExt`
-	ERABMaximumBitrateUL    int64 `lb:0,ub:4000000000000,mandatory,valExt`
-	ERABGuaranteedBitrateDL int64 `lb:0,ub:4000000000000,mandatory,valExt`
-	ERABGuaranteedBitrateUL int64 `lb:0,ub:4000000000000,mandatory,valExt`
+	ERABMaximumBitrateDL    int64 `lb:0,ub:4000000000000,mandatory,valueExt`
+	ERABMaximumBitrateUL    int64 `lb:0,ub:4000000000000,mandatory,valueExt`
+	ERABGuaranteedBitrateDL int64 `lb:0,ub:4000000000000,mandatory,valueExt`
+	ERABGuaranteedBitrateUL int64 `lb:0,ub:4000000000000,mandatory,valueExt`
 	// IEExtensions * `optional`
 }
 

@@ -6,8 +6,8 @@ import (
 )
 
 type SRBsModifiedItem struct {
-	SRBID int64 `lb:0,ub:3,mandatory`
-	LCID  int64 `lb:1,ub:32,mandatory`
+	SRBID int64 `lb:0,ub:3,mandatory,valueExt`
+	LCID  int64 `lb:1,ub:32,mandatory,valueExt`
 	// IEExtensions * `optional`
 }
 
@@ -17,12 +17,12 @@ func (ie *SRBsModifiedItem) Encode(w *aper.AperWriter) (err error) {
 	}
 	optionals := []byte{0x0}
 	w.WriteBits(optionals, 1)
-	tmp_SRBID := NewINTEGER(ie.SRBID, aper.Constraint{Lb: 0, Ub: 3}, false)
+	tmp_SRBID := NewINTEGER(ie.SRBID, aper.Constraint{Lb: 0, Ub: 3}, true)
 	if err = tmp_SRBID.Encode(w); err != nil {
 		err = utils.WrapError("Encode SRBID", err)
 		return
 	}
-	tmp_LCID := NewINTEGER(ie.LCID, aper.Constraint{Lb: 1, Ub: 32}, false)
+	tmp_LCID := NewINTEGER(ie.LCID, aper.Constraint{Lb: 1, Ub: 32}, true)
 	if err = tmp_LCID.Encode(w); err != nil {
 		err = utils.WrapError("Encode LCID", err)
 		return
@@ -38,7 +38,7 @@ func (ie *SRBsModifiedItem) Decode(r *aper.AperReader) (err error) {
 	}
 	tmp_SRBID := INTEGER{
 		c:   aper.Constraint{Lb: 0, Ub: 3},
-		ext: false,
+		ext: true,
 	}
 	if err = tmp_SRBID.Decode(r); err != nil {
 		err = utils.WrapError("Read SRBID", err)
@@ -47,7 +47,7 @@ func (ie *SRBsModifiedItem) Decode(r *aper.AperReader) (err error) {
 	ie.SRBID = int64(tmp_SRBID.Value)
 	tmp_LCID := INTEGER{
 		c:   aper.Constraint{Lb: 1, Ub: 32},
-		ext: false,
+		ext: true,
 	}
 	if err = tmp_LCID.Decode(r); err != nil {
 		err = utils.WrapError("Read LCID", err)

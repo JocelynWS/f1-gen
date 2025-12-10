@@ -6,7 +6,7 @@ import (
 )
 
 type GTPTunnel struct {
-	TransportLayerAddress aper.BitString `lb:1,ub:160,mandatory,valExt`
+	TransportLayerAddress aper.BitString `lb:1,ub:160,mandatory,valueExt`
 	GTPTEID               []byte         `lb:4,ub:4,mandatory`
 	// IEExtensions * `optional`
 }

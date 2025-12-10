@@ -7,7 +7,7 @@ import (
 
 type SCellToBeSetupModItem struct {
 	SCellID           NRCGI             `mandatory`
-	SCellIndex        int64             `lb:1,ub:31,mandatory,valExt`
+	SCellIndex        int64             `lb:1,ub:31,mandatory,valueExt`
 	SCellULConfigured *CellULConfigured `optional`
 	// IEExtensions * `optional`
 }

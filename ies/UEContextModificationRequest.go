@@ -13,7 +13,7 @@ type UEContextModificationRequest struct {
 	GNBCUUEF1APID                           int64                                    `lb:0,ub:4294967295,mandatory,reject`
 	GNBDUUEF1APID                           int64                                    `lb:0,ub:4294967295,mandatory,reject`
 	SpCellID                                *NRCGI                                   `optional,ignore`
-	ServCellIndex                           *int64                                   `lb:0,ub:31,optional,reject`
+	ServCellIndex                           *int64                                   `lb:0,ub:31,optional,reject,valueExt`
 	SpCellULConfigured                      *CellULConfigured                        `optional,ignore`
 	DRXCycle                                *DRXCycle                                `optional,ignore`
 	CUtoDURRCInformation                    *CUtoDURRCInformation                    `optional,reject`
@@ -38,7 +38,7 @@ type UEContextModificationRequest struct {
 	ExecuteDuplication                      *ExecuteDuplication                      `optional,ignore`
 	RRCDeliveryStatusRequest                *RRCDeliveryStatusRequest                `optional,ignore`
 	ResourceCoordinationTransferInformation *ResourceCoordinationTransferInformation `optional,ignore`
-	ServingCellMO                           *int64                                   `lb:1,ub:64,optional,ignore`
+	ServingCellMO                           *int64                                   `lb:1,ub:64,optional,ignore,valueExt`
 	NeedforGap                              *NeedforGap                              `optional,ignore`
 	FullConfiguration                       *FullConfiguration                       `optional,reject`
 	AdditionalRRMPriorityIndex              *aper.BitString                          `lb:32,ub:32,optional,ignore`
@@ -96,7 +96,7 @@ func (msg *UEContextModificationRequest) toIes() (ies []F1apMessageIE, err error
 			Criticality: Criticality{Value: Criticality_PresentReject},
 			Value: &INTEGER{
 				c:     aper.Constraint{Lb: 0, Ub: 31},
-				ext:   false,
+				ext:   true,
 				Value: aper.Integer(*msg.ServCellIndex),
 			}})
 	}
@@ -335,7 +335,7 @@ func (msg *UEContextModificationRequest) toIes() (ies []F1apMessageIE, err error
 			Criticality: Criticality{Value: Criticality_PresentIgnore},
 			Value: &INTEGER{
 				c:     aper.Constraint{Lb: 1, Ub: 64},
-				ext:   false,
+				ext:   true,
 				Value: aper.Integer(*msg.ServingCellMO),
 			}})
 	}
@@ -601,7 +601,7 @@ func (decoder *UEContextModificationRequestDecoder) decodeIE(r *aper.AperReader)
 	case ProtocolIEID_ServCellIndex:
 		tmp := INTEGER{
 			c:   aper.Constraint{Lb: 0, Ub: 31},
-			ext: false,
+			ext: true,
 		}
 		if err = tmp.Decode(ieR); err != nil {
 			err = utils.WrapError("Read ServCellIndex", err)

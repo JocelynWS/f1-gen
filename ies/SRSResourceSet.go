@@ -6,7 +6,7 @@ import (
 )
 
 type SRSResourceSet struct {
-	SRSResourceSetID  int64           `lb:0,ub:15,mandatory`
+	SRSResourceSetID  int64           `lb:0,ub:15,mandatory,valueExt`
 	SRSResourceIDList []int64         `lb:1,ub:maxnoSRSResourcePerSet,mandatory`
 	ResourceSetType   ResourceSetType `mandatory`
 	// IEExtensions *ProtocolExtensionContainerSRSResourceSetExtIEs `optional`
@@ -21,7 +21,7 @@ func (ie *SRSResourceSet) Encode(w *aper.AperWriter) (err error) {
 		return
 	}
 
-	tmp_SRSResourceSetID := NewINTEGER(ie.SRSResourceSetID, aper.Constraint{Lb: 0, Ub: 15}, false)
+	tmp_SRSResourceSetID := NewINTEGER(ie.SRSResourceSetID, aper.Constraint{Lb: 0, Ub: 15}, true)
 	if err = tmp_SRSResourceSetID.Encode(w); err != nil {
 		err = utils.WrapError("Encode SRSResourceSetID", err)
 		return
@@ -64,7 +64,7 @@ func (ie *SRSResourceSet) Decode(r *aper.AperReader) (err error) {
 
 	tmp_SRSResourceSetID := INTEGER{
 		c:   aper.Constraint{Lb: 0, Ub: 15},
-		ext: false,
+		ext: true,
 	}
 	if err = tmp_SRSResourceSetID.Decode(r); err != nil {
 		err = utils.WrapError("Read SRSResourceSetID", err)

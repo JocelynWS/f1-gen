@@ -6,10 +6,10 @@ import (
 )
 
 type ActiveULBWP struct {
-	LocationAndBandwidth    int64             `lb:0,ub:37949,madatory,valExt`
-	SubcarrierSpacing       SubcarrierSpacing `madatory,valExt`
+	LocationAndBandwidth    int64             `lb:0,ub:37949,madatory,valueExt`
+	SubcarrierSpacing       SubcarrierSpacing `madatory,valueExt`
 	CyclicPrefix            CyclicPrefix      `madatory`
-	TxDirectCurrentLocation int64             `lb:0,ub:3301,madatory,valExt`
+	TxDirectCurrentLocation int64             `lb:0,ub:3301,madatory,valueExt`
 	Shift7dot5kHz           *Shift7dot5kHz    `optional`
 	SRSConfig               SRSConfig         `madatory`
 	// IEExtensions *ActiveULBWPExtIEs `optional`

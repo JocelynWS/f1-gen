@@ -27,7 +27,7 @@ func (ie *BHQoSInformation) Encode(w *aper.AperWriter) (err error) {
 	case BHQoSInformationPresentEUTRANBHRLCCHQoS:
 		err = ie.EUTRANBHRLCCHQoS.Encode(w)
 	case BHQoSInformationPresentCPTrafficType:
-		tmp := NewINTEGER(*ie.CPTrafficType, aper.Constraint{Lb: 0, Ub: 3}, false)
+		tmp := NewINTEGER(*ie.CPTrafficType, aper.Constraint{Lb: 1, Ub: 3}, true)
 		err = tmp.Encode(w)
 	}
 	return
@@ -51,7 +51,7 @@ func (ie *BHQoSInformation) Decode(r *aper.AperReader) (err error) {
 		}
 		ie.EUTRANBHRLCCHQoS = &tmp
 	case BHQoSInformationPresentCPTrafficType:
-		tmp := NewINTEGER(0, aper.Constraint{Lb: 0, Ub: 3}, false)
+		tmp := NewINTEGER(0, aper.Constraint{Lb: 1, Ub: 3}, true)
 		if err = tmp.Decode(r); err != nil {
 			return
 		}

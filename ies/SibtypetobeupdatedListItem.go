@@ -6,9 +6,9 @@ import (
 )
 
 type SibtypetobeupdatedListItem struct {
-	SIBtype    int64  `lb:2,ub:32,mandatory,valExt`
+	SIBtype    int64  `lb:2,ub:32,mandatory,valueExt`
 	SIBmessage []byte `lb:0,ub:0,mandatory`
-	ValueTag   int64  `lb:0,ub:31,mandatory,valExt`
+	ValueTag   int64  `lb:0,ub:31,mandatory,valueExt`
 	// IEExtensions * `optional`
 }
 

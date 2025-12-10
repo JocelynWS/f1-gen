@@ -6,7 +6,7 @@ import (
 )
 
 type UACOperatorDefined struct {
-	AccessCategory int64          `lb:32,ub:63,mandatory,valExt`
+	AccessCategory int64          `lb:32,ub:63,mandatory,valueExt`
 	AccessIdentity aper.BitString `lb:7,ub:7,mandatory`
 	// IEExtensions * `optional`
 }

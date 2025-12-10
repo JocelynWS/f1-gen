@@ -6,8 +6,8 @@ import (
 )
 
 type RelativeGeodeticLocation struct {
-	MilliArcSecondUnits MilliArcSecondUnits `madatory,valExt`
-	HeightUnits         HeightUnits         `madatory,valExt`
+	MilliArcSecondUnits MilliArcSecondUnits `madatory,valueExt`
+	HeightUnits         HeightUnits         `madatory,valueExt`
 	DeltaLatitude       int64               `lb:-1024,ub:1023,madatory`
 	DeltaLongitude      int64               `lb:-1024,ub:1023,madatory`
 	DeltaHeight         int64               `lb:-1024,ub:1023,madatory`

@@ -6,7 +6,7 @@ import (
 )
 
 type BAPlayerBHRLCchannelMappingInfoItem struct {
-	MappingInformationIndex aper.BitString  `lb:1,ub:65536,mandatory,valExt`
+	MappingInformationIndex aper.BitString  `lb:1,ub:65536,mandatory,valueExt`
 	PriorHopBAPAddress      *aper.BitString `lb:10,ub:10,optional`
 	IngressbHRLCChannelID   *aper.BitString `lb:16,ub:16,optional`
 	NextHopBAPAddress       *aper.BitString `lb:10,ub:10,optional`

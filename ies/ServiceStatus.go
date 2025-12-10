@@ -7,7 +7,7 @@ import (
 
 type ServiceStatus struct {
 	ServiceState        ServiceState         `madatory`
-	SwitchingOffOngoing *SwitchingOffOngoing `optional,valExt`
+	SwitchingOffOngoing *SwitchingOffOngoing `optional,valueExt`
 	// IEExtensions *ServiceStatusExtIEs `optional`
 }
 

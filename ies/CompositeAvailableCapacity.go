@@ -6,7 +6,7 @@ import (
 )
 
 type CompositeAvailableCapacity struct {
-	CellCapacityClassValue *int64        `lb:1,ub:100,optional,valExt`
+	CellCapacityClassValue *int64        `lb:1,ub:100,optional,valueExt`
 	CapacityValue          CapacityValue `mandatory`
 	// IEExtensions * `optional`
 }

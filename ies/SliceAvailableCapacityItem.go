@@ -7,7 +7,7 @@ import (
 
 type SliceAvailableCapacityItem struct {
 	PLMNIdentity                []byte                        `lb:3,ub:3,mandatory`
-	SNSSAIAvailableCapacityList []SNSSAIAvailableCapacityItem `lb:1,ub:maxnoofSliceItems,mandatory,valExt`
+	SNSSAIAvailableCapacityList []SNSSAIAvailableCapacityItem `lb:1,ub:maxnoofSliceItems,mandatory,valueExt`
 	// IEExtensions * `optional`
 }
 

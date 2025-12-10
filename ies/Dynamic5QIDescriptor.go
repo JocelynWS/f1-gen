@@ -9,9 +9,9 @@ type Dynamic5QIDescriptor struct {
 	QoSPriorityLevel   int64             `lb:1,ub:127,mandatory`
 	PacketDelayBudget  PacketDelayBudget `mandatory`
 	PacketErrorRate    PacketErrorRate   `mandatory`
-	FiveQI             *int64            `lb:0,ub:255,optional,valExt`
+	FiveQI             *int64            `lb:0,ub:255,optional,valueExt`
 	DelayCritical      *DelayCritical    `optional`
-	AveragingWindow    *int64            `lb:0,ub:4095,optional`
+	AveragingWindow    *int64            `lb:0,ub:4095,optional,valueExt`
 	MaxDataBurstVolume *int64            `lb:0,ub:4095,optional`
 	// IEExtensions *Dynamic5QIDescriptorExtIEs `optional`
 }
@@ -66,7 +66,7 @@ func (ie *Dynamic5QIDescriptor) Encode(w *aper.AperWriter) (err error) {
 	}
 
 	if ie.AveragingWindow != nil {
-		tmp := NewINTEGER(*ie.AveragingWindow, aper.Constraint{Lb: 0, Ub: 4095}, false)
+		tmp := NewINTEGER(*ie.AveragingWindow, aper.Constraint{Lb: 0, Ub: 4095}, true)
 		if err = tmp.Encode(w); err != nil {
 			return utils.WrapError("Encode AveragingWindow", err)
 		}
@@ -125,7 +125,7 @@ func (ie *Dynamic5QIDescriptor) Decode(r *aper.AperReader) (err error) {
 	}
 
 	if aper.IsBitSet(optionals, 3) {
-		tmp := INTEGER{c: aper.Constraint{Lb: 0, Ub: 4095}, ext: false}
+		tmp := INTEGER{c: aper.Constraint{Lb: 0, Ub: 4095}, ext: true}
 		if err = tmp.Decode(r); err != nil {
 			return utils.WrapError("Read AveragingWindow", err)
 		}

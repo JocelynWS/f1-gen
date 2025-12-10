@@ -10,7 +10,7 @@ import (
 )
 
 type PositioningMeasurementResponse struct {
-	TransactionID            int64                          `lb:0,ub:255,mandatory,reject`
+	TransactionID            int64                          `lb:0,ub:255,mandatory,reject,valueExt`
 	LMFMeasurementID         int64                          `lb:1,ub:65536,mandatory,reject,valueExt`
 	RANMeasurementID         int64                          `lb:1,ub:65536,mandatory,reject,valueExt`
 	PosMeasurementResultList []PosMeasurementResultListItem `lb:1,ub:maxNoOfMeasTRPs,optional,reject,valueExt`
@@ -32,7 +32,7 @@ func (msg *PositioningMeasurementResponse) toIes() (ies []F1apMessageIE, err err
 		Criticality: Criticality{Value: Criticality_PresentReject},
 		Value: &INTEGER{
 			c:     aper.Constraint{Lb: 0, Ub: 255},
-			ext:   false,
+			ext:   true,
 			Value: aper.Integer(msg.TransactionID),
 		}})
 	ies = append(ies, F1apMessageIE{
@@ -153,7 +153,7 @@ func (decoder *PositioningMeasurementResponseDecoder) decodeIE(r *aper.AperReade
 	case ProtocolIEID_TransactionID:
 		tmp := INTEGER{
 			c:   aper.Constraint{Lb: 0, Ub: 255},
-			ext: false,
+			ext: true,
 		}
 		if err = tmp.Decode(ieR); err != nil {
 			err = utils.WrapError("Read TransactionID", err)

@@ -6,7 +6,7 @@ import (
 )
 
 type PWSSystemInformation struct {
-	SIBtype    int64  `lb:6,ub:8,mandatory,valExt`
+	SIBtype    int64  `lb:6,ub:8,mandatory,valueExt`
 	SIBmessage []byte `lb:0,ub:0,mandatory`
 	// IEExtensions * `optional`
 }

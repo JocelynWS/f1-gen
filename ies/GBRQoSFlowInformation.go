@@ -6,10 +6,10 @@ import (
 )
 
 type GBRQoSFlowInformation struct {
-	MaxFlowBitRateDownlink        int64  `lb:0,ub:4000000000000,mandatory,valExt`
-	MaxFlowBitRateUplink          int64  `lb:0,ub:4000000000000,mandatory,valExt`
-	GuaranteedFlowBitRateDownlink int64  `lb:0,ub:4000000000000,mandatory,valExt`
-	GuaranteedFlowBitRateUplink   int64  `lb:0,ub:4000000000000,mandatory,valExt`
+	MaxFlowBitRateDownlink        int64  `lb:0,ub:4000000000000,mandatory,valueExt`
+	MaxFlowBitRateUplink          int64  `lb:0,ub:4000000000000,mandatory,valueExt`
+	GuaranteedFlowBitRateDownlink int64  `lb:0,ub:4000000000000,mandatory,valueExt`
+	GuaranteedFlowBitRateUplink   int64  `lb:0,ub:4000000000000,mandatory,valueExt`
 	MaxPacketLossRateDownlink     *int64 `lb:0,ub:1000,optional`
 	MaxPacketLossRateUplink       *int64 `lb:0,ub:1000,optional`
 }

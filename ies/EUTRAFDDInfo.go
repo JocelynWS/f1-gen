@@ -6,8 +6,8 @@ import (
 )
 
 type EUTRAFDDInfo struct {
-	ULOffsetToPointA int64 `lb:0,ub:2199,mandatory,valExt`
-	DLOffsetToPointA int64 `lb:0,ub:2199,mandatory,valExt`
+	ULOffsetToPointA int64 `lb:0,ub:2199,mandatory,valueExt`
+	DLOffsetToPointA int64 `lb:0,ub:2199,mandatory,valueExt`
 	// IEExtensions * `optional`
 }
 

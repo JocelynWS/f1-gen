@@ -6,7 +6,7 @@ import (
 )
 
 type PosSRSResourceItem struct {
-	SrsPosResourceId       int64                  `lb:0,ub:63,mandatory`
+	SrsPosResourceId       int64                  `lb:0,ub:63,mandatory,valueExt`
 	TransmissionCombPos    TransmissionCombPos    `mandatory`
 	StartPosition          int64                  `lb:0,ub:13,mandatory`
 	NrofSymbols            NrofSymbols            `mandatory`
@@ -28,7 +28,7 @@ func (ie *PosSRSResourceItem) Encode(w *aper.AperWriter) (err error) {
 	}
 	w.WriteBits(optionals, 2)
 
-	tmp1 := NewINTEGER(ie.SrsPosResourceId, aper.Constraint{Lb: 0, Ub: 63}, false)
+	tmp1 := NewINTEGER(ie.SrsPosResourceId, aper.Constraint{Lb: 0, Ub: 63}, true)
 	if err = tmp1.Encode(w); err != nil {
 		return utils.WrapError("Encode SrsPosResourceId", err)
 	}

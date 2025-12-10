@@ -6,7 +6,7 @@ import (
 )
 
 type SLDRBsRequiredToBeModifiedItem struct {
-	SLDRBID int64 `lb:1,ub:512,mandatory`
+	SLDRBID int64 `lb:1,ub:512,mandatory,valueExt`
 	// IEExtensions * `optional`
 }
 
@@ -16,7 +16,7 @@ func (ie *SLDRBsRequiredToBeModifiedItem) Encode(w *aper.AperWriter) (err error)
 	}
 	optionals := []byte{0x0}
 	w.WriteBits(optionals, 1)
-	tmp_SLDRBID := NewINTEGER(ie.SLDRBID, aper.Constraint{Lb: 1, Ub: 512}, false)
+	tmp_SLDRBID := NewINTEGER(ie.SLDRBID, aper.Constraint{Lb: 1, Ub: 512}, true)
 	if err = tmp_SLDRBID.Encode(w); err != nil {
 		err = utils.WrapError("Encode SLDRBID", err)
 		return
@@ -32,7 +32,7 @@ func (ie *SLDRBsRequiredToBeModifiedItem) Decode(r *aper.AperReader) (err error)
 	}
 	tmp_SLDRBID := INTEGER{
 		c:   aper.Constraint{Lb: 1, Ub: 512},
-		ext: false,
+		ext: true,
 	}
 	if err = tmp_SLDRBID.Decode(r); err != nil {
 		err = utils.WrapError("Read SLDRBID", err)

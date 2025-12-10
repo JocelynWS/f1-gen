@@ -10,7 +10,7 @@ import (
 )
 
 type ResourceStatusRequest struct {
-	TransactionID         int64                 `lb:0,ub:255,mandatory,reject`
+	TransactionID         int64                 `lb:0,ub:255,mandatory,reject,valueExt`
 	GNBCUMeasurementID    int64                 `lb:0,ub:4095,mandatory,reject,valueExt`
 	GNBDUMeasurementID    *int64                `lb:0,ub:4095,conditional,ignore,valueExt`
 	RegistrationRequest   RegistrationRequest   `mandatory,ignore`
@@ -36,7 +36,7 @@ func (msg *ResourceStatusRequest) toIes() (ies []F1apMessageIE, err error) {
 		Criticality: Criticality{Value: Criticality_PresentReject},
 		Value: &INTEGER{
 			c:     aper.Constraint{Lb: 0, Ub: 255},
-			ext:   false,
+			ext:   true,
 			Value: aper.Integer(msg.TransactionID),
 		},
 	})
@@ -203,7 +203,7 @@ func (decoder *ResourceStatusRequestDecoder) decodeIE(r *aper.AperReader) (msgIe
 	case ProtocolIEID_TransactionID:
 		tmp := INTEGER{
 			c:   aper.Constraint{Lb: 0, Ub: 255},
-			ext: false,
+			ext: true,
 		}
 		if err = tmp.Decode(ieR); err != nil {
 			err = utils.WrapError("Read TransactionID", err)

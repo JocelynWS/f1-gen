@@ -6,8 +6,8 @@ import (
 )
 
 type TransportUPLayerAddressInfoToAddItem struct {
-	IPSecTransportLayerAddress    aper.BitString `lb:1,ub:160,mandatory,valExt`
-	GTPTransportLayerAddressToAdd []GTPTLAItem   `lb:1,ub:maxnoofGTPTLAs,optional,valExt`
+	IPSecTransportLayerAddress    aper.BitString `lb:1,ub:160,mandatory,valueExt`
+	GTPTransportLayerAddressToAdd []GTPTLAItem   `lb:1,ub:maxnoofGTPTLAs,optional,valueExt`
 	// IEExtensions * `optional`
 }
 

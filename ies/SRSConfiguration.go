@@ -6,7 +6,7 @@ import (
 )
 
 type SRSConfiguration struct {
-	SRSCarrierList []SRSCarrierListItem `lb:1,ub:maxnoSRSCarriers,mandatory,valExt`
+	SRSCarrierList []SRSCarrierListItem `lb:1,ub:maxnoSRSCarriers,mandatory,valueExt`
 	// IEExtensions * `optional`
 }
 

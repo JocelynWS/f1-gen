@@ -6,8 +6,8 @@ import (
 )
 
 type DLUPTNLAddressToUpdateListItem struct {
-	OldIPAdress aper.BitString `lb:1,ub:160,mandatory,valExt`
-	NewIPAdress aper.BitString `lb:1,ub:160,mandatory,valExt`
+	OldIPAdress aper.BitString `lb:1,ub:160,mandatory,valueExt`
+	NewIPAdress aper.BitString `lb:1,ub:160,mandatory,valueExt`
 	// IEExtensions * `optional`
 }
 

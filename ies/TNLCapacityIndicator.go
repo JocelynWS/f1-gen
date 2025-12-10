@@ -6,10 +6,10 @@ import (
 )
 
 type TNLCapacityIndicator struct {
-	DLTNLOfferedCapacity   int64 `lb:1,ub:16777216,mandatory,valExt`
-	DLTNLAvailableCapacity int64 `lb:0,ub:100,mandatory,valExt`
-	ULTNLOfferedCapacity   int64 `lb:1,ub:16777216,mandatory,valExt`
-	ULTNLAvailableCapacity int64 `lb:0,ub:100,mandatory,valExt`
+	DLTNLOfferedCapacity   int64 `lb:1,ub:16777216,mandatory,valueExt`
+	DLTNLAvailableCapacity int64 `lb:0,ub:100,mandatory,valueExt`
+	ULTNLOfferedCapacity   int64 `lb:1,ub:16777216,mandatory,valueExt`
+	ULTNLAvailableCapacity int64 `lb:0,ub:100,mandatory,valueExt`
 	// IEExtensions * `optional`
 }
 

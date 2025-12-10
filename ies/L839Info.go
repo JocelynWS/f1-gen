@@ -7,7 +7,7 @@ import (
 
 type L839Info struct {
 	RootSequenceIndex   int64               `lb:0,ub:837,mandatory`
-	RestrictedSetConfig RestrictedSetConfig `madatory,valExt`
+	RestrictedSetConfig RestrictedSetConfig `madatory,valueExt`
 	// IEExtension *L839InfoExtIEs `optional`
 }
 

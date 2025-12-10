@@ -6,9 +6,9 @@ import (
 )
 
 type SCSSpecificCarrier struct {
-	OffsetToCarrier   int64                `lb:0,ub:2199,madatory,valExt`
-	SubcarrierSpacing SubcarrierSpacingSCS `madatory,valExt`
-	CarrierBandwidth  int64                `lb:1,ub:275,madatory,valExt`
+	OffsetToCarrier   int64                `lb:0,ub:2199,madatory,valueExt`
+	SubcarrierSpacing SubcarrierSpacingSCS `madatory,valueExt`
+	CarrierBandwidth  int64                `lb:1,ub:275,madatory,valueExt`
 	// IEExtensions *SCSSpecificCarrierExtIEs `optional`
 }
 

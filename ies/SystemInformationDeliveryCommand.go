@@ -10,7 +10,7 @@ import (
 )
 
 type SystemInformationDeliveryCommand struct {
-	TransactionID int64        `lb:0,ub:255,mandatory,reject`
+	TransactionID int64        `lb:0,ub:255,mandatory,reject,valueExt`
 	NRCGI         NRCGI        `mandatory,reject`
 	SItypeList    []SItypeItem `lb:1,ub:maxnoofSITypes,mandatory,reject,valueExt`
 	ConfirmedUEID int64        `lb:0,ub:4294967295,mandatory,reject`
@@ -31,7 +31,7 @@ func (msg *SystemInformationDeliveryCommand) toIes() (ies []F1apMessageIE, err e
 		Criticality: Criticality{Value: Criticality_PresentReject},
 		Value: &INTEGER{
 			c:     aper.Constraint{Lb: 0, Ub: 255},
-			ext:   false,
+			ext:   true,
 			Value: aper.Integer(msg.TransactionID),
 		}})
 	ies = append(ies, F1apMessageIE{
@@ -154,7 +154,7 @@ func (decoder *SystemInformationDeliveryCommandDecoder) decodeIE(r *aper.AperRea
 	case ProtocolIEID_TransactionID:
 		tmp := INTEGER{
 			c:   aper.Constraint{Lb: 0, Ub: 255},
-			ext: false,
+			ext: true,
 		}
 		if err = tmp.Decode(ieR); err != nil {
 			err = utils.WrapError("Read TransactionID", err)

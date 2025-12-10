@@ -9,7 +9,7 @@ type TraceActivation struct {
 	TraceID                        []byte         `lb:8,ub:8,mandatory`
 	InterfacesToTrace              aper.BitString `lb:8,ub:8,mandatory`
 	TraceDepth                     TraceDepth     `mandatory`
-	TraceCollectionEntityIPAddress aper.BitString `lb:1,ub:160,mandatory,valExt`
+	TraceCollectionEntityIPAddress aper.BitString `lb:1,ub:160,mandatory,valueExt`
 	// IEExtensions * `optional`
 }
 

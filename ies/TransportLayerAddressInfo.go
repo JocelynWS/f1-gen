@@ -6,8 +6,8 @@ import (
 )
 
 type TransportLayerAddressInfo struct {
-	TransportUPLayerAddressInfoToAddList    []TransportUPLayerAddressInfoToAddItem    `lb:1,ub:maxnoofTLAIAB,optional,valExt`
-	TransportUPLayerAddressInfoToRemoveList []TransportUPLayerAddressInfoToRemoveItem `lb:1,ub:maxnoofTLAIAB,optional,valExt`
+	TransportUPLayerAddressInfoToAddList    []TransportUPLayerAddressInfoToAddItem    `lb:1,ub:maxnoofTLAIAB,optional,valueExt`
+	TransportUPLayerAddressInfoToRemoveList []TransportUPLayerAddressInfoToRemoveItem `lb:1,ub:maxnoofTLAIAB,optional,valueExt`
 	// IEExtensions * `optional`
 }
 

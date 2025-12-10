@@ -6,7 +6,7 @@ import (
 )
 
 type GTPTLAItem struct {
-	GTPTransportLayerAddress aper.BitString `lb:1,ub:160,mandatory,valExt`
+	GTPTransportLayerAddress aper.BitString `lb:1,ub:160,mandatory,valueExt`
 	// IEExtensions * `optional`
 }
 

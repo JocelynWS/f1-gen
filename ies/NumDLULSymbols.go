@@ -6,8 +6,8 @@ import (
 )
 
 type NumDLULSymbols struct {
-	NumDLSymbols int64 `lb:0,ub:13,mandatory,valExt`
-	NumULSymbols int64 `lb:0,ub:13,mandatory,valExt`
+	NumDLSymbols int64 `lb:0,ub:13,mandatory,valueExt`
+	NumULSymbols int64 `lb:0,ub:13,mandatory,valueExt`
 	// IEExtensions * `optional`
 }
 

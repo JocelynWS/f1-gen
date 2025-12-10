@@ -10,7 +10,7 @@ import (
 )
 
 type ReferenceTimeInformationReportingControl struct {
-	TransactionID        int64                `lb:0,ub:255,mandatory,reject`
+	TransactionID        int64                `lb:0,ub:255,mandatory,reject,valueExt`
 	ReportingRequestType ReportingRequestType `mandatory,reject`
 }
 
@@ -29,7 +29,7 @@ func (msg *ReferenceTimeInformationReportingControl) toIes() (ies []F1apMessageI
 		Criticality: Criticality{Value: Criticality_PresentReject},
 		Value: &INTEGER{
 			c:     aper.Constraint{Lb: 0, Ub: 255},
-			ext:   false,
+			ext:   true,
 			Value: aper.Integer(msg.TransactionID),
 		}})
 	ies = append(ies, F1apMessageIE{
@@ -109,7 +109,7 @@ func (decoder *ReferenceTimeInformationReportingControlDecoder) decodeIE(r *aper
 	case ProtocolIEID_TransactionID:
 		tmp := INTEGER{
 			c:   aper.Constraint{Lb: 0, Ub: 255},
-			ext: false,
+			ext: true,
 		}
 		if err = tmp.Decode(ieR); err != nil {
 			err = utils.WrapError("Read TransactionID", err)

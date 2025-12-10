@@ -10,7 +10,7 @@ import (
 )
 
 type IABUPConfigurationUpdateResponse struct {
-	TransactionID              int64                            `lb:0,ub:255,mandatory,reject`
+	TransactionID              int64                            `lb:0,ub:255,mandatory,reject,valueExt`
 	CriticalityDiagnostics     *CriticalityDiagnostics          `optional,ignore`
 	DLUPTNLAddresstoUpdateList []DLUPTNLAddressToUpdateListItem `lb:1,ub:maxnoofUPTNLAddresses,optional,reject,valueExt`
 }
@@ -30,7 +30,7 @@ func (msg *IABUPConfigurationUpdateResponse) toIes() (ies []F1apMessageIE, err e
 		Criticality: Criticality{Value: Criticality_PresentReject},
 		Value: &INTEGER{
 			c:     aper.Constraint{Lb: 0, Ub: 255},
-			ext:   false,
+			ext:   true,
 			Value: aper.Integer(msg.TransactionID),
 		}})
 	if msg.CriticalityDiagnostics != nil {
@@ -117,7 +117,7 @@ func (decoder *IABUPConfigurationUpdateResponseDecoder) decodeIE(r *aper.AperRea
 	case ProtocolIEID_TransactionID:
 		tmp := INTEGER{
 			c:   aper.Constraint{Lb: 0, Ub: 255},
-			ext: false,
+			ext: true,
 		}
 		if err = tmp.Decode(ieR); err != nil {
 			err = utils.WrapError("Read TransactionID", err)

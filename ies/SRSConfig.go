@@ -6,10 +6,10 @@ import (
 )
 
 type SRSConfig struct {
-	SRSResourceList       []SRSResource           `lb:1,ub:maxnoSRSResources,optional,valExt`
-	PosSRSResourceList    []PosSRSResourceItem    `lb:1,ub:maxnoSRSPosResources,optional,valExt`
-	SRSResourceSetList    []SRSResourceSetItem    `lb:1,ub:maxnoSRSResources,optional,valExt`
-	PosSRSResourceSetList []PosSRSResourceSetItem `lb:1,ub:maxnoSRSPosResourceSetss,optional,valExt`
+	SRSResourceList       []SRSResource           `lb:1,ub:maxnoSRSResources,optional,valueExt`
+	PosSRSResourceList    []PosSRSResourceItem    `lb:1,ub:maxnoSRSPosResources,optional,valueExt`
+	SRSResourceSetList    []SRSResourceSetItem    `lb:1,ub:maxnoSRSResources,optional,valueExt`
+	PosSRSResourceSetList []PosSRSResourceSetItem `lb:1,ub:maxnoSRSPosResourceSetss,optional,valueExt`
 	// IEExtensions * `optional`
 }
 

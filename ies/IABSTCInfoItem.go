@@ -9,7 +9,7 @@ type IABSTCInfoItem struct {
 	SSBFreqInfo                 int64                      `lb:0,ub:3279165,mandatory`
 	SSBSubcarrierSpacing        SSBSubcarrierSpacing       `mandatory`
 	SSBTransmissionPeriodicity  SSBTransmissionPeriodicity `mandatory`
-	SSBTransmissionTimingOffset int64                      `lb:0,ub:127,mandatory`
+	SSBTransmissionTimingOffset int64                      `lb:0,ub:127,mandatory,valueExt`
 	SSBTransmissionBitmap       SSBTransmissionBitmap      `mandatory`
 	// IEExtensions * `optional`
 }
@@ -33,7 +33,7 @@ func (ie *IABSTCInfoItem) Encode(w *aper.AperWriter) (err error) {
 		err = utils.WrapError("Encode SSBTransmissionPeriodicity", err)
 		return
 	}
-	tmp_SSBTransmissionTimingOffset := NewINTEGER(ie.SSBTransmissionTimingOffset, aper.Constraint{Lb: 0, Ub: 127}, false)
+	tmp_SSBTransmissionTimingOffset := NewINTEGER(ie.SSBTransmissionTimingOffset, aper.Constraint{Lb: 0, Ub: 127}, true)
 	if err = tmp_SSBTransmissionTimingOffset.Encode(w); err != nil {
 		err = utils.WrapError("Encode SSBTransmissionTimingOffset", err)
 		return
@@ -70,7 +70,7 @@ func (ie *IABSTCInfoItem) Decode(r *aper.AperReader) (err error) {
 	}
 	tmp_SSBTransmissionTimingOffset := INTEGER{
 		c:   aper.Constraint{Lb: 0, Ub: 127},
-		ext: false,
+		ext: true,
 	}
 	if err = tmp_SSBTransmissionTimingOffset.Decode(r); err != nil {
 		err = utils.WrapError("Read SSBTransmissionTimingOffset", err)

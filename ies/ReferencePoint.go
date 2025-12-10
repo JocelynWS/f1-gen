@@ -23,7 +23,7 @@ func (ie *ReferencePoint) Encode(w *aper.AperWriter) (err error) {
 	}
 	switch ie.Choice {
 	case ReferencePointPresentCoordinateID:
-		tmp := NewINTEGER(*ie.CoordinateID, aper.Constraint{Lb: 0, Ub: 511}, false)
+		tmp := NewINTEGER(*ie.CoordinateID, aper.Constraint{Lb: 0, Ub: 511}, true)
 		err = tmp.Encode(w)
 	case ReferencePointPresentReferencePointCoordinate:
 		err = ie.ReferencePointCoordinate.Encode(w)
@@ -39,7 +39,7 @@ func (ie *ReferencePoint) Decode(r *aper.AperReader) (err error) {
 	}
 	switch ie.Choice {
 	case ReferencePointPresentCoordinateID:
-		tmp := NewINTEGER(0, aper.Constraint{Lb: 0, Ub: 511}, false)
+		tmp := NewINTEGER(0, aper.Constraint{Lb: 0, Ub: 511}, true)
 		if err = tmp.Decode(r); err != nil {
 			return
 		}

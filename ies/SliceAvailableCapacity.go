@@ -6,7 +6,7 @@ import (
 )
 
 type SliceAvailableCapacity struct {
-	SliceAvailableCapacityList []SliceAvailableCapacityItem `lb:1,ub:maxnoofSliceItems,mandatory,valExt`
+	SliceAvailableCapacityList []SliceAvailableCapacityItem `lb:1,ub:maxnoofSliceItems,mandatory,valueExt`
 	// IEExtensions * `optional`
 }
 

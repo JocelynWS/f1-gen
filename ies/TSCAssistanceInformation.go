@@ -6,7 +6,7 @@ import (
 )
 
 type TSCAssistanceInformation struct {
-	Periodicity      int64  `lb:0,ub:640000,mandatory`
+	Periodicity      int64  `lb:0,ub:640000,mandatory,valueExt`
 	BurstArrivalTime []byte `lb:0,ub:0,optional`
 	// IEExtensions * `optional`
 }
@@ -20,7 +20,7 @@ func (ie *TSCAssistanceInformation) Encode(w *aper.AperWriter) (err error) {
 		aper.SetBit(optionals, 1)
 	}
 	w.WriteBits(optionals, 2)
-	tmp_Periodicity := NewINTEGER(ie.Periodicity, aper.Constraint{Lb: 0, Ub: 640000}, false)
+	tmp_Periodicity := NewINTEGER(ie.Periodicity, aper.Constraint{Lb: 0, Ub: 640000}, true)
 	if err = tmp_Periodicity.Encode(w); err != nil {
 		err = utils.WrapError("Encode Periodicity", err)
 		return
@@ -44,7 +44,7 @@ func (ie *TSCAssistanceInformation) Decode(r *aper.AperReader) (err error) {
 	}
 	tmp_Periodicity := INTEGER{
 		c:   aper.Constraint{Lb: 0, Ub: 640000},
-		ext: false,
+		ext: true,
 	}
 	if err = tmp_Periodicity.Decode(r); err != nil {
 		err = utils.WrapError("Read Periodicity", err)

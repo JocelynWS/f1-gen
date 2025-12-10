@@ -7,7 +7,7 @@ import (
 
 type ExtendedServedPLMNsItem struct {
 	PLMNIdentity        []byte             `lb:3,ub:3,mandatory`
-	TAISliceSupportList []SliceSupportItem `lb:1,ub:maxnoofSliceItems,optional,valExt`
+	TAISliceSupportList []SliceSupportItem `lb:1,ub:maxnoofSliceItems,optional,valueExt`
 	// IEExtensions * `optional`
 }
 

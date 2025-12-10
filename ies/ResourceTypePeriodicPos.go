@@ -6,8 +6,8 @@ import (
 )
 
 type ResourceTypePeriodicPos struct {
-	Periodicity ResourceTypePeriodicPosPeriodicity `madatory,valExt`
-	Offset      int64                              `lb:0,ub:81919,madatory,valExt`
+	Periodicity ResourceTypePeriodicPosPeriodicity `madatory,valueExt`
+	Offset      int64                              `lb:0,ub:81919,madatory,valueExt`
 	// IEExtensions *ResourceTypePeriodicPosExtIEs `optional`
 }
 

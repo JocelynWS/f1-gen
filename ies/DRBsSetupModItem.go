@@ -6,8 +6,8 @@ import (
 )
 
 type DRBsSetupModItem struct {
-	DRBID                           int64                             `lb:1,ub:32,mandatory`
-	LCID                            *int64                            `lb:1,ub:32,optional`
+	DRBID                           int64                             `lb:1,ub:32,mandatory,valueExt`
+	LCID                            *int64                            `lb:1,ub:32,optional,valueExt`
 	DLUPTNLInformationToBeSetupList []DLUPTNLInformationToBeSetupItem `lb:1,ub:maxnoofDLUPTNLInformation,mandatory`
 	// IEExtensions * `optional`
 }
@@ -21,13 +21,13 @@ func (ie *DRBsSetupModItem) Encode(w *aper.AperWriter) (err error) {
 		aper.SetBit(optionals, 1)
 	}
 	w.WriteBits(optionals, 2)
-	tmp_DRBID := NewINTEGER(ie.DRBID, aper.Constraint{Lb: 1, Ub: 32}, false)
+	tmp_DRBID := NewINTEGER(ie.DRBID, aper.Constraint{Lb: 1, Ub: 32}, true)
 	if err = tmp_DRBID.Encode(w); err != nil {
 		err = utils.WrapError("Encode DRBID", err)
 		return
 	}
 	if ie.LCID != nil {
-		tmp_LCID := NewINTEGER(*ie.LCID, aper.Constraint{Lb: 1, Ub: 32}, false)
+		tmp_LCID := NewINTEGER(*ie.LCID, aper.Constraint{Lb: 1, Ub: 32}, true)
 		if err = tmp_LCID.Encode(w); err != nil {
 			err = utils.WrapError("Encode LCID", err)
 			return
@@ -62,7 +62,7 @@ func (ie *DRBsSetupModItem) Decode(r *aper.AperReader) (err error) {
 	}
 	tmp_DRBID := INTEGER{
 		c:   aper.Constraint{Lb: 1, Ub: 32},
-		ext: false,
+		ext: true,
 	}
 	if err = tmp_DRBID.Decode(r); err != nil {
 		err = utils.WrapError("Read DRBID", err)
@@ -72,7 +72,7 @@ func (ie *DRBsSetupModItem) Decode(r *aper.AperReader) (err error) {
 	if aper.IsBitSet(optionals, 1) {
 		tmp_LCID := INTEGER{
 			c:   aper.Constraint{Lb: 1, Ub: 32},
-			ext: false,
+			ext: true,
 		}
 		if err = tmp_LCID.Decode(r); err != nil {
 			err = utils.WrapError("Read LCID", err)

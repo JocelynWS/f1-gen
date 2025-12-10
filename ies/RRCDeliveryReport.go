@@ -13,7 +13,7 @@ type RRCDeliveryReport struct {
 	GNBCUUEF1APID     int64             `lb:0,ub:4294967295,mandatory,reject`
 	GNBDUUEF1APID     int64             `lb:0,ub:4294967295,mandatory,reject`
 	RRCDeliveryStatus RRCDeliveryStatus `mandatory,ignore`
-	SRBID             int64             `lb:0,ub:3,mandatory,ignore`
+	SRBID             int64             `lb:0,ub:3,mandatory,ignore,valueExt`
 }
 
 func (msg *RRCDeliveryReport) Encode(w io.Writer) (err error) {
@@ -52,7 +52,7 @@ func (msg *RRCDeliveryReport) toIes() (ies []F1apMessageIE, err error) {
 		Criticality: Criticality{Value: Criticality_PresentIgnore},
 		Value: &INTEGER{
 			c:     aper.Constraint{Lb: 0, Ub: 3},
-			ext:   false,
+			ext:   true,
 			Value: aper.Integer(msg.SRBID),
 		}})
 	return
@@ -172,7 +172,7 @@ func (decoder *RRCDeliveryReportDecoder) decodeIE(r *aper.AperReader) (msgIe *F1
 	case ProtocolIEID_SRBID:
 		tmp := INTEGER{
 			c:   aper.Constraint{Lb: 0, Ub: 3},
-			ext: false,
+			ext: true,
 		}
 		if err = tmp.Decode(ieR); err != nil {
 			err = utils.WrapError("Read SRBID", err)

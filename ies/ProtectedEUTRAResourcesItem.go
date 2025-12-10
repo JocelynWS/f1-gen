@@ -7,7 +7,7 @@ import (
 
 type ProtectedEUTRAResourcesItem struct {
 	SpectrumSharingGroupID int64                `lb:1,ub:maxCellineNB,mandatory`
-	EUTRACellsList         []EUTRACellsListItem `lb:1,ub:maxCellineNB,mandatory,valExt`
+	EUTRACellsList         []EUTRACellsListItem `lb:1,ub:maxCellineNB,mandatory,valueExt`
 	// IEExtensions * `optional`
 }
 

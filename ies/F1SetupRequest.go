@@ -10,7 +10,7 @@ import (
 )
 
 type F1SetupRequest struct {
-	TransactionID             int64                      `lb:0,ub:255,mandatory,reject`
+	TransactionID             int64                      `lb:0,ub:255,mandatory,reject,valueExt`
 	GNBDUID                   int64                      `lb:0,ub:68719476735,mandatory,reject`
 	GNBDUName                 []byte                     `lb:1,ub:150,optional,ignore,valueExt`
 	GNBDUServedCellsList      []GNBDUServedCellsItem     `lb:1,ub:maxCellingNBDU,optional,reject,valueExt`
@@ -35,7 +35,7 @@ func (msg *F1SetupRequest) toIes() (ies []F1apMessageIE, err error) {
 		Criticality: Criticality{Value: Criticality_PresentReject},
 		Value: &INTEGER{
 			c:     aper.Constraint{Lb: 0, Ub: 255},
-			ext:   false,
+			ext:   true,
 			Value: aper.Integer(msg.TransactionID),
 		}})
 	ies = append(ies, F1apMessageIE{
@@ -181,7 +181,7 @@ func (decoder *F1SetupRequestDecoder) decodeIE(r *aper.AperReader) (msgIe *F1apM
 	case ProtocolIEID_TransactionID:
 		tmp := INTEGER{
 			c:   aper.Constraint{Lb: 0, Ub: 255},
-			ext: false,
+			ext: true,
 		}
 		if err = tmp.Decode(ieR); err != nil {
 			err = utils.WrapError("Read TransactionID", err)

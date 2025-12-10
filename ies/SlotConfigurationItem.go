@@ -6,7 +6,7 @@ import (
 )
 
 type SlotConfigurationItem struct {
-	SlotIndex         int64             `lb:0,ub:5119,mandatory,valExt`
+	SlotIndex         int64             `lb:0,ub:5119,mandatory,valueExt`
 	SymbolAllocInSlot SymbolAllocInSlot `mandatory`
 	// IEExtensions * `optional`
 }

@@ -7,7 +7,7 @@ import (
 
 type PRSMutingOption1 struct {
 	MutingPattern             DLPRSMutingPattern        `madatory`
-	MutingBitRepetitionFactor MutingBitRepetitionFactor `madatory,valExt`
+	MutingBitRepetitionFactor MutingBitRepetitionFactor `madatory,valueExt`
 	// IEExtensions *PRSMutingOption1ExtIEs `optional`
 }
 

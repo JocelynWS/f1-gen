@@ -6,10 +6,10 @@ import (
 )
 
 type NonDynamicPQIDescriptor struct {
-	FiveQI             int64  `lb:0,ub:255,mandatory,valExt`
-	QoSPriorityLevel   *int64 `lb:1,ub:8,optional,valExt`
-	AveragingWindow    *int64 `lb:0,ub:4095,optional`
-	MaxDataBurstVolume *int64 `lb:0,ub:4095,optional,valExt`
+	FiveQI             int64  `lb:0,ub:255,mandatory,valueExt`
+	QoSPriorityLevel   *int64 `lb:1,ub:8,optional,valueExt`
+	AveragingWindow    *int64 `lb:0,ub:4095,optional,valueExt`
+	MaxDataBurstVolume *int64 `lb:0,ub:4095,optional,valueExt`
 	// IEExtensions * `optional`
 }
 
@@ -41,7 +41,7 @@ func (ie *NonDynamicPQIDescriptor) Encode(w *aper.AperWriter) (err error) {
 		}
 	}
 	if ie.AveragingWindow != nil {
-		tmp_AveragingWindow := NewINTEGER(*ie.AveragingWindow, aper.Constraint{Lb: 0, Ub: 4095}, false)
+		tmp_AveragingWindow := NewINTEGER(*ie.AveragingWindow, aper.Constraint{Lb: 0, Ub: 4095}, true)
 		if err = tmp_AveragingWindow.Encode(w); err != nil {
 			err = utils.WrapError("Encode AveragingWindow", err)
 			return
@@ -88,7 +88,7 @@ func (ie *NonDynamicPQIDescriptor) Decode(r *aper.AperReader) (err error) {
 	if aper.IsBitSet(optionals, 2) {
 		tmp_AveragingWindow := INTEGER{
 			c:   aper.Constraint{Lb: 0, Ub: 4095},
-			ext: false,
+			ext: true,
 		}
 		if err = tmp_AveragingWindow.Decode(r); err != nil {
 			err = utils.WrapError("Read AveragingWindow", err)

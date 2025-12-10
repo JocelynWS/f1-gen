@@ -6,7 +6,7 @@ import (
 )
 
 type L139Info struct {
-	Msg1SCS           Msg1SCS `madatory,valExt`
+	Msg1SCS           Msg1SCS `madatory,valueExt`
 	RootSequenceIndex *int64  `optional,lb:0,ub:137`
 	// IEExtension *L139InfoExtIEs `optional`
 }

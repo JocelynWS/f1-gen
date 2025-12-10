@@ -6,7 +6,7 @@ import (
 )
 
 type M7Configuration struct {
-	M7period     int64        `lb:1,ub:60,mandatory,valExt`
+	M7period     int64        `lb:1,ub:60,mandatory,valueExt`
 	M7LinksToLog M7LinksToLog `mandatory`
 	// IEExtensions * `optional`
 }

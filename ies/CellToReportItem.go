@@ -7,8 +7,8 @@ import (
 
 type CellToReportItem struct {
 	CellID            NRCGI               `mandatory`
-	SSBToReportList   []SSBToReportItem   `lb:1,ubmaxnoofSSBAreas,optional,valExt`
-	SliceToReportList []SliceToReportItem `lb:1,ub:maxnoofBPLMNsNR,optional,valExt`
+	SSBToReportList   []SSBToReportItem   `lb:1,ubmaxnoofSSBAreas,optional,valueExt`
+	SliceToReportList []SliceToReportItem `lb:1,ub:maxnoofBPLMNsNR,optional,valueExt`
 	// IEExtensions * `optional`
 }
 

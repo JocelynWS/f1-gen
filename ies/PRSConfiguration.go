@@ -6,7 +6,7 @@ import (
 )
 
 type PRSConfiguration struct {
-	PRSResourceSetList []PRSResourceSetItem `lb:1,ub:maxnoofPRSResourceSets,mandatory,valExt`
+	PRSResourceSetList []PRSResourceSetItem `lb:1,ub:maxnoofPRSResourceSets,mandatory,valueExt`
 	// IEExtensions * `optional`
 }
 

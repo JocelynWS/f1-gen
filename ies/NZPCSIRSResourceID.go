@@ -4,7 +4,7 @@ import "github.com/lvdund/ngap/aper"
 
 // NZP-CSI-RS-ResourceID ::= INTEGER (0..191, ...)
 type NZPCSIRSResourceID struct {
-	Value int64 `lb:0,ub:191,mandatory,valExt`
+	Value int64 `lb:0,ub:191,mandatory,valueExt`
 }
 
 func (m *NZPCSIRSResourceID) Encode(w *aper.AperWriter) error {

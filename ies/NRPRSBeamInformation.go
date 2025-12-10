@@ -6,8 +6,8 @@ import (
 )
 
 type NRPRSBeamInformation struct {
-	NRPRSBeamInformationList []NRPRSBeamInformationItem `lb:1,ub:maxnoofPRSResourcesPerSet,mandatory,valExt`
-	LCStoGCSTranslationList  []LCStoGCSTranslation      `lb:1,ub:maxnoofLCSGCSTranslation,optional,valExt`
+	NRPRSBeamInformationList []NRPRSBeamInformationItem `lb:1,ub:maxnoofPRSResourcesPerSet,mandatory,valueExt`
+	LCStoGCSTranslationList  []LCStoGCSTranslation      `lb:1,ub:maxnoofLCSGCSTranslation,optional,valueExt`
 	// IEExtensions * `optional`
 }
 

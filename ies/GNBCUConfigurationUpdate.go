@@ -10,7 +10,7 @@ import (
 )
 
 type GNBCUConfigurationUpdate struct {
-	TransactionID                   int64                             `lb:0,ub:255,mandatory,reject`
+	TransactionID                   int64                             `lb:0,ub:255,mandatory,reject,valueExt`
 	CellstobeActivatedList          []CellstobeActivatedListItem      `lb:1,ub:maxCellingNBDU,optional,reject,valueExt`
 	CellstobeDeactivatedList        []CellsToBeDeactivatedListItem    `lb:1,ub:maxCellingNBDU,optional,reject,valueExt`
 	GNBCUTNLAssociationToAddList    []GNBCUTNLAssociationToAddItem    `lb:1,ub:maxnoofTNLAssociations,optional,ignore,valueExt`
@@ -39,7 +39,7 @@ func (msg *GNBCUConfigurationUpdate) toIes() (ies []F1apMessageIE, err error) {
 		Criticality: Criticality{Value: Criticality_PresentReject},
 		Value: &INTEGER{
 			c:     aper.Constraint{Lb: 0, Ub: 255},
-			ext:   false,
+			ext:   true,
 			Value: aper.Integer(msg.TransactionID),
 		}})
 
@@ -244,7 +244,7 @@ func (decoder *GNBCUConfigurationUpdateDecoder) decodeIE(r *aper.AperReader) (ms
 	case ProtocolIEID_TransactionID:
 		tmp := INTEGER{
 			c:   aper.Constraint{Lb: 0, Ub: 255},
-			ext: false,
+			ext: true,
 		}
 		if err = tmp.Decode(ieR); err != nil {
 			err = utils.WrapError("Read TransactionID", err)

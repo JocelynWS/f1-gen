@@ -7,7 +7,7 @@ import (
 
 type PosSRSResourceSetItem struct {
 	PossrsResourceSetID  int64              `lb:0,ub:15,mandatory`
-	PossRSResourceIDList []SRSPosResourceID `lb:1,ub:maxnoSRSPosResourcePerSet,mandatory,valExt`
+	PossRSResourceIDList []SRSPosResourceID `lb:1,ub:maxnoSRSPosResourcePerSet,mandatory,valueExt`
 	PosresourceSetType   PosResourceSetType `mandatory`
 	// IEExtensions * `optional`
 }

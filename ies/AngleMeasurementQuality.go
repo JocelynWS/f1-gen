@@ -8,7 +8,7 @@ import (
 type AngleMeasurementQuality struct {
 	AzimuthQuality int64      `lb:0,ub:255,madatory`
 	ZenithQuality  *int64     `optional,lb:0,ub:255`
-	Resolution     Resolution `madatory,valExt`
+	Resolution     Resolution `madatory,valueExt`
 	// IEExtensions *AngleMeasurementQualityExtIEs `optional`
 }
 

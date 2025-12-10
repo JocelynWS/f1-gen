@@ -6,8 +6,8 @@ import (
 )
 
 type PacketErrorRate struct {
-	PERScalar   int64 `lb:0,ub:9,mandatory,valExt`
-	PERExponent int64 `lb:0,ub:9,mandatory,valExt`
+	PERScalar   int64 `lb:0,ub:9,mandatory,valueExt`
+	PERExponent int64 `lb:0,ub:9,mandatory,valueExt`
 	// IEExtensions * `optional`
 }
 

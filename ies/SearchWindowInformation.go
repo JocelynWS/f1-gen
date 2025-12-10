@@ -6,8 +6,8 @@ import (
 )
 
 type SearchWindowInformation struct {
-	ExpectedPropagationDelay int64 `lb:3841,ub:3841,mandatory,valExt`
-	DelayUncertainty         int64 `lb:1,ub:246,mandatory,valExt`
+	ExpectedPropagationDelay int64 `lb:3841,ub:3841,mandatory,valueExt`
+	DelayUncertainty         int64 `lb:1,ub:246,mandatory,valueExt`
 	// IEExtensions * `optional`
 }
 

@@ -10,10 +10,10 @@ import (
 )
 
 type PositioningAssistanceInformationControl struct {
-	TransactionID             int64         `lb:0,ub:255,mandatory,reject`
+	TransactionID             int64         `lb:0,ub:255,mandatory,reject,valueExt`
 	PosAssistanceInformation  []byte        `lb:0,ub:0,optional,reject`
 	PosBroadcast              *PosBroadcast `optional,reject`
-	PositioningBroadcastCells []NRCGI       `lb:1,ub:maxCellingNBDU,optional,reject,valExt`
+	PositioningBroadcastCells []NRCGI       `lb:1,ub:maxCellingNBDU,optional,reject,valueExt`
 	RoutingID                 []byte        `lb:0,ub:0,optional,reject`
 }
 
@@ -33,7 +33,7 @@ func (msg *PositioningAssistanceInformationControl) toIes() (ies []F1apMessageIE
 		Criticality: Criticality{Value: Criticality_PresentReject},
 		Value: &INTEGER{
 			c:     aper.Constraint{Lb: 0, Ub: 255},
-			ext:   false,
+			ext:   true,
 			Value: aper.Integer(msg.TransactionID),
 		}})
 	if len(msg.PosAssistanceInformation) > 0 {
@@ -142,7 +142,7 @@ func (decoder *PositioningAssistanceInformationControlDecoder) decodeIE(r *aper.
 	case ProtocolIEID_TransactionID:
 		tmp := INTEGER{
 			c:   aper.Constraint{Lb: 0, Ub: 255},
-			ext: false,
+			ext: true,
 		}
 		if err = tmp.Decode(ieR); err != nil {
 			err = utils.WrapError("Read TransactionID", err)

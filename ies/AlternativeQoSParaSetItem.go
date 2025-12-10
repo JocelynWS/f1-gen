@@ -7,8 +7,8 @@ import (
 
 type AlternativeQoSParaSetItem struct {
 	AlternativeQoSParaSetIndex int64            `lb:1,ub:8,mandatory`
-	GuaranteedFlowBitRateDL    *int64           `lb:0,ub:4000000000000,optional,valExt`
-	GuaranteedFlowBitRateUL    *int64           `lb:0,ub:4000000000000,optional,valExt`
+	GuaranteedFlowBitRateDL    *int64           `lb:0,ub:4000000000000,optional,valueExt`
+	GuaranteedFlowBitRateUL    *int64           `lb:0,ub:4000000000000,optional,valueExt`
 	PacketDelayBudget          *int64           `lb:0,ub:1023,optional`
 	PacketErrorRate            *PacketErrorRate `optional`
 	// IEExtensions * `optional`

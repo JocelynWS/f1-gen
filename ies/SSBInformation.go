@@ -6,7 +6,7 @@ import (
 )
 
 type SSBInformation struct {
-	SSBInformationList []SSBInformationItem `lb:1,ub:maxnoofSSBs,mandatory,valExt`
+	SSBInformationList []SSBInformationItem `lb:1,ub:maxnoofSSBs,mandatory,valueExt`
 	// IEExtensions * `optional`
 }
 

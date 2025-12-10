@@ -7,7 +7,7 @@ import (
 
 type MDTConfiguration struct {
 	MdtActivation          MDTActivation    `mandatory`
-	MeasurementsToActivate aper.BitString   `lb:8,ub:8,mandatory,valExt`
+	MeasurementsToActivate aper.BitString   `lb:8,ub:8,mandatory,valueExt`
 	M2Configuration        *M2Configuration `optional`
 	M5Configuration        *M5Configuration `optional`
 	M6Configuration        *M6Configuration `optional`

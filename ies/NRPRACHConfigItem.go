@@ -7,10 +7,10 @@ import (
 
 type NRPRACHConfigItem struct {
 	NRSCS                     NRSCS              `mandatory`
-	PrachFreqStartfromCarrier int64              `lb:0,ub:maxnoofPhysicalResourceBlocks-1,mandatory,valExt`
-	Msg1FDM                   Msg1FDM            `mandatory,valExt` 
-	ParchConfigIndex          int64              `lb:0,ub:255,mandatory,valExt`
-	SsbPerRACHOccasion        SSBPerRACHOccasion `mandatory,valExt` 
+	PrachFreqStartfromCarrier int64              `lb:0,ub:maxnoofPhysicalResourceBlocks-1,mandatory,valueExt`
+	Msg1FDM                   Msg1FDM            `mandatory,valueExt`
+	ParchConfigIndex          int64              `lb:0,ub:255,mandatory,valueExt`
+	SsbPerRACHOccasion        SSBPerRACHOccasion `mandatory,valueExt`
 	FreqDomainLength          FreqDomainLength   `mandatory`
 	ZeroCorrelZoneConfig      int64              `lb:0,ub:15,mandatory`
 	// IEExtension *NRPRACHConfigItemExtIEs `optional`

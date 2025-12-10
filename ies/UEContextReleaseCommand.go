@@ -14,7 +14,7 @@ type UEContextReleaseCommand struct {
 	GNBDUUEF1APID            int64                     `lb:0,ub:4294967295,mandatory,reject`
 	Cause                    Cause                     `mandatory,ignore`
 	RRCContainer             []byte                    `lb:0,ub:0,optional,ignore`
-	SRBID                    *int64                    `lb:0,ub:3,conditional,ignore`
+	SRBID                    *int64                    `lb:0,ub:3,conditional,ignore,valueExt`
 	OldgNBDUUEF1APID         *int64                    `lb:0,ub:4294967295,optional,ignore`
 	ExecuteDuplication       *ExecuteDuplication       `optional,ignore`
 	RRCDeliveryStatusRequest *RRCDeliveryStatusRequest `optional,ignore`
@@ -73,7 +73,7 @@ func (msg *UEContextReleaseCommand) toIes() (ies []F1apMessageIE, err error) {
 			Criticality: Criticality{Value: Criticality_PresentIgnore},
 			Value: &INTEGER{
 				c:     aper.Constraint{Lb: 0, Ub: 3},
-				ext:   false,
+				ext:   true,
 				Value: aper.Integer(*msg.SRBID),
 			}})
 	}
@@ -241,7 +241,7 @@ func (decoder *UEContextReleaseCommandDecoder) decodeIE(r *aper.AperReader) (msg
 	case ProtocolIEID_SRBID:
 		tmp := INTEGER{
 			c:   aper.Constraint{Lb: 0, Ub: 3},
-			ext: false,
+			ext: true,
 		}
 		if err = tmp.Decode(ieR); err != nil {
 			err = utils.WrapError("Read SRBID", err)

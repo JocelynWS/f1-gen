@@ -6,7 +6,7 @@ import (
 )
 
 type TRPListItem struct {
-	TRPID int64 `lb:0,ub:maxnoofTRPs,mandatory,valExt`
+	TRPID int64 `lb:0,ub:maxnoofTRPs,mandatory,valueExt`
 	// IEExtensions * `optional`
 }
 

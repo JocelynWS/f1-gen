@@ -10,7 +10,7 @@ import (
 )
 
 type PositioningMeasurementFailure struct {
-	TransactionID          int64                   `lb:0,ub:255,mandatory,reject`
+	TransactionID          int64                   `lb:0,ub:255,mandatory,reject,valueExt`
 	LMFMeasurementID       int64                   `lb:1,ub:65536,mandatory,reject,valueExt`
 	RANMeasurementID       int64                   `lb:1,ub:65536,mandatory,reject,valueExt`
 	Cause                  Cause                   `mandatory,ignore`
@@ -32,7 +32,7 @@ func (msg *PositioningMeasurementFailure) toIes() (ies []F1apMessageIE, err erro
 		Criticality: Criticality{Value: Criticality_PresentReject},
 		Value: &INTEGER{
 			c:     aper.Constraint{Lb: 0, Ub: 255},
-			ext:   false,
+			ext:   true,
 			Value: aper.Integer(msg.TransactionID),
 		}})
 	ies = append(ies, F1apMessageIE{
@@ -153,7 +153,7 @@ func (decoder *PositioningMeasurementFailureDecoder) decodeIE(r *aper.AperReader
 	case ProtocolIEID_TransactionID:
 		tmp := INTEGER{
 			c:   aper.Constraint{Lb: 0, Ub: 255},
-			ext: false,
+			ext: true,
 		}
 		if err = tmp.Decode(ieR); err != nil {
 			err = utils.WrapError("Read TransactionID", err)

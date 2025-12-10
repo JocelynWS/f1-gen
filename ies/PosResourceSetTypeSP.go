@@ -6,7 +6,7 @@ import (
 )
 
 type PosResourceSetTypeSP struct {
-	PosSemiPersistentSet PosSemiPersistentSet `madatory,valExt`
+	PosSemiPersistentSet PosSemiPersistentSet `madatory,valueExt`
 	// IEExtensions *PosResourceSetTypeSPExtIEs `optional`
 }
 

@@ -6,8 +6,8 @@ import (
 )
 
 type PC5FlowBitRates struct {
-	GuaranteedFlowBitRate int64 `lb:0,ub:4000000000000,mandatory,valExt`
-	MaximumFlowBitRate    int64 `lb:0,ub:4000000000000,mandatory,valExt`
+	GuaranteedFlowBitRate int64 `lb:0,ub:4000000000000,mandatory,valueExt`
+	MaximumFlowBitRate    int64 `lb:0,ub:4000000000000,mandatory,valueExt`
 	// IEExtensions * `optional`
 }
 

@@ -6,7 +6,7 @@ import (
 )
 
 type TRPMeasurementRequestItem struct {
-	TRPID                   int64                    `lb:0,ub:maxnoofTRPs,mandatory,valExt`
+	TRPID                   int64                    `lb:0,ub:maxnoofTRPs,mandatory,valueExt`
 	SearchWindowInformation *SearchWindowInformation `optional`
 	//IEExtensions            *ProtocolExtensionContainer `optional`
 }

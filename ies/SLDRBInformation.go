@@ -7,7 +7,7 @@ import (
 
 type SLDRBInformation struct {
 	SLDRBQoS               PC5QoSParameters         `mandatory`
-	FlowsMappedToSLDRBList []FlowsMappedToSLDRBItem `lb:1,ub:maxnoofQoSFlows,mandatory,valExt`
+	FlowsMappedToSLDRBList []FlowsMappedToSLDRBItem `lb:1,ub:maxnoofQoSFlows,mandatory,valueExt`
 }
 
 func (ie *SLDRBInformation) Encode(w *aper.AperWriter) (err error) {

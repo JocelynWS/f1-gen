@@ -10,9 +10,9 @@ import (
 )
 
 type WriteReplaceWarningRequest struct {
-	TransactionID            int64                        `lb:0,ub:255,mandatory,reject`
+	TransactionID            int64                        `lb:0,ub:255,mandatory,reject,valueExt`
 	PWSSystemInformation     PWSSystemInformation         `mandatory,reject`
-	RepetitionPeriod         int64                        `lb:0,ub:131071,mandatory,reject`
+	RepetitionPeriod         int64                        `lb:0,ub:131071,mandatory,reject,valueExt`
 	NumberofBroadcastRequest int64                        `lb:0,ub:65535,mandatory,reject`
 	CellsToBeBroadcastList   []CellsToBeBroadcastListItem `lb:1,ub:maxCellingNBDU,optional,reject,valueExt`
 }
@@ -32,7 +32,7 @@ func (msg *WriteReplaceWarningRequest) toIes() (ies []F1apMessageIE, err error) 
 		Criticality: Criticality{Value: Criticality_PresentReject},
 		Value: &INTEGER{
 			c:     aper.Constraint{Lb: 0, Ub: 255},
-			ext:   false,
+			ext:   true,
 			Value: aper.Integer(msg.TransactionID),
 		}})
 	ies = append(ies, F1apMessageIE{
@@ -45,7 +45,7 @@ func (msg *WriteReplaceWarningRequest) toIes() (ies []F1apMessageIE, err error) 
 		Criticality: Criticality{Value: Criticality_PresentReject},
 		Value: &INTEGER{
 			c:     aper.Constraint{Lb: 0, Ub: 131071},
-			ext:   false,
+			ext:   true,
 			Value: aper.Integer(msg.RepetitionPeriod),
 		}})
 	ies = append(ies, F1apMessageIE{
@@ -160,7 +160,7 @@ func (decoder *WriteReplaceWarningRequestDecoder) decodeIE(r *aper.AperReader) (
 	case ProtocolIEID_TransactionID:
 		tmp := INTEGER{
 			c:   aper.Constraint{Lb: 0, Ub: 255},
-			ext: false,
+			ext: true,
 		}
 		if err = tmp.Decode(ieR); err != nil {
 			err = utils.WrapError("Read TransactionID", err)
@@ -177,7 +177,7 @@ func (decoder *WriteReplaceWarningRequestDecoder) decodeIE(r *aper.AperReader) (
 	case ProtocolIEID_RepetitionPeriod:
 		tmp := INTEGER{
 			c:   aper.Constraint{Lb: 0, Ub: 131071},
-			ext: false,
+			ext: true,
 		}
 		if err = tmp.Decode(ieR); err != nil {
 			err = utils.WrapError("Read RepetitionPeriod", err)

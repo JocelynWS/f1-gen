@@ -7,7 +7,7 @@ import (
 
 type TimingMeasurementQuality struct {
 	MeasurementQuality int64                 `lb:0,ub:31,madatory`
-	Resolution         MeasurementResolution `madatory,valExt`
+	Resolution         MeasurementResolution `madatory,valueExt`
 	// IEExtensions *TimingMeasurementQualityExtIEs `optional`
 }
 

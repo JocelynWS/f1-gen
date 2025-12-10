@@ -6,10 +6,10 @@ import (
 )
 
 type RequestedSRSTransmissionCharacteristics struct {
-	NumberOfTransmissions *int64               `lb:0,ub:500,optional,valExt`
-	ResourceType          SRBResourceType      `mandatory,valExt`
+	NumberOfTransmissions *int64               `lb:0,ub:500,optional,valueExt`
+	ResourceType          SRBResourceType      `mandatory,valueExt`
 	BandwidthSRS          BandwidthSRS         `mandatory`
-	SRSResourceSetList    []SRSResourceSetItem `lb:1,ub:maxnoofSRSResourceSets,optional,valExt`
+	SRSResourceSetList    []SRSResourceSetItem `lb:1,ub:maxnoofSRSResourceSets,optional,valueExt`
 	SSBInformation        *SSBInformation      `optional`
 	// IEExtensions *ProtocolExtensionContainer `optional`
 }

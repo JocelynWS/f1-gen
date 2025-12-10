@@ -10,7 +10,7 @@ import (
 )
 
 type BAPMappingConfigurationAcknowledge struct {
-	TransactionID          int64                   `lb:0,ub:255,mandatory,reject`
+	TransactionID          int64                   `lb:0,ub:255,mandatory,reject,valueExt`
 	CriticalityDiagnostics *CriticalityDiagnostics `optional,ignore`
 }
 
@@ -30,7 +30,7 @@ func (msg *BAPMappingConfigurationAcknowledge) toIes() (ies []F1apMessageIE, err
 		Criticality: Criticality{Value: Criticality_PresentReject},
 		Value: &INTEGER{
 			c:     aper.Constraint{Lb: 0, Ub: 255},
-			ext:   false,
+			ext:   true,
 			Value: aper.Integer(msg.TransactionID),
 		}})
 	
@@ -112,7 +112,7 @@ func (decoder *BAPMappingConfigurationAcknowledgeDecoder) decodeIE(r *aper.AperR
 	case ProtocolIEID_TransactionID:
 		tmp := INTEGER{
 			c:   aper.Constraint{Lb: 0, Ub: 255},
-			ext: false,
+			ext: true,
 		}
 		if err = tmp.Decode(ieR); err != nil {
 			err = utils.WrapError("Read TransactionID", err)

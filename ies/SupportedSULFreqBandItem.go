@@ -6,7 +6,7 @@ import (
 )
 
 type SupportedSULFreqBandItem struct {
-	FreqBandIndicatorNr int64 `lb:1,ub:1024,mandatory,valExt`
+	FreqBandIndicatorNr int64 `lb:1,ub:1024,mandatory,valueExt`
 	// IEExtensions * `optional`
 }
 

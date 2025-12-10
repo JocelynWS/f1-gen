@@ -22,7 +22,7 @@ type UEContextModificationResponse struct {
 	DRBsFailedToBeModifiedList            []DRBsFailedToBeModifiedItem       `lb:1,ub:maxnoofDRBs,optional,ignore`
 	InactivityMonitoringResponse          *InactivityMonitoringResponse      `optional,reject`
 	CriticalityDiagnostics                *CriticalityDiagnostics            `optional,ignore`
-	CRNTI                                 *int64                             `lb:0,ub:65535,optional,ignore`
+	CRNTI                                 *int64                             `lb:0,ub:65535,optional,ignore,valueExt`
 	AssociatedSCellList                   []AssociatedSCellItem              `lb:1,ub:maxnoofSCells,optional,ignore,valueExt`
 	SRBsSetupModList                      []SRBsSetupModItem                 `lb:1,ub:maxnoofSRBs,optional,ignore`
 	SRBsModifiedList                      []SRBsModifiedItem                 `lb:1,ub:maxnoofSRBs,optional,ignore`
@@ -188,7 +188,7 @@ func (msg *UEContextModificationResponse) toIes() (ies []F1apMessageIE, err erro
 			Criticality: Criticality{Value: Criticality_PresentIgnore},
 			Value: &INTEGER{
 				c:     aper.Constraint{Lb: 0, Ub: 65535},
-				ext:   false,
+				ext:   true,
 				Value: aper.Integer(*msg.CRNTI),
 			}})
 	}
@@ -570,7 +570,7 @@ func (decoder *UEContextModificationResponseDecoder) decodeIE(r *aper.AperReader
 	case ProtocolIEID_CRNTI:
 		tmp := INTEGER{
 			c:   aper.Constraint{Lb: 0, Ub: 65535},
-			ext: false,
+			ext: true,
 		}
 		if err = tmp.Decode(ieR); err != nil {
 			err = utils.WrapError("Read CRNTI", err)

@@ -7,7 +7,7 @@ import (
 
 type ECIDMeasurementResult struct {
 	GeographicalCoordinates *GeographicalCoordinates  `optional`
-	MeasuredResultsList     []ECIDMeasuredResultsItem `lb:1,ub:maxnoofMeasECID,optional,valExt`
+	MeasuredResultsList     []ECIDMeasuredResultsItem `lb:1,ub:maxnoofMeasECID,optional,valueExt`
 	// IEExtensions * `optional`
 }
 

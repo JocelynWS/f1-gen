@@ -9,8 +9,8 @@ type CriticalityDiagnostics struct {
 	ProcedureCode             *int64                         `lb:0,ub:255,optional`
 	TriggeringMessage         *TriggeringMessage             `optional`
 	ProcedureCriticality      *Criticality                   `optional`
-	TransactionID             *int64                         `lb:0,ub:255,optional`
-	IEsCriticalityDiagnostics []CriticalityDiagnosticsIEItem `lb:1,ub:maxnoofErrors,optional,valExt`
+	TransactionID             *int64                         `lb:0,ub:255,optional,valueExt`
+	IEsCriticalityDiagnostics []CriticalityDiagnosticsIEItem `lb:1,ub:maxnoofErrors,optional,valueExt`
 	// IEExtensions *CriticalityDiagnosticsExtIEs `optional`
 }
 
@@ -55,7 +55,7 @@ func (ie *CriticalityDiagnostics) Encode(w *aper.AperWriter) (err error) {
 		}
 	}
 	if ie.TransactionID != nil {
-		tmp_TransactionID := NewINTEGER(*ie.TransactionID, aper.Constraint{Lb: 0, Ub: 255}, false)
+		tmp_TransactionID := NewINTEGER(*ie.TransactionID, aper.Constraint{Lb: 0, Ub: 255}, true)
 		if err = tmp_TransactionID.Encode(w); err != nil {
 			err = utils.WrapError("Encode TransactionID", err)
 			return
@@ -115,7 +115,7 @@ func (ie *CriticalityDiagnostics) Decode(r *aper.AperReader) (err error) {
 	if aper.IsBitSet(optionals, 4) {
 		tmp_TransactionID := INTEGER{
 			c:   aper.Constraint{Lb: 0, Ub: 255},
-			ext: false,
+			ext: true,
 		}
 		if err = tmp_TransactionID.Decode(r); err != nil {
 			err = utils.WrapError("Read TransactionID", err)

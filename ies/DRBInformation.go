@@ -9,7 +9,7 @@ type DRBInformation struct {
 	DRBQoS               QoSFlowLevelQoSParameters `mandatory`
 	SNSSAI               SNSSAI                    `mandatory`
 	NotificationControl  *NotificationControl      `optional`
-	FlowsMappedToDRBList []FlowsMappedToDRBItem    `lb:1,ub:maxnoofQoSFlows,mandatory,valExt`
+	FlowsMappedToDRBList []FlowsMappedToDRBItem    `lb:1,ub:maxnoofQoSFlows,mandatory,valueExt`
 	// IEExtensions * `optional`
 }
 

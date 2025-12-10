@@ -6,7 +6,7 @@ import (
 )
 
 type AperiodicSRS struct {
-	Aperiodic          Aperiodic           `madatory,valExt`
+	Aperiodic          Aperiodic           `madatory,valueExt`
 	SRSResourceTrigger *SRSResourceTrigger `optional`
 	// IEExtensions *AperiodicSRSExtIEs `optional`
 }

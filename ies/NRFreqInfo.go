@@ -8,7 +8,7 @@ import (
 type NRFreqInfo struct {
 	NRARFCN        int64            `lb:0,ub:maxNRARFCN,mandatory`
 	SulInformation *SULInformation  `optional`
-	FreqBandListNr []FreqBandNrItem `lb:1,ub:maxnoofNrCellBands,mandatory,valExt`
+	FreqBandListNr []FreqBandNrItem `lb:1,ub:maxnoofNrCellBands,mandatory,valueExt`
 	// IEExtensions *optional
 }
 

@@ -6,8 +6,8 @@ import (
 )
 
 type PosMeasurementResultListItem struct {
-	PosMeasurementResult []PosMeasurementResultItem `lb:1,ub:maxnoofPosMeas,mandatory,valExt`
-	TRPID                int64                      `lb:0,ub:maxnoofTRPs,mandatory,valExt`
+	PosMeasurementResult []PosMeasurementResultItem `lb:1,ub:maxnoofPosMeas,mandatory,valueExt`
+	TRPID                int64                      `lb:0,ub:maxnoofTRPs,mandatory,valueExt`
 	// IEExtensions * `optional`
 }
 

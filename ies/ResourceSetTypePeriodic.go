@@ -6,7 +6,7 @@ import (
 )
 
 type ResourceSetTypePeriodic struct {
-	PeriodicSet PeriodicSet `madatory,valExt`
+	PeriodicSet PeriodicSet `madatory,valueExt`
 	// IEExtensions *ResourceSetTypePeriodicExtIEs `optional`
 }
 

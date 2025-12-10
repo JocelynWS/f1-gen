@@ -6,8 +6,8 @@ import (
 )
 
 type TransportUPLayerAddressInfoToRemoveItem struct {
-	IPSecTransportLayerAddress       aper.BitString `lb:1,ub:160,mandatory,valExt`
-	GTPTransportLayerAddressToRemove []GTPTLAItem   `lb:1,ub:maxnoofGTPTLAs,optional,valExt`
+	IPSecTransportLayerAddress       aper.BitString `lb:1,ub:160,mandatory,valueExt`
+	GTPTransportLayerAddressToRemove []GTPTLAItem   `lb:1,ub:maxnoofGTPTLAs,optional,valueExt`
 	// IEExtensions * `optional`
 }
 

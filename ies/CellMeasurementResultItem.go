@@ -10,7 +10,7 @@ type CellMeasurementResultItem struct {
 	RadioResourceStatus             *RadioResourceStatus             `optional`
 	CompositeAvailableCapacityGroup *CompositeAvailableCapacityGroup `optional`
 	SliceAvailableCapacity          *SliceAvailableCapacity          `optional`
-	NumberofActiveUEs               *int64                           `lb:0,ub:16777215,optional,valExt`
+	NumberofActiveUEs               *int64                           `lb:0,ub:16777215,optional,valueExt`
 	// IEExtensions * `optional`
 }
 

@@ -7,17 +7,17 @@ import (
 
 type PRSResourceSetItem struct {
 	PRSResourceSetID         PRSResourceSetID         `madatory`
-	SubcarrierSpacing        SubcarrierSpacingPRS     `madatory,valExt` // Đổi tên để tránh xung đột với SubcarrierSpacing trước đó
+	SubcarrierSpacing        SubcarrierSpacingPRS     `madatory,valueExt` // Đổi tên để tránh xung đột với SubcarrierSpacing trước đó
 	PRSBandwidth             int64                    `lb:1,ub:63,madatory`
 	StartPRB                 int64                    `lb:0,ub:2176,madatory`
 	PointA                   int64                    `lb:0,ub:3279165,madatory`
-	CombSize                 CombSize                 `madatory,valExt`
-	CPType                   CPType                   `madatory,valExt`
-	ResourceSetPeriodicity   ResourceSetPeriodicity   `madatory,valExt`
-	ResourceSetSlotOffset    int64                    `lb:0,ub:81919,madatory,valExt`
-	ResourceRepetitionFactor ResourceRepetitionFactor `madatory,valExt`
-	ResourceTimeGap          ResourceTimeGap          `madatory,valExt`
-	ResourceNumberofSymbols  ResourceNumberofSymbols  `madatory,valExt`
+	CombSize                 CombSize                 `madatory,valueExt`
+	CPType                   CPType                   `madatory,valueExt`
+	ResourceSetPeriodicity   ResourceSetPeriodicity   `madatory,valueExt`
+	ResourceSetSlotOffset    int64                    `lb:0,ub:81919,madatory,valueExt`
+	ResourceRepetitionFactor ResourceRepetitionFactor `madatory,valueExt`
+	ResourceTimeGap          ResourceTimeGap          `madatory,valueExt`
+	ResourceNumberofSymbols  ResourceNumberofSymbols  `madatory,valueExt`
 	PRSMuting                *PRSMuting               `optional`
 	PRSResourceTransmitPower int64                    `lb:-60,ub:50,madatory`
 	PRSResourceList          PRSResourceItem          `madatory`

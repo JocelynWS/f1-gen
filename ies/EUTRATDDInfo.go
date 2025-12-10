@@ -6,7 +6,7 @@ import (
 )
 
 type EUTRATDDInfo struct {
-	OffsetToPointA int64 `lb:0,ub:2199,mandatory,valExt`
+	OffsetToPointA int64 `lb:0,ub:2199,mandatory,valueExt`
 	// IEExtensions * `optional`
 }
 

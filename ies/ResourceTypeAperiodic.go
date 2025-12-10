@@ -6,7 +6,7 @@ import (
 )
 
 type ResourceTypeAperiodic struct {
-	AperiodicResourceType AperiodicResourceType `madatory,valExt`
+	AperiodicResourceType AperiodicResourceType `madatory,valueExt`
 	// IEExtensions *ResourceTypeAperiodicExtIEs `optional`
 }
 

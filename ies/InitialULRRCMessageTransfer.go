@@ -12,11 +12,11 @@ import (
 type InitialULRRCMessageTransfer struct {
 	GNBDUUEF1APID                int64                `lb:0,ub:4294967295,mandatory,reject`
 	NRCGI                        NRCGI                `mandatory,reject`
-	CRNTI                        int64                `lb:0,ub:65535,mandatory,reject`
+	CRNTI                        int64                `lb:0,ub:65535,mandatory,reject,valueExt`
 	RRCContainer                 []byte               `lb:0,ub:0,mandatory,reject`
 	DUtoCURRCContainer           []byte               `lb:0,ub:0,optional,reject`
 	SULAccessIndication          *SULAccessIndication `optional,ignore`
-	TransactionID                int64                `lb:0,ub:255,mandatory,ignore`
+	TransactionID                int64                `lb:0,ub:255,mandatory,ignore,valueExt`
 	RANUEID                      []byte               `lb:8,ub:8,optional,ignore`
 	RRCContainerRRCSetupComplete []byte               `lb:0,ub:0,optional,ignore`
 }
@@ -49,7 +49,7 @@ func (msg *InitialULRRCMessageTransfer) toIes() (ies []F1apMessageIE, err error)
 		Criticality: Criticality{Value: Criticality_PresentReject},
 		Value: &INTEGER{
 			c:     aper.Constraint{Lb: 0, Ub: 65535},
-			ext:   false,
+			ext:   true,
 			Value: aper.Integer(msg.CRNTI),
 		}})
 	ies = append(ies, F1apMessageIE{
@@ -82,7 +82,7 @@ func (msg *InitialULRRCMessageTransfer) toIes() (ies []F1apMessageIE, err error)
 		Criticality: Criticality{Value: Criticality_PresentIgnore},
 		Value: &INTEGER{
 			c:     aper.Constraint{Lb: 0, Ub: 255},
-			ext:   false,
+			ext:   true,
 			Value: aper.Integer(msg.TransactionID),
 		}})
 	if msg.RANUEID != nil {
@@ -221,7 +221,7 @@ func (decoder *InitialULRRCMessageTransferDecoder) decodeIE(r *aper.AperReader) 
 	case ProtocolIEID_CRNTI:
 		tmp := INTEGER{
 			c:   aper.Constraint{Lb: 0, Ub: 65535},
-			ext: false,
+			ext: true,
 		}
 		if err = tmp.Decode(ieR); err != nil {
 			err = utils.WrapError("Read CRNTI", err)
@@ -258,7 +258,7 @@ func (decoder *InitialULRRCMessageTransferDecoder) decodeIE(r *aper.AperReader) 
 	case ProtocolIEID_TransactionID:
 		tmp := INTEGER{
 			c:   aper.Constraint{Lb: 0, Ub: 255},
-			ext: false,
+			ext: true,
 		}
 		if err = tmp.Decode(ieR); err != nil {
 			err = utils.WrapError("Read TransactionID", err)

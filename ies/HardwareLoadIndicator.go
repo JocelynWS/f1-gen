@@ -6,8 +6,8 @@ import (
 )
 
 type HardwareLoadIndicator struct {
-	DLHardwareLoadIndicator int64 `lb:0,ub:100,mandatory,valExt`
-	ULHardwareLoadIndicator int64 `lb:0,ub:100,mandatory,valExt`
+	DLHardwareLoadIndicator int64 `lb:0,ub:100,mandatory,valueExt`
+	ULHardwareLoadIndicator int64 `lb:0,ub:100,mandatory,valueExt`
 	// IEExtensions * `optional`
 }
 

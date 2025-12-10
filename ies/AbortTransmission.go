@@ -21,7 +21,7 @@ func (ie *AbortTransmission) Encode(w *aper.AperWriter) (err error) {
 	}
 	switch ie.Choice {
 	case AbortTransmissionPresentSRSResourceSetID:
-		tmp := NewINTEGER(*ie.SRSResourceSetID, aper.Constraint{Lb: 0, Ub: 15}, false)
+		tmp := NewINTEGER(*ie.SRSResourceSetID, aper.Constraint{Lb: 0, Ub: 15}, true)
 		err = tmp.Encode(w)
 	case AbortTransmissionPresentReleaseALL:
 		err = ie.ReleaseALL.Encode(w)
@@ -35,7 +35,7 @@ func (ie *AbortTransmission) Decode(r *aper.AperReader) (err error) {
 	}
 	switch ie.Choice {
 	case AbortTransmissionPresentSRSResourceSetID:
-		tmp := NewINTEGER(0, aper.Constraint{Lb: 0, Ub: 15}, false)
+		tmp := NewINTEGER(0, aper.Constraint{Lb: 0, Ub: 15}, true)
 		if err = tmp.Decode(r); err != nil {
 			return
 		}

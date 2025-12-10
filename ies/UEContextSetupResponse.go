@@ -13,7 +13,7 @@ type UEContextSetupResponse struct {
 	GNBCUUEF1APID                         int64                           `lb:0,ub:4294967295,mandatory,reject`
 	GNBDUUEF1APID                         int64                           `lb:0,ub:4294967295,mandatory,reject`
 	DUtoCURRCInformation                  DUtoCURRCInformation            `mandatory,reject`
-	CRNTI                                 *int64                          `lb:0,ub:65535,optional,ignore`
+	CRNTI                                 *int64                          `lb:0,ub:65535,optional,ignore,valueExt`
 	ResourceCoordinationTransferContainer []byte                          `lb:0,ub:0,optional,ignore`
 	FullConfiguration                     *FullConfiguration              `optional,reject`
 	DRBsSetupList                         []DRBsSetupItem                 `lb:1,ub:maxnoofDRBs,optional,ignore`
@@ -67,7 +67,7 @@ func (msg *UEContextSetupResponse) toIes() (ies []F1apMessageIE, err error) {
 			Criticality: Criticality{Value: Criticality_PresentIgnore},
 			Value: &INTEGER{
 				c:     aper.Constraint{Lb: 0, Ub: 65535},
-				ext:   false,
+				ext:   true,
 				Value: aper.Integer(*msg.CRNTI),
 			}})
 	}
@@ -345,7 +345,7 @@ func (decoder *UEContextSetupResponseDecoder) decodeIE(r *aper.AperReader) (msgI
 	case ProtocolIEID_CRNTI:
 		tmp := INTEGER{
 			c:   aper.Constraint{Lb: 0, Ub: 65535},
-			ext: false,
+			ext: true,
 		}
 		if err = tmp.Decode(ieR); err != nil {
 			err = utils.WrapError("Read CRNTI", err)

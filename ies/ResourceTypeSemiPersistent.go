@@ -6,8 +6,8 @@ import (
 )
 
 type ResourceTypeSemiPersistent struct {
-	Periodicity ResourceTypeSemiPersistentPeriodicity `madatory,valExt`
-	Offset      int64                                 `lb:0,ub:2559,madatory,valExt`
+	Periodicity ResourceTypeSemiPersistentPeriodicity `madatory,valueExt`
+	Offset      int64                                 `lb:0,ub:2559,madatory,valueExt`
 	// IEExtensions *ResourceTypeSemiPersistentExtIEs `optional`
 }
 

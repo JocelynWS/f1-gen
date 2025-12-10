@@ -6,7 +6,7 @@ import (
 )
 
 type RelativeCartesianLocation struct {
-	XYZUnit             XYZUnit             `madatory,valExt`
+	XYZUnit             XYZUnit             `madatory,valueExt`
 	XValue              int64               `lb:-65536,ub:65535,madatory`
 	YValue              int64               `lb:-65536,ub:65535,madatory`
 	ZValue              int64               `lb:-32768,ub:32767,madatory`
