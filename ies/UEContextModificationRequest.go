@@ -629,6 +629,371 @@ func (decoder *UEContextModificationRequestDecoder) decodeIE(r *aper.AperReader)
 			return
 		}
 		msg.CUtoDURRCInformation = &tmp
+	case ProtocolIEID_TransmissionActionIndicator:
+		var tmp TransmissionActionIndicator
+		if err = tmp.Decode(ieR); err != nil {
+			err = utils.WrapError("Read TransmissionActionIndicator", err)
+			return
+		}
+		msg.TransmissionActionIndicator = &tmp
+	case ProtocolIEID_ResourceCoordinationTransferContainer:
+		tmp := OCTETSTRING{
+			c:   aper.Constraint{Lb: 0, Ub: 0},
+			ext: false,
+		}
+		if err = tmp.Decode(ieR); err != nil {
+			err = utils.WrapError("Read ResourceCoordinationTransferContainer", err)
+			return
+		}
+		msg.ResourceCoordinationTransferContainer = tmp.Value
+	case ProtocolIEID_RRCReconfigurationCompleteIndicator:
+		var tmp RRCReconfigurationCompleteIndicator
+		if err = tmp.Decode(ieR); err != nil {
+			err = utils.WrapError("Read RRCReconfigurationCompleteIndicator", err)
+			return
+		}
+		msg.RRCReconfigurationCompleteIndicator = &tmp
+	case ProtocolIEID_RRCContainer:
+		tmp := OCTETSTRING{
+			c:   aper.Constraint{Lb: 0, Ub: 0},
+			ext: false,
+		}
+		if err = tmp.Decode(ieR); err != nil {
+			err = utils.WrapError("Read RRCContainer", err)
+			return
+		}
+		msg.RRCContainer = tmp.Value
+	case ProtocolIEID_SCellToBeSetupModList:
+		var tmp Sequence[*SCellToBeSetupModItem]
+		tmp.c = aper.Constraint{Lb: 1, Ub: maxnoofSCells}
+		if err = tmp.Decode(ieR, func() *SCellToBeSetupModItem {
+			return new(SCellToBeSetupModItem)
+		}); err != nil {
+			err = utils.WrapError("Read SCellToBeSetupModList", err)
+			return
+		}
+		msg.SCellToBeSetupModList = make([]SCellToBeSetupModItem, len(tmp.Value))
+		for i, v := range tmp.Value {
+			msg.SCellToBeSetupModList[i] = *v
+		}
+	case ProtocolIEID_SCellToBeRemovedList:
+		var tmp Sequence[*SCellToBeRemovedItem]
+		tmp.c = aper.Constraint{Lb: 1, Ub: maxnoofSCells}
+		if err = tmp.Decode(ieR, func() *SCellToBeRemovedItem {
+			return new(SCellToBeRemovedItem)
+		}); err != nil {
+			err = utils.WrapError("Read SCellToBeRemovedList", err)
+			return
+		}
+		msg.SCellToBeRemovedList = make([]SCellToBeRemovedItem, len(tmp.Value))
+		for i, v := range tmp.Value {
+			msg.SCellToBeRemovedList[i] = *v
+		}
+	case ProtocolIEID_SRBsToBeSetupModList:
+		var tmp Sequence[*SRBsToBeSetupModItem]
+		tmp.c = aper.Constraint{Lb: 1, Ub: maxnoofSRBs}
+		if err = tmp.Decode(ieR, func() *SRBsToBeSetupModItem {
+			return new(SRBsToBeSetupModItem)
+		}); err != nil {
+			err = utils.WrapError("Read SRBsToBeSetupModList", err)
+			return
+		}
+		msg.SRBsToBeSetupModList = make([]SRBsToBeSetupModItem, len(tmp.Value))
+		for i, v := range tmp.Value {
+			msg.SRBsToBeSetupModList[i] = *v
+		}
+	case ProtocolIEID_DRBsToBeSetupModList:
+		var tmp Sequence[*DRBsToBeSetupModItem]
+		tmp.c = aper.Constraint{Lb: 1, Ub: maxnoofDRBs}
+		if err = tmp.Decode(ieR, func() *DRBsToBeSetupModItem {
+			return new(DRBsToBeSetupModItem)
+		}); err != nil {
+			err = utils.WrapError("Read DRBsToBeSetupModList", err)
+			return
+		}
+		msg.DRBsToBeSetupModList = make([]DRBsToBeSetupModItem, len(tmp.Value))
+		for i, v := range tmp.Value {
+			msg.DRBsToBeSetupModList[i] = *v
+		}
+	case ProtocolIEID_DRBsToBeModifiedList:
+		var tmp Sequence[*DRBsToBeModifiedItem]
+		tmp.c = aper.Constraint{Lb: 1, Ub: maxnoofDRBs}
+		if err = tmp.Decode(ieR, func() *DRBsToBeModifiedItem {
+			return new(DRBsToBeModifiedItem)
+		}); err != nil {
+			err = utils.WrapError("Read DRBsToBeModifiedList", err)
+			return
+		}
+		msg.DRBsToBeModifiedList = make([]DRBsToBeModifiedItem, len(tmp.Value))
+		for i, v := range tmp.Value {
+			msg.DRBsToBeModifiedList[i] = *v
+		}
+	case ProtocolIEID_SRBsToBeReleasedList:
+		var tmp Sequence[*SRBsToBeReleasedItem]
+		tmp.c = aper.Constraint{Lb: 1, Ub: maxnoofSRBs}
+		if err = tmp.Decode(ieR, func() *SRBsToBeReleasedItem {
+			return new(SRBsToBeReleasedItem)
+		}); err != nil {
+			err = utils.WrapError("Read SRBsToBeReleasedList", err)
+			return
+		}
+		msg.SRBsToBeReleasedList = make([]SRBsToBeReleasedItem, len(tmp.Value))
+		for i, v := range tmp.Value {
+			msg.SRBsToBeReleasedList[i] = *v
+		}
+	case ProtocolIEID_DRBsToBeReleasedList:
+		var tmp Sequence[*DRBsToBeReleasedItem]
+		tmp.c = aper.Constraint{Lb: 1, Ub: maxnoofDRBs}
+		if err = tmp.Decode(ieR, func() *DRBsToBeReleasedItem {
+			return new(DRBsToBeReleasedItem)
+		}); err != nil {
+			err = utils.WrapError("Read DRBsToBeReleasedList", err)
+			return
+		}
+		msg.DRBsToBeReleasedList = make([]DRBsToBeReleasedItem, len(tmp.Value))
+		for i, v := range tmp.Value {
+			msg.DRBsToBeReleasedList[i] = *v
+		}
+	case ProtocolIEID_InactivityMonitoringRequest:
+		var tmp InactivityMonitoringRequest
+		if err = tmp.Decode(ieR); err != nil {
+			err = utils.WrapError("Read InactivityMonitoringRequest", err)
+			return
+		}
+		msg.InactivityMonitoringRequest = &tmp
+	case ProtocolIEID_RATFrequencyPriorityInformation:
+		var tmp RATFrequencyPriorityInformation
+		if err = tmp.Decode(ieR); err != nil {
+			err = utils.WrapError("Read RATFrequencyPriorityInformation", err)
+			return
+		}
+		msg.RATFrequencyPriorityInformation = &tmp
+	case ProtocolIEID_DRXConfigurationIndicator:
+		var tmp DRXConfigurationIndicator
+		if err = tmp.Decode(ieR); err != nil {
+			err = utils.WrapError("Read DRXConfigurationIndicator", err)
+			return
+		}
+		msg.DRXConfigurationIndicator = &tmp
+	case ProtocolIEID_RLCFailureIndication:
+		var tmp RLCFailureIndication
+		if err = tmp.Decode(ieR); err != nil {
+			err = utils.WrapError("Read RLCFailureIndication", err)
+			return
+		}
+		msg.RLCFailureIndication = &tmp
+	case ProtocolIEID_UplinkTxDirectCurrentListInformation:
+		tmp := OCTETSTRING{
+			c:   aper.Constraint{Lb: 0, Ub: 0},
+			ext: false,
+		}
+		if err = tmp.Decode(ieR); err != nil {
+			err = utils.WrapError("Read UplinkTxDirectCurrentListInformation", err)
+			return
+		}
+		msg.UplinkTxDirectCurrentListInformation = tmp.Value
+	case ProtocolIEID_GNBDUConfigurationQuery:
+		var tmp GNBDUConfigurationQuery
+		if err = tmp.Decode(ieR); err != nil {
+			err = utils.WrapError("Read GNBDUConfigurationQuery", err)
+			return
+		}
+		msg.GNBDUConfigurationQuery = &tmp
+	case ProtocolIEID_GNBDUUEAMBRUL:
+		tmp := INTEGER{
+			c:   aper.Constraint{Lb: 0, Ub: 4000000000000},
+			ext: true,
+		}
+		if err = tmp.Decode(ieR); err != nil {
+			err = utils.WrapError("Read GNBDUUEAMBRUL", err)
+			return
+		}
+		msg.GNBDUUEAMBRUL = (*int64)(&tmp.Value)
+	case ProtocolIEID_ExecuteDuplication:
+		var tmp ExecuteDuplication
+		if err = tmp.Decode(ieR); err != nil {
+			err = utils.WrapError("Read ExecuteDuplication", err)
+			return
+		}
+		msg.ExecuteDuplication = &tmp
+	case ProtocolIEID_RRCDeliveryStatusRequest:
+		var tmp RRCDeliveryStatusRequest
+		if err = tmp.Decode(ieR); err != nil {
+			err = utils.WrapError("Read RRCDeliveryStatusRequest", err)
+			return
+		}
+		msg.RRCDeliveryStatusRequest = &tmp
+	case ProtocolIEID_ResourceCoordinationTransferInformation:
+		var tmp ResourceCoordinationTransferInformation
+		if err = tmp.Decode(ieR); err != nil {
+			err = utils.WrapError("Read ResourceCoordinationTransferInformation", err)
+			return
+		}
+		msg.ResourceCoordinationTransferInformation = &tmp
+	case ProtocolIEID_ServingCellMO:
+		tmp := INTEGER{
+			c:   aper.Constraint{Lb: 1, Ub: 64},
+			ext: true,
+		}
+		if err = tmp.Decode(ieR); err != nil {
+			err = utils.WrapError("Read ServingCellMO", err)
+			return
+		}
+		msg.ServingCellMO = (*int64)(&tmp.Value)
+	case ProtocolIEID_NeedForGap:
+		var tmp NeedforGap
+		if err = tmp.Decode(ieR); err != nil {
+			err = utils.WrapError("Read NeedforGap", err)
+			return
+		}
+		msg.NeedforGap = &tmp
+	case ProtocolIEID_FullConfiguration:
+		var tmp FullConfiguration
+		if err = tmp.Decode(ieR); err != nil {
+			err = utils.WrapError("Read FullConfiguration", err)
+			return
+		}
+		msg.FullConfiguration = &tmp
+	case ProtocolIEID_AdditionalRRMPriorityIndex:
+		tmp := BITSTRING{
+			c:   aper.Constraint{Lb: 32, Ub: 32},
+			ext: false,
+		}
+		if err = tmp.Decode(ieR); err != nil {
+			err = utils.WrapError("Read AdditionalRRMPriorityIndex", err)
+			return
+		}
+		msg.AdditionalRRMPriorityIndex = &tmp.Value
+	case ProtocolIEID_LowerLayerPresenceStatusChange:
+		var tmp LowerLayerPresenceStatusChange
+		if err = tmp.Decode(ieR); err != nil {
+			err = utils.WrapError("Read LowerLayerPresenceStatusChange", err)
+			return
+		}
+		msg.LowerLayerPresenceStatusChange = &tmp
+	case ProtocolIEID_BHChannelsToBeSetupModList:
+		var tmp Sequence[*BHChannelsToBeSetupModItem]
+		tmp.c = aper.Constraint{Lb: 1, Ub: maxnoofBHRLCChannels}
+		if err = tmp.Decode(ieR, func() *BHChannelsToBeSetupModItem {
+			return new(BHChannelsToBeSetupModItem)
+		}); err != nil {
+			err = utils.WrapError("Read BHChannelsToBeSetupModList", err)
+			return
+		}
+		msg.BHChannelsToBeSetupModList = make([]BHChannelsToBeSetupModItem, len(tmp.Value))
+		for i, v := range tmp.Value {
+			msg.BHChannelsToBeSetupModList[i] = *v
+		}
+	case ProtocolIEID_BHChannelsToBeModifiedList:
+		var tmp Sequence[*BHChannelsToBeModifiedItem]
+		tmp.c = aper.Constraint{Lb: 1, Ub: maxnoofBHRLCChannels}
+		if err = tmp.Decode(ieR, func() *BHChannelsToBeModifiedItem {
+			return new(BHChannelsToBeModifiedItem)
+		}); err != nil {
+			err = utils.WrapError("Read BHChannelsToBeModifiedList", err)
+			return
+		}
+		msg.BHChannelsToBeModifiedList = make([]BHChannelsToBeModifiedItem, len(tmp.Value))
+		for i, v := range tmp.Value {
+			msg.BHChannelsToBeModifiedList[i] = *v
+		}
+	case ProtocolIEID_BHChannelsToBeReleasedList:
+		var tmp Sequence[*BHChannelsToBeReleasedItem]
+		tmp.c = aper.Constraint{Lb: 1, Ub: maxnoofBHRLCChannels}
+		if err = tmp.Decode(ieR, func() *BHChannelsToBeReleasedItem {
+			return new(BHChannelsToBeReleasedItem)
+		}); err != nil {
+			err = utils.WrapError("Read BHChannelsToBeReleasedList", err)
+			return
+		}
+		msg.BHChannelsToBeReleasedList = make([]BHChannelsToBeReleasedItem, len(tmp.Value))
+		for i, v := range tmp.Value {
+			msg.BHChannelsToBeReleasedList[i] = *v
+		}
+	case ProtocolIEID_NRV2XServicesAuthorized:
+		var tmp NRV2XServicesAuthorized
+		if err = tmp.Decode(ieR); err != nil {
+			err = utils.WrapError("Read NRV2XServicesAuthorized", err)
+			return
+		}
+		msg.NRV2XServicesAuthorized = &tmp
+	case ProtocolIEID_LTEV2XServicesAuthorized:
+		var tmp LTEV2XServicesAuthorized
+		if err = tmp.Decode(ieR); err != nil {
+			err = utils.WrapError("Read LTEV2XServicesAuthorized", err)
+			return
+		}
+		msg.LTEV2XServicesAuthorized = &tmp
+	case ProtocolIEID_NRUESidelinkAggregateMaximumBitrate:
+		var tmp NRUESidelinkAggregateMaximumBitrate
+		if err = tmp.Decode(ieR); err != nil {
+			err = utils.WrapError("Read NRUESidelinkAggregateMaximumBitrate", err)
+			return
+		}
+		msg.NRUESidelinkAggregateMaximumBitrate = &tmp
+	case ProtocolIEID_LTEUESidelinkAggregateMaximumBitrate:
+		var tmp LTEUESidelinkAggregateMaximumBitrate
+		if err = tmp.Decode(ieR); err != nil {
+			err = utils.WrapError("Read LTEUESidelinkAggregateMaximumBitrate", err)
+			return
+		}
+		msg.LTEUESidelinkAggregateMaximumBitrate = &tmp
+	case ProtocolIEID_PC5LinkAMBR:
+		tmp := INTEGER{
+			c:   aper.Constraint{Lb: 0, Ub: 4000000000000},
+			ext: true,
+		}
+		if err = tmp.Decode(ieR); err != nil {
+			err = utils.WrapError("Read PC5LinkAMBR", err)
+			return
+		}
+		msg.PC5LinkAMBR = (*int64)(&tmp.Value)
+	case ProtocolIEID_SLDRBsToBeSetupModList:
+		var tmp Sequence[*SLDRBsToBeSetupModItem]
+		tmp.c = aper.Constraint{Lb: 1, Ub: maxnoofSLDRBs}
+		if err = tmp.Decode(ieR, func() *SLDRBsToBeSetupModItem {
+			return new(SLDRBsToBeSetupModItem)
+		}); err != nil {
+			err = utils.WrapError("Read SLDRBsToBeSetupModList", err)
+			return
+		}
+		msg.SLDRBsToBeSetupModList = make([]SLDRBsToBeSetupModItem, len(tmp.Value))
+		for i, v := range tmp.Value {
+			msg.SLDRBsToBeSetupModList[i] = *v
+		}
+	case ProtocolIEID_SLDRBsToBeModifiedList:
+		var tmp Sequence[*SLDRBsToBeModifiedItem]
+		tmp.c = aper.Constraint{Lb: 1, Ub: maxnoofSLDRBs}
+		if err = tmp.Decode(ieR, func() *SLDRBsToBeModifiedItem {
+			return new(SLDRBsToBeModifiedItem)
+		}); err != nil {
+			err = utils.WrapError("Read SLDRBsToBeModifiedList", err)
+			return
+		}
+		msg.SLDRBsToBeModifiedList = make([]SLDRBsToBeModifiedItem, len(tmp.Value))
+		for i, v := range tmp.Value {
+			msg.SLDRBsToBeModifiedList[i] = *v
+		}
+	case ProtocolIEID_SLDRBsToBeReleasedList:
+		var tmp Sequence[*SLDRBsToBeReleasedItem]
+		tmp.c = aper.Constraint{Lb: 1, Ub: maxnoofSLDRBs}
+		if err = tmp.Decode(ieR, func() *SLDRBsToBeReleasedItem {
+			return new(SLDRBsToBeReleasedItem)
+		}); err != nil {
+			err = utils.WrapError("Read SLDRBsToBeReleasedList", err)
+			return
+		}
+		msg.SLDRBsToBeReleasedList = make([]SLDRBsToBeReleasedItem, len(tmp.Value))
+		for i, v := range tmp.Value {
+			msg.SLDRBsToBeReleasedList[i] = *v
+		}
+	case ProtocolIEID_ConditionalIntraDUMobilityInformation:
+		var tmp ConditionalIntraDUMobilityInformation
+		if err = tmp.Decode(ieR); err != nil {
+			err = utils.WrapError("Read ConditionalIntraDUMobilityInformation", err)
+			return
+		}
+		msg.ConditionalIntraDUMobilityInformation = &tmp
 	default:
 	}
 	return
