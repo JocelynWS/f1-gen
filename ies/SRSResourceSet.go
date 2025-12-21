@@ -36,7 +36,7 @@ func (ie *SRSResourceSet) Encode(w *aper.AperWriter) (err error) {
 		tmp_List.Value = append(tmp_List.Value, &INTEGER{
 			Value: aper.Integer(id),
 			c:     aper.Constraint{Lb: 0, Ub: 63},
-			ext:   false,
+			ext:   true,
 		})
 	}
 
@@ -76,7 +76,7 @@ func (ie *SRSResourceSet) Decode(r *aper.AperReader) (err error) {
 		c:   aper.Constraint{Lb: 1, Ub: maxnoSRSResourcePerSet},
 		ext: false,
 	}
-	fn := func() *INTEGER { return &INTEGER{c: aper.Constraint{Lb: 0, Ub: 63}, ext: false} }
+	fn := func() *INTEGER { return &INTEGER{c: aper.Constraint{Lb: 0, Ub: 63}, ext: true} }
 	if err = tmp_List.Decode(r, fn); err != nil {
 		err = utils.WrapError("Read SRSResourceIDList", err)
 		return

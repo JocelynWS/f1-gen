@@ -11,7 +11,7 @@ type DynamicPQIDescriptor struct {
 	PacketDelayBudget  PacketDelayBudget `mandatory`
 	PacketErrorRate    PacketErrorRate   `mandatory`
 	AveragingWindow    *int64            `lb:0,ub:4095,optional,valueExt`
-	MaxDataBurstVolume *int64            `lb:0,ub:4095,optional`
+	MaxDataBurstVolume *int64            `lb:0,ub:4095,optional,valueExt`
 	// IEExtensions *DynamicPQIDescriptorExtIEs `optional`
 }
 
@@ -63,7 +63,7 @@ func (ie *DynamicPQIDescriptor) Encode(w *aper.AperWriter) (err error) {
 	}
 
 	if ie.MaxDataBurstVolume != nil {
-		tmp := NewINTEGER(*ie.MaxDataBurstVolume, aper.Constraint{Lb: 0, Ub: 4095}, false)
+		tmp := NewINTEGER(*ie.MaxDataBurstVolume, aper.Constraint{Lb: 0, Ub: 4095}, true)
 		if err = tmp.Encode(w); err != nil {
 			return utils.WrapError("Encode MaxDataBurstVolume", err)
 		}
@@ -116,7 +116,7 @@ func (ie *DynamicPQIDescriptor) Decode(r *aper.AperReader) (err error) {
 	}
 
 	if aper.IsBitSet(optionals, 3) {
-		tmp := INTEGER{c: aper.Constraint{Lb: 0, Ub: 4095}, ext: false}
+		tmp := INTEGER{c: aper.Constraint{Lb: 0, Ub: 4095}, ext: true}
 		if err = tmp.Decode(r); err != nil {
 			return utils.WrapError("Read MaxDataBurstVolume", err)
 		}
